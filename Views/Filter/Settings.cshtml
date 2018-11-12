@@ -1,0 +1,291 @@
+﻿@{
+    ViewBag.Title = "Настройки фильтра";
+    Layout = "~/Views/Shared/_MasterLoader.cshtml";
+    var counter = 0;
+    var itemList = (List<SelectListItem>)ViewBag.Items;
+    var category = (int)ViewBag.Category;
+}
+@model List<FilterItem>
+
+<div class="control-group row-fluid" style="min-height: 400px">
+    <div class="controls">
+        <div class="span12">
+
+            <fieldset>
+                <table class="mygrid" style="width: 97%; border-bottom: 1px solid #D1D7DF">
+                    <tbody>
+                        <tr>
+
+                            <th>
+                                <div class="form-legend">
+                                    Название
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    Слайд?
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    Разв.?
+                                </div>
+                            </th>
+                            <th>
+                                <div class="form-legend">
+                                    Характеристика
+                                </div>
+                            </th>
+                            <th>
+                                <div class="form-legend">
+                                    Подсказка
+                                </div>
+                            </th>
+                            <th>
+                                <div class="form-legend">
+                                    Фото
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    &nbsp;
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    &nbsp;
+                                </div>
+                            </th>
+                            <th class="last-td" style="width: 50px">
+                                <div class="form-legend">&nbsp;</div>
+                            </th>
+                        </tr>
+                        @foreach (var item in Model)
+                        {
+                            counter++;
+                            <tr class="@(counter%2 == 1 ? "even":"odd")">
+                                <td>
+                                    <div class="cell-content">
+                                        @Html.TextBox("Name_" + item.ID, item.Name, new { style = "margin-bottom: 0", onchange = "saveItem(this);", arg = item.ID, field = "Name", category = category })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        @Html.CheckBox("Type_" + item.ID, item.Type != 0, new { style = "margin-bottom: 0", onchange = "saveItem(this);", arg = item.ID, field = "Type", category = category })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        @Html.CheckBox("Visible_" + item.ID, item.Visible.HasValue && item.Visible.Value, new { style = "margin-bottom: 0", onchange = "saveItem(this);", arg = item.ID, field = "Visible", category = category })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        @Html.DropDownList("Char_" + item.ID, itemList.Select(x => new SelectListItem() { Text = x.Text, Value = x.Value, Selected = ((item.IsPrice && x.Value == "Price") || (item.CharID.ToString() == x.Value)) }), new { style = "margin-bottom: 0; width: 175px", onchange = "saveItem(this); fillName(this);", arg = item.ID, field = "CharID", category = category })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        @Html.TextBox("Help_" + item.ID, item.Help, new { style = "margin-bottom: 0", onchange = "saveItem(this);", arg = item.ID, field = "Help", category = category })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content" arg="@item.ID">
+                                        @if (item.Img != null)
+                                        {
+                                            <div class='img-cell'><img src='/Master/ru/UniversalEditor/Image?tableName=FilterItems&fieldName=Img&uidName=ID&width=50&height=50&uidValue=@item.ID&rnd=@(new Random(DateTime.Now.Millisecond).Next(1000, 9999))'><a href='#' onclick='deleteImg(@item.ID); return false;' title='Удалить'><img src='/content/admin/row_del.png' /></a></div>
+                                        }
+                                        <label style="cursor: pointer; border-bottom: 1px dotted gray; padding-left: 0" class="upl-link" for="upload-photo_@item.ID">Загрузить</label>
+                                        <input type="file" class="upl-file" arg="@item.ID" id="upload-photo_@item.ID" style=" opacity: 0; position: absolute; z-index: -1;" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="#" onclick="changeOrder(this, 'up', @item.ID, @category); return false;" class="image-up" style="margin-left: 7px !important; cursor: pointer"></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="#" onclick="changeOrder(this, 'down', @item.ID, @category); return false;" class="image-down" style="margin-left: 7px !important; cursor: pointer"></a>
+                                    </div>
+                                </td>
+                                <td class="td-delete">
+                                    <div class="cell-content cell-content-delete">
+                                        <a href="#" onclick="deleteItem(this, @item.ID, @category); return false;" style="margin-left: 7px !important; cursor: pointer"></a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+
+
+
+                    </tbody>
+                </table>
+                <br>
+
+                <div class="image-add-cell">
+                    <input type="submit" class="image-add" name="Image_New_Icon" value="1">
+                    <input type="submit" onclick="addItem(this, @category)" class="image-add-text" value="Добавить параметр">
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<style>
+    .upl-link:hover {
+        border-bottom: none !important;
+        color: black !important;
+    }
+
+    .img-cell {
+        clear: both;
+        overflow: hidden;
+    }
+
+        .img-cell > img {
+            width: 35px;
+            height: 35px;
+            display: block;
+            float: left;
+        }
+
+        .img-cell a {
+            float: left;
+            display: block;
+            margin: -1px 0 0 2px;
+        }
+</style>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+    $().ready(function () {
+        resize();
+        initUpload();
+    });
+
+    function deleteImg(id) {
+        $.post('/Master/ru/Filter/DeleteIcon', { id: id }, function(data) {
+            var parent = $('.cell-content[arg="' + id + '"]');
+            var imgCell = parent.find('.img-cell');
+            if (imgCell.length) {
+                imgCell.remove();
+            }
+        });
+    }
+
+
+    function fillName(obj) {
+        
+        var nc = $('input[field="Name"]').filter('[arg="' + $(obj).attr('arg') + '"]');
+        if (nc.length && !nc.val().length) {
+            var vv = $(obj).val();
+            if(vv.length) {
+                nc.val($(obj).find('option[value="'+vv+'"]').text());
+                saveItem(nc[0]);
+            }
+        }
+    }
+
+    function initUpload() {
+        $('.upl-file').each(function () {
+            var fu = $(this);
+            fu.fileupload({
+                autoUpload: true,
+                url: '/Master/ru/Filter/UploadIcon?ID=' + fu.attr('arg'),
+                dataType: 'json',
+                add: function (e, data) {
+                    var jqXHR = data.submit()
+                        .success(function (data, textStatus, jqXHR) {
+                            if (data.isUploaded) {
+                                try {
+                                    debugger;
+                                    var parent = $('.cell-content[arg="' + data.id + '"]');
+                                    var imgCell = parent.find('.img-cell');
+
+                                    var html = "<div class='img-cell'><img src='" + data.path + "'><a href='#' onclick='deleteImg(" + data.id + "); return false;' title='Удалить'><img src='/content/admin/row_del.png' /></a></div>";
+
+                                    if (imgCell.length) {
+                                        imgCell.replaceWith(html);
+                                    } else {
+                                        parent.prepend(html);
+                                    }
+
+                                } catch (ex) {
+                                    alert(ex);
+                                }
+                            }
+                            else {
+                                alert(data.message);
+                            }
+
+                        })
+                        .error(function (data, textStatus, errorThrown) {
+                            if (typeof (data) != 'undefined' || typeof (textStatus) != 'undefined' || typeof (errorThrown) != 'undefined') {
+                                alert(textStatus + errorThrown + data);
+                            }
+                        });
+                },
+                fail: function (event, data) {
+                    if (data.files[0].error) {
+                        alert(data.files[0].error);
+                    }
+                }
+            });
+        });
+    }
+
+
+    $(document).resize(function () {
+        resize();
+    });
+
+    function saveItem(obj) {
+        $.post('/Master/ru/Filter/Save', { Category: $(obj).attr('category'), ID: $(obj).attr('arg'), Field: $(obj).attr('field'), Value: $(obj).is(":checkbox") ? $(obj).is(":checked") : $(obj).val() }, function () {
+
+        });
+    }
+
+    function resize() {
+        var tss = 0;
+        $('.text-span').each(function () {
+            if ($(this).find('h4').width() + $(this).find('label').width() > tss)
+                tss = $(this).find('h4').width() + $(this).find('label').width();
+        });
+        tss += 10;
+        $('.text-span').css('width', tss + 'px');
+
+        tss = 0;
+        $('.input-span').each(function () {
+            if ($(this).find('input').width() > tss)
+                tss = $(this).find('input').width();
+        });
+        tss += 10;
+        $('.input-span').css('width', tss + 'px');
+
+    }
+
+    function addItem(obj, catid) {
+        $.post('/Master/ru/Filter/Add', { Category: catid }, function () {
+            document.location.reload(true);
+        });
+    }
+
+
+    function changeOrder(obj, type, id, cat) {
+        $.post('/Master/ru/Filter/ChangeOrder', { Type: type, ID: id, Category: cat }, function () {
+            document.location.reload(true);
+        });
+    }
+
+    function deleteItem(obj, id, cat) {
+        $.post('/Master/ru/Filter/DeleteItem', { ID: id }, function () {
+            document.location.reload(true);
+        });
+    }
+
+
+
+</script>

@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Настройки модуля";
+    Layout = "~/Views/Shared/_MasterPopup.cshtml";
+}
+@model List<BlockSettingsData>
+
+@if (Model != null && Model.Any())
+{
+    @Html.Partial("MessageBox")
+    using (Html.BeginForm("BlockSettings", "Settings", new { blockname = Request["blockname"], viewid = Request["viewid"] }, FormMethod.Post))
+    {
+        <div class="group-cnt" style="display: block">
+            @foreach (var row in Model)
+            {
+                <div class="control-group row-fluid">
+                    <div class="span4">
+                        <label class="control-label" ><span>@row.Description</span></label>
+                    </div>
+                    <div class="span8">
+                        <div class="controls">
+                            @if (row.Editor == "CheckBox")
+                            {
+                                @Html.CheckBox(row.Field, row.StoredValue.ToBool())
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <br />
+        <input type="submit" class="btn" value="Сохранить" />
+    }
+}

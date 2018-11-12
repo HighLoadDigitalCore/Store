@@ -1,0 +1,52 @@
+﻿@using System.Linq
+@model CatalogMenu
+@{
+    var browser = CatalogBrowser.Init();
+}
+<nav style="@(browser.IsProductPage && browser.CurrentProduct.RelatedCategories.IsFilled() ? "display:none" : "")" class="navigate_left clearfix" data-megamenu="@(Model.CatalogBrowser.IsCategoryPage || Model.CatalogBrowser.IsProductPage ? "0" : "1")" data-hidesection="@(Model.MenuHidden.ToIntString())" data-currentlevel="@Model.OpenLevel">
+
+    <a class="head cat_index_page active" href="@CatalogBrowser.ParentPage.FullUrl"><i class="icon_cat_index_page"></i>Каталог товаров<i class="arrow icon_arrow_down"></i></a>
+    <div class="catalogue_menu_wrapper">
+        @foreach (var pg in Model.FirstLevel)
+        {
+            var l1 = pg.GetChildren<SiteMapItem>();
+            <a data-catid="@pg.ID" class="@(pg.IsActive && CatalogBrowser.Init().ParentIds.Any() && CatalogBrowser.Init().ParentIds.First() == pg.ID ? "active" : "")" data-level="1" title="@pg.Title" href="@pg.Link"><span>@pg.Name</span></a>
+            if (pg.IsActive)
+            {
+
+                foreach (var l1c in l1)
+                {
+            <a class="@(l1c.IsActive && CatalogBrowser.Init().ParentIds.Any() && CatalogBrowser.Init().ParentIds.First() == l1c.ID ? "active" : "")" data-level="2"  title="@pg.Title" href="@l1c.Link"><i class="icon_c_chevsmall-right"></i><span>@l1c.Name</span></a>
+                    if (l1c.IsActive)
+                    {
+                        var l2 = l1c.GetChildren<SiteMapItem>();
+                        foreach (var l2c in l2)
+                        {
+            <a class="@(l2c.IsActive && CatalogBrowser.Init().ParentIds.Any() && CatalogBrowser.Init().ParentIds.First() == l2c.ID ? "active" : "")" data-level="3"  title="@pg.Title" href="@l2c.Link"><i class="icon_c_chevsmall-right"></i><span>@l2c.Name</span></a>
+                        }
+                    }
+                }
+            }
+        }
+        @if ((Model.CatalogBrowser.IsCategoryPage || Model.CatalogBrowser.IsProductPage) && Model.CatalogBrowser.CurrentCategory.ID > 1)
+        {
+            <a class="switch" href="#nogo"><i class="icon_c_eye-open"></i><span>Показать разделы</span><span>Спрятать разделы</span></a>
+        }
+    </div>
+    <section class="menu-back"></section>
+</nav>
+@if (browser.IsProductPage && browser.CurrentProduct.RelatedCategories.IsFilled())
+{
+    var db = new DB();
+    var cats = browser.CurrentProduct.RelatedCategories.Split<string>(";", ",").Select(x => db.StoreCategories.FirstOrDefault(z => z.Slug == x || z.ID == x.ToInt())).Where(x => x != null);
+    <nav class="navigate_left_simple clearfix">
+
+        <div class="catalogue_menu_wrapper">
+            @foreach (var cat in cats)
+            {            
+                <a title="@cat.Name" title="@cat.Description.ClearHTML()" href="@cat.FullUrl"><span>@cat.Name</span></a>
+            }
+        </div>
+
+    </nav>
+}

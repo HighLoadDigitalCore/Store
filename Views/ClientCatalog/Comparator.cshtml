@@ -1,0 +1,12 @@
+﻿@model Comparator
+@*
+<div class="compare @Model.CSS for-idiots" >
+    <a title="@Model.Text" href="#" arg="@Model.ID"></a> Сравнить
+</div>
+*@
+<div class="compare @Model.CSS for-idiots" >
+    <label class="cb-checkbox cb-sm">
+        <input @(Model.InCompare ? "checked=checked" : "") type="checkbox" arg="@Model.ID" title="@Model.Text" /><span>Сравнить</span>
+    </label>
+
+</div>

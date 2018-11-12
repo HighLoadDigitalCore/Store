@@ -1,0 +1,17 @@
+﻿@model IEnumerable<CMSPageMenuCustom>
+@if (Model.Any())
+{
+    <dl class="text_12 color_white" style="margin-top: 0">
+        @foreach (var item in Model)
+        {
+            if (item.IsHeader)
+            {
+            <h3><a href="@item.URL">@item.Name</a></h3>        
+            }
+            else
+            {
+            <dd><a href="@item.URL">@item.Name</a></dd>
+            }
+        }
+    </dl>
+}

@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "Редактирование расписания";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model EventCalendar
+@section Header
+{
+    Редактирование расписания цен
+}
+@section Description
+{
+    Укажите период времени и наценку, которая будет использоваться при формировании цены
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@Html.Partial("MessageBox")
+<div class="filter-block">
+    @using (Html.BeginForm("Edit", "Event", new { id = Model.ID }, FormMethod.Post))
+    {
+
+
+        <div class="form-legend">Редактирование правила:</div>
+
+        @Html.HiddenFor(model => model.ID)
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.DayOfWeek, new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.DropDownListFor(model => model.DayOfWeek, Model.WeekDays)
+                    @Html.ValidationMessageFor(model => model.DayOfWeek)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.StartTime, new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.StartTime, new { @class = "time-picker" })
+                    @Html.ValidationMessageFor(model => model.StartTime)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.EndTime, new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.EndTime, new { @class = "time-picker" })
+                    @Html.ValidationMessageFor(model => model.EndTime)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.PricePercent, new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBoxFor(model => model.PricePercent)
+                    @Html.ValidationMessageFor(model => model.PricePercent)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.Direction, new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.DropDownListFor(model => model.Direction, Model.DirectionList)
+                    @Html.ValidationMessageFor(model => model.Direction)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.ShowDiscount, new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    <label class="checkbox">
+                        @Html.EditorFor(model => model.ShowDiscount)
+                    </label>
+                    @Html.ValidationMessageFor(model => model.ShowDiscount)
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group row-fluid">
+            <div class="controls">
+                <div class="span12">
+                    <input type="submit" value="Сохранить изменения" class="btn" style="margin-left: 10px" />
+                    <div class="backref" style="margin-left: 10px">
+                        @Html.ActionLink("Назад к списку", "Index")
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    }
+</div>

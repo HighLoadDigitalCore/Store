@@ -1,0 +1,35 @@
+﻿@model StoreImage
+@{
+    if (Model != null)
+    {
+        ViewBag.Title = Model.Description;
+    }
+    Layout = "~/Views/Shared/VideoFrame.cshtml";
+}
+@if (Model != null)
+{
+    <div id="playerCell">
+        @if (!Model.Youtube.Contains(".swf"))
+        {
+
+            <object type="application/x-shockwave-flash" data="/content/Video/uppod.swf" width="780" height="515" id="playerCell" style="visibility: visible;">
+                <param name="bgcolor" value="#ffffff">
+                <param name="wmode" value="window">
+                <param name="allowFullScreen" value="true">
+                <param name="allowScriptAccess" value="always">
+                <param name="flashvars" value="file=@Model.Youtube&amp;poster=@Model.UrlPath&amp;st=/content/Video/video84-2262.txt">
+            </object>
+        }
+        else
+        {
+
+            <object type="application/x-shockwave-flash" data="@Model.Youtube" width="780" height="515" id="playerCell" style="visibility: visible;">
+                <param name="bgcolor" value="#ffffff">
+                <param name="wmode" value="window">
+                <param name="allowFullScreen" value="true">
+                <param name="allowScriptAccess" value="always">
+            </object>
+
+        }
+    </div>
+}

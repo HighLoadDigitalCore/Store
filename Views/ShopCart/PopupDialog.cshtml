@@ -1,0 +1,120 @@
+﻿@model StoreProduct
+@{
+    var cart = new ShopCart().InitCart();
+    var recomend = Model.StoreProductRelations.Where(x => x.BaseProductReverse != null && x.GroupName == "recomend").Select(x => x.BaseProductReverse).ToList();
+}
+@if (Model != null)
+{
+    <div id="PopupDialog">
+        <div id="el_modal_window">
+            <div class="modal_wrap_content feed-back">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div class="dspl_n" id="div_after_add2cart" style="display: block;">
+                            <div class="align-c" id="div_after_add2cart_text">
+                                <table class="mt-5" style="width: 650px;">
+                                    <tbody>
+                                        <tr><td colspan="3"><h1 style="text-align: left; margin-top: -15px">Товар добавлен в корзину</h1></td></tr>
+                                        <tr>
+                                            
+                                            <td width="190" class="valign-t">
+                                                <img style="width: 150px; height: 135px;" alt="" src="@Model.DefaultImage" id="imgGood">
+                                            </td>
+                                            <td width="285">
+                                                <div id="addct1" class="w100 align-l">
+                                                    <a class="fs-13" href="@Model.FullUrl" id="waddcarturl">@Model.NameOrDef</a>
+                                                </div>
+                                                <div class="mb-15 align-l mt-15" id="addct2">
+                                                    <span class="fs-12 c-gray3">Ваша цена:</span>
+                                                    <span class="fs-17 fst-b c-red" id="addcartprice">@Model.PriceModule.ShopCartPrice.ToNiceDigit()</span>
+                                                    <span class="c-red fst-n fs-12">руб.</span>
+@*
+                                                    <table cellspacing="0" cellpadding="0" width="147" id="cart5293342" class="mt-10 c-gray3">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td width="74" class="c-gray3 valign-m">Количество:</td>
+                                                                <td width="17" height="22" class=" valign-m">
+                                                                    <img height="13" class="cMinus" src="/content/theme_main/img/minus.png" onclick="renewCart(@Model.ID, -1, $('#cartInput'), false)">
+                                                                </td>
+                                                                <td width="42">
+                                                                    <input type="text" onchange="renewCart(@Model.ID, 0, this, true); " id="cartInput" style="width: 34px; height: 16px;" maxlength="5" value="@cart.ShopCartItems.Where(x=> x.ProductID == Model.ID).Sum(x=> x.Count)" class="dspl_ib quant align-r">
+                                                                </td>
+                                                                <td width="14"> <img height="13" onclick="renewCart(@Model.ID, 1, $('#cartInput'), false)" class="cPlus dspl_ib" src="/content/theme_main/img/plus.png"> </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+*@
+                                                </div>
+                                            </td>
+                                            <td class="valign-t" rowspan="2"> <div class="goToCartConteiner crns8">
+                                                                                  <div class="cartInfo">
+                                                                                       <div class="align-l mt-30 ml-15 mb-20 fs-14 c-gray3" id="addcmsg"> В корзине:&nbsp;<span id="quantw"><b>@cart.TotalCount</b> <span class="fst-n fs-13">товар@(@cart.TotalCount.GetStringPostfix(WordKind.Man)) </span></span> <br>на сумму: <span id="cartAllCost" class="fs-17 fst-b">@cart.TotalSum.ToNiceDigit()</span> <span> руб.</span> </div> 
+                                                                                  </div>  
+                                                                                  @*<a style="width: 194px;" class="buttonPres buttonBlue curs-point mt-15 lh-26 tdec-none align-c dspl_b futura dspl_fr fs-18 c-white crns8" href="@CMSPage.GetPageLinkByType("ShopCart")">Перейти в корзину<span class="sprArrow arrowWhiteRight dspl_ib ml-7 mt-6"></span></a>*@
+                                                                                  <a href="@CMSPage.GetPageLinkByType("ShopCart")" class="basketAddHide c-blueLight fs-14 dspl_ib dspl_fl mb-5 ml-5 linkDotted" style="
+">
+                                                                                      <span class="linkDotted">Перейти в корзину</span><span class="sprArrow arrowRightRedNotBckgr dspl_ib mr-7"></span>
+                                                                                  </a>
+                                                                              </div> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="valign-b pd-0" style="text-align: left; padding-bottom: 19px!important">
+                                                <a href="#" onclick="return closeDialogNative($('.icon_close'));" class="basketAddHide c-blueLight fs-14 dspl_ib dspl_fl mb-5 ml-5 linkDotted">
+                                                    <span class="sprArrow arrowLeftRedNotBckgr dspl_ib mr-7"></span><span class="linkDotted">Продолжить покупки</span>
+                                                </a>
+                                            </td> 
+                                            <td style="padding-bottom: 19px;">
+                                                <a href="#" onclick="showOrderForm(this); return false;" class="basketAddHide c-blueLight fs-14 dspl_ib dspl_fl mb-5 ml-5 linkDotted">
+                                                    <span class="linkDotted">Оформить заказ</span><span class="sprArrow arrowRightRedNotBckgr dspl_ib mr-7"></span>
+                                                </a>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                @if (recomend.Any())
+                                {
+                                    <table cellspacing="0" cellpadding="0" width="650" id="recommendations" class="mt-15">
+                                        <tbody>
+                                            <tr><td class="recHeader fs-18 pdl-15" colspan="5">Вам также могут пригодиться</td></tr>
+                                            <tr>  </tr>
+                                            @foreach (var item in recomend.Take(5))
+                                            {
+                                                <tr data-good-id="@item.ID" class="goodBlock">
+                                                    <td width="77">
+                                                        <a class="rashodkaLink" href="#" title="#" target="_blank">
+                                                            <img style="width: 70px;" alt="" src="@item.DefaultImage" id="imgGood">
+                                                        </a>
+                                                    </td>
+                                                    <td width="244" class="align-l pdl-10">
+                                                        <a class="fs-13 rashodkaLink" href="@item.FullUrl" id="recItemUrl" target="_blank">
+                                                            @item.NameOrDef
+                                                        </a>
+                                                    </td>
+                                                    <td width="93" class="align-c">
+                                                        <span class="fs-17 c-red fst-b">@item.TradingPrice</span> <span class="fs-12 c-red"> руб.</span>
+                                                    </td>
+                                                    <td width="85" class="align-c">
+                                                        <div class="countConteiner">
+                                                            <img src="/content/theme_main/img/minus.png" class="cMinusRec m-0" id="minus44007" onclick="changeBox(this, -1)" style="cursor: pointer"> 
+                                                            <input type="text" class="dspl_ib goodQuant" name="quant_44007" id="quant_44007" value="1" maxlength="5"> 
+                                                            <img src="/content/theme_main/img/plus.png" class="cPlusRec dspl_ib" id="plus44007" onclick="changeBox(this, 1)" style="cursor: pointer">
+                                                        </div>
+                                                    </td>
+                                                    <td width="121">
+                                                        <a onclick="renewCart(@item.ID, $(this).parent().parent().find('.goodQuant').val(), $(this).parent().parent().find('.goodQuant'), true)" href="#nogo" class="but-buy3 buttonPres mt-3 futura crnsapp crns8 align-c addBasket rashodkaBuy" data-good-id="44007" style="width: 121px;" title="Купить"><span style="margin: 6px 5px 5px 5px;" class="dspl_ib sprCommon basketSmall"></span> В корзину</a>  
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                            </div>
+                        </div>
+                        <a onclick=" return closeDialogNative(this); " href="#nogo" class="modal_window_close icon_close"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

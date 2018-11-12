@@ -1,0 +1,43 @@
+﻿@model ShopCart
+<div class="basket_view-basic">
+    <div class="back-call-cell">
+        <a href="#" onclick="showBackCall(); return false;">
+            <img src="/content/theme_main/img/back.jpg" />
+            <span>Обратный<br />
+                звонок</span>
+        </a>
+    </div>
+    <div class="basket-cell">
+        <h3 class="color_dark link_dashed"><i class="icon_c_basket"></i>
+            <a href="@CMSPage.GetPageLinkByType("ShopCart")" id="basket_widget-main" class="in_basket_sum">&nbsp;@Model.TotalSum.ToNiceDigit()&nbsp;руб.</a></h3>
+        <p class="text_11 in_basket_count">
+            @if (Model.TotalCount == 0)
+            {
+                @Html.Raw("корзина пуста")
+
+            }
+            else
+            {
+                @Html.Raw(string.Format("{0} товар{1} в корзине", Model.TotalCount, Model.TotalCount.GetStringPostfix(WordKind.Man)))
+            }
+
+        </p>
+        @if (Model.TotalCount == 0)
+        {
+        
+            <button class="el_form btn btn_green disabled">
+                Оформить заказ
+            </button>
+        }
+        else
+        {
+            <button class="el_form btn btn_green" onclick="document.location.href = '@CMSPage.GetPageLinkByType("ShopCart")';">
+                Оформить заказ
+            </button>
+@*
+        <a href="@CMSPage.GetPageLinkByType("ShopCart")"  class="el_form btn btn_green small">Оформить заказ
+        </a>
+*@
+        }
+    </div>
+</div>

@@ -1,0 +1,83 @@
+﻿@model RadiatorFilter
+@{
+    var connect = Model.Get("Подключение");
+    var power = Model.Get("Мощность");
+    var type = Model.Get("Тип");
+    var height = Model.Get("Высота");
+    var width = Model.Get("Ширина");
+    var catalog = CatalogBrowser.Init();
+    
+}
+
+@if (catalog.IsCategoryPage && (catalog.CurrentCategory.ProductList.Any()  || catalog.IsFilterPage))
+{
+    <div class="inner-filter">
+
+        <div class="f-col">
+            <div class="f-head">
+                Подключение
+            </div>
+            <div class="f-cell">
+                <label>
+                    <input type="radio" value="Боковое" @(connect.FilteredValues.Any(z => z == "Боковое") ? "checked" : "") arg="@connect.CharacterID" name="RadioBox_@(connect.CharacterID)"  /><span>Боковое</span></label>
+                <label>
+                    <input type="radio" value="Нижнее" @(connect.FilteredValues.Any(z => z == "Нижнее") ? "checked" : "") arg="@connect.CharacterID" name="RadioBox_@(connect.CharacterID)"  /><span>Нижнее</span></label>
+            </div>
+        </div>
+        <div class="f-col">
+            <div class="f-head">
+                Тип
+            </div>
+            <div class="f-cell">
+                @foreach (var v in Model.Depth.OrderBy(x => x.Value.Length).ThenBy(x => x.Value))
+                {
+                    <label>
+                        <input type="checkbox" value="@v.Key" @(type.FilteredValues.Any(z => z == v.Value) ? "checked" : "") arg="@type.CharacterID" name="Check_@(type.CharacterID)"  /><span>@v.Value</span></label>
+
+                }
+            </div>
+        </div>
+        <div class="f-col">
+            <div class="f-head">
+                Высота
+            </div>
+            <div class="f-cell">
+                @foreach (var v in Model.Height.OrderBy(x => x.Value.Length).ThenBy(x => x.Value))
+                {
+                    <label>
+                        <input type="checkbox" value="@v.Key" @(height.FilteredValues.Any(z => z == v.Value) ? "checked" : "") arg="@height.CharacterID" name="Check_@(height.CharacterID)"  /><span>@v.Value</span></label>
+                }
+            </div>
+        </div>
+        <div class="f-col">
+            <div class="f-head">
+                Ширина
+            </div>
+            <div class="f-cell double">
+                @foreach (var v in Model.Width.OrderBy(x => x.Value.Length).ThenBy(x => x.Value).Take(8))
+                {
+                    <label>
+                        <input type="checkbox" value="@v.Key" @(width.FilteredValues.Any(z => z == v.Value) ? "checked" : "") arg="@width.CharacterID" name="Check_@(width.CharacterID)"  /><span>@v.Value</span></label>
+                }
+            </div>
+            <div class="f-cell">
+                @foreach (var v in Model.Width.OrderBy(x => x.Value.Length).ThenBy(x => x.Value).Skip(8))
+                {
+                    <label>
+                        <input type="checkbox" value="@v.Key" @(width.FilteredValues.Any(z => z == v.Value) ? "checked" : "") arg="@width.CharacterID" name="Check_@(width.CharacterID)"  /><span>@v.Value</span></label>
+                }
+            </div>
+        </div>
+        <div class="f-col power">
+            <div class="f-head center">
+                Мощность
+            </div>
+            <div class="power-slider">
+                <input additional="power" id="Slider_@(power.CharacterID)" arg="@power.CharacterID" from="@power.Values.ElementAt(0).Replace(",", ".")" to="@power.Values.ElementAt(1).Replace(",", ".")" value="@power.GetValue(0).Replace(",", ".");@power.GetValue(1).Replace(",", ".")" type="slider" name="area" />
+            </div>
+            <input type="submit" value="Подобрать" onclick="showRadFilterResultC();" class="el_form btn btn_green rad-choise" />
+            <div class="found" style="display: none">Найдено: <a href="#">0 товар(ов)</a></div>
+            
+        </div>
+    </div>
+}

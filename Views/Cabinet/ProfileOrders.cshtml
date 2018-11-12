@@ -1,0 +1,165 @@
+﻿@{
+    var user = HttpContext.Current.GetCurrentUser();
+    var shopcart = new ShopCart().InitCart();
+}
+@if (Request.QueryString["order"].IsFilled())
+{
+    
+    var order = new DB().Orders.FirstOrDefault(x => x.ID == Request.QueryString["order"].ToInt());
+    if (order != null)
+    {
+    <div class="history_order ">
+        <h2 class="private_office_title">Информация о заказе №@order.ID.ToString("d10") от @order.CreateDate.ToString("d MMMM yyyy")</h2>
+        <div class="zakaz_data">
+            <div class="grid_5 alpha">
+                <h3 class="address">@order.OrderDetail.Address</h3>
+                <div class="interval">@order.CreateDate.ToString("d MMMM yyyy, HH:mm")</div>
+            </div>
+            <div class="grid_2">
+                <h3>@order.OrderDetail.OrderCost.Value.ToNiceDigit() &nbsp;руб.</h3>
+                <div class="page_marker_order"><i class="page_sprite-succes status_ASSEMBLE_COMPLETE"></i>@order.OrderStatus.Status</div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+        @if (order.OrderDetail.Weight > 0 || order.OrderDetail.Volume > 0)
+        {
+            <div class="grid_4 alpha">
+                <h3>Дополнительно</h3>
+                <ul class="base_nobull_list list_additional">
+                    @if (order.OrderDetail.Weight > 0)
+                    {
+                        <li><i class="icon_weight"></i>Общий вес заказа: @order.OrderDetail.Weight.ToString("f2") кг</li>
+                    }
+                    @if (order.OrderDetail.Volume > 0)
+                    {
+                        <li><i class="icon_volume"></i>Общий объем товаров: @order.OrderDetail.Volume.ToString("f2") см<sup>3</sup></li>
+                    }
+                </ul>
+            </div>
+        }
+        @if (order.OrderedProducts.Any())
+        {
+            if (order.OrderedProducts.Any(x => x.StoreProduct != null))
+            {
+            <div class="grid_5 omega">
+                <h3>Доступные действия</h3>
+                <ul class="base_inline_list list_actions">
+                    <li class="add_to_basket"><a href="#nogo" title="Положить в корзину" class="link_icon action_to_basket"><i class="icon_ms_basket"></i>Положить в&nbsp;корзину</a></li>
+                    @*
+                    <li class="save_template"><a data-pavorderid="098343116762" href="#" title="Сохранить как шаблон" class="link_icon action_save_template"><i class="icon_ms_template"></i>Сохранить как шаблон</a></li>
+                    <li class="print_check"><a target="_blank" href="/order/blank/all/098343116762" title="Распечатать чек" class="link_icon action_print_check"><i class="icon_ms_printer"></i>Распечатать чек</a></li>
+*@
+                </ul>
+            </div>
+            }
+            <div class="clear"></div>
+
+            <div class="alpha">
+                <h3>Состав заказа</h3>
+                @if (order.OrderedProducts.Any(x => x.StoreProduct != null))
+                {
+                    <ul class="base_inline_list list_check">
+                        <li class="cb">
+                            <input type="checkbox" class="el_form check_all_goods"></li>
+                        <li class="count_checked_goods">товары не выбраны</li>
+                        <li class="buttons">
+                            <button class="el_form btn small add_list_to_basket">Купить</button>
+                    </ul>
+                }
+            </div>
+            <div class="clear"></div>
+            <ul class="base_inline_list list_headers">
+                <li class="name">наименование</li>
+                <li class="price">стоимость</li>
+                @if (order.OrderedProducts.Any(x => x.StoreProduct != null))
+                {
+                    <li class="add">хотите купить еще?</li>
+                }
+            </ul>
+            <div>
+                @foreach (var product in order.OrderedProducts/*.Where(x => x.StoreProduct != null)*/)
+                {
+                    <div data-item_id="@(product.ProductIDOrNull)" class="goods_view_history_line ">
+                        @if (product.StoreProduct != null)
+                        {
+                            <div class="goods_check">
+                                <input type="checkbox" value="@product.ProductID" count="@product.Amount" name="item_id" class="el_form"><ins class="checked_line"></ins>
+                            </div>
+                        }
+                        <div class="goods_data">
+                            <a title="@product.ProductName" class="goods_caption" href="@product.FullUrl">@product.ProductName</a>
+                            @if (product.StoreProduct != null && product.StoreProduct.NeedShowArticle)
+                            {
+                                <small class="text_11">Артикул: @product.StoreProduct.Article</small>
+                            }
+                        </div>
+                        <div class="goods_price">
+                            <div class="total">@product.Sum.ToNiceDigit()<span class="currency">&nbsp;руб.</span><br>
+                            </div>
+                            @product.Amount×@product.SalePrice.ToNiceDigit()<span class="currency">&nbsp;руб.</span>
+                        </div>
+                        <div class="goods_pic">
+                            @if (shopcart.ShopCartItems.Any(x => x.ProductID == product.ProductIDOrNull))
+                            {
+                                <div class="icon_goods">@shopcart.ShopCartItems.First(x => x.ProductID == product.ProductIDOrNull).Count</div>
+                            }
+                            @if (product.StoreProduct != null)
+                            {
+                                <a href="@product.StoreProduct.FullUrl">
+                                    <img style="max-width: 100px; max-height: 100px" src="@product.StoreProduct.GetThumbURL(180, 180)"></a>
+                            }
+                        </div>
+                        @if (product.StoreProduct != null)
+                        {
+                            <div class="goods_form">
+                                <h3 class="color_black">@product.StoreProduct.TradingPriceDecimal.ToNiceDigit()<span>&nbsp;руб.</span><span class="signature text_12"></span></h3>
+                                <div style="margin-top: 10px;">
+                                    <div class="el_form-quantity">
+                                        <a class="el_form small btn disabled bradius_c-r reduce"><i class="icon icon_minus"></i></a>
+                                        <input type="text" class="el_form small bradius_c-r bradius_c-l" min="1" arg="@product.ProductID" name="count" value="1"><a class="el_form small btn bradius_c-l increase"><i class="icon icon_plus"></i></a>
+                                    </div>
+                                </div>
+                                <button class="el_form small btn @(shopcart.ActiveProducts.Any(z => z.ProductID == product.StoreProduct.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(shopcart.ActiveProducts.Any(z => z.ProductID == product.StoreProduct.ID) ? "В корзине" : "Купить")</button>
+                            </div>
+                        }
+                        <div class="clear"></div>
+                    </div>
+
+                }
+
+            </div>
+        }
+        <dl class="total_sum">
+            <dt>Итого, без скидок:</dt>
+            <dd>@((order.TotalSum + order.OrderDetail.DiscountCost.Value).ToNiceDigit())<span class="currency">&nbsp;руб.</span></dd>
+            <dt class="paid">Итого, с учетом скидки:</dt>
+            <dd class="paid">@(order.OrderDetail.OrderCost.Value.ToNiceDigit())<span class="currency">&nbsp;руб.</span></dd>
+        </dl>
+    </div>
+    }
+}
+else
+{
+    <h2 class="private_office_title">История заказов</h2>
+    <p>Отслеживайте информацию по вашим текущим заказам онлайн. </p>
+    <table class="order_list-item">
+        @foreach (var order in user.Orders)
+        {
+            <tr>
+                <td class="order_item-id"><a href="@(Request.RawUrl + "&order=" + order.ID)" class="pav_order_id">№ @order.ID.ToString("d10")</a>
+                    <div class="signature">от @order.CreateDate.ToString("d MMMM yyyy"), @order.CreateDate.ToString("HH:mm")</div>
+                </td>
+                <td class="order_item-address">Доставка:<div class="signature">@order.OrderDetail.Address</div>
+                </td>
+                <td class="order_item-status_list">
+                    <div class="foreign_font">@order.OrderDetail.OrderCost.Value.ToNiceDigit()&nbsp;руб.</div>
+                    <div class="page_marker_order"><i class="page_sprite-succes status_ASSEMBLE_COMPLETE"></i>@order.OrderStatus.Status</div>
+                </td>
+            </tr>
+            <tr class="add_line">
+                <td colspan="3"></td>
+            </tr>
+        }
+    </table>
+}

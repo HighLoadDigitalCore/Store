@@ -1,0 +1,84 @@
+﻿@using System.Collections
+@model UniversalEditorPagedData
+@if (Model.CurrentType == CurrentEditorType.List)
+{
+    <fieldset>
+        @if (Model.AddView != null && !Model.AddView.InEditor)
+        {
+            @Html.Action(Model.AddView.Action, Model.AddView.Controller, Model.AddView.Routes)
+        }
+        @*<h4>Список доступных объектов:</h4>*@
+        <table class="mygrid" style="width: 100%">
+            <tr>
+                @{
+    var counter = 1;
+                }
+                @foreach (var column in Model.Settings.ShowedFieldsInList)
+                {
+                    <th @(!Model.Settings.HasDeleteColumn && counter == Model.Settings.ShowedFieldsInList.Count ? "last-td" : "")>
+                        <div class="form-legend">
+                            @if (column.HeaderText.IsFilled())
+                            {
+                                @Html.Raw(column.HeaderText);
+                            }
+                            else
+                            {
+                                @Html.Raw("&nbsp;");
+                            }
+                        </div>
+                    </th>
+                            counter++;
+                }
+                @if (Model.Settings.HasDeleteColumn)
+                {
+                    <th class="last-td">
+                        <div class="form-legend">&nbsp;</div>
+                    </th>
+                }
+            </tr>
+            @Html.Partial("UniversalList", Model)
+        </table>
+        <br />
+        @Model.PagedData.ExecuteMethod("PagerMenu", Html, Model.GetFullParamsValuesForList())
+
+    </fieldset>
+    if (Model.Settings.CanAddNew)
+    {
+        <div class="backref-tbl">
+            @Html.ActionLinkQuery("Добавить", Model.CallerAction, Model.CallerController, Model.FullParamList, new { Type = "Edit" }, new { @class = "btn",  onclick= Model.IsPartial ? "loadByLink(this); return false;" : "return true;"})
+        </div>
+    }
+    if (Model.Settings.HasListLinks)
+    {
+        <div class="backref">
+            <br />
+            @foreach (var link in Model.Settings.ListLinks)
+            {
+                <a onclick="@(link.IsPartial ? "loadByLink(this); return false;" : "return true;")" href="@link.Link">@link.Name</a><br />
+            }
+        </div>
+
+    }
+
+}
+else if (Model.CurrentType == CurrentEditorType.Edit)
+{
+    @Html.Partial("UniversalEdit", Model)
+@*
+    if (!Model.IsAddingNew && Model.Settings.EditLinks != null)
+    {
+        <div class="backref">
+            <br />
+            @foreach (var link in Model.Settings.EditLinks)
+            {
+                <a onclick="@(link.IsPartial ? "loadByLink(this); return false;" : "return true;")" href="@link.Link">@link.Name</a>
+                <br />
+            }
+        </div>
+    }
+*@
+}
+else if (Model.CurrentType == CurrentEditorType.Delete)
+{
+    @Html.Partial("UniversalDelete", Model)
+}

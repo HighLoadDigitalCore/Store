@@ -1,0 +1,191 @@
+﻿<!DOCTYPE HTML SYSTEM "about:legacy-compat">
+<html>
+<head>
+    <title>@AccessHelper.CurrentPageInfo.Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0" />
+    <meta name="robots" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    <meta name="keywords" content="@AccessHelper.CurrentPageInfo.Keywords" />
+    <meta name="description" content="@AccessHelper.CurrentPageInfo.Description" />
+    
+    @if (SiteSetting.Get<string>("FavIcon").IsFilled())
+    {
+        <link rel="SHORTCUT ICON" href="/favicon.ico">
+    }
+    @Styles.Render("~/css")
+@*    <link rel="stylesheet" type="text/css" href="/Master/ru/Theme/Index" />*@
+    <link rel="stylesheet" type="text/css" href="/content/theme_main/css/theme_override.css" />
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="/content/theme_main/css/style_lt9.css">
+        <script src="/content/theme_main/js/html5.js"></script>
+        <script src="/content/theme_main/js/lt9.js"></script>
+    <![endif]-->
+    @Scripts.Render("~/js")
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+
+        var yaParams = { ip_adress: "@(Request.GetRequestIP())" };
+
+
+        (function (d, w, c) {
+            (w[c] = w[c] || []).push(function () {
+                try {
+                    w.yaCounter47004228 = new Ya.Metrika({
+                        id: 47004228,
+                        params:window.yaParams,
+                        clickmap: true,
+                        trackLinks: true,
+                        accurateTrackBounce: true,
+                        webvisor: true
+                    });
+                } catch (e) { }
+            });
+
+            var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () { n.parentNode.insertBefore(s, n); };
+            s.type = "text/javascript";
+            s.async = true;
+            s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+            if (w.opera == "[object Opera]") {
+                d.addEventListener("DOMContentLoaded", f, false);
+            } else { f(); }
+        })(document, window, "yandex_metrika_callbacks");
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/47004228" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+    <link rel="canonical" href="@Request.RawUrl.Split('?')[0]">
+</head>
+<body data-theme_decor="theme_page_packing" style="box-shadow:none !important;">
+
+    <div class="layer_decor top" style="box-shadow:none !important;">
+        <div class="theme_page_wall_front"></div>
+    </div>
+    <div rel="main">
+        @if (AccessHelper.CurrentPageInfo.HasModulsForCell("Header"))
+        {
+            <div id="head-wrapper">
+
+                <header class="container_12 decor_header">
+                    @RenderSection("Header", false)
+                </header>
+            </div>
+        }
+        else
+        {
+            @RenderSection("Header", false)
+        }
+        @Html.Hidden("LangCode", AccessHelper.CurrentLang.ShortName)
+        @Html.Hidden("LangID", AccessHelper.CurrentLang.ID)
+        @Html.Hidden("PageURL", Request.RawUrl)
+        @Html.Hidden("PageID", AccessHelper.CurrentPageInfo.ID)
+        @{
+            var hasRight = AccessHelper.CurrentPageInfo.HasModulsForCell("RightColumn");
+        }
+        <article>
+            @if (AccessHelper.CurrentPageInfo.HasModulsForCell("HeaderS1") || AccessHelper.CurrentPageInfo.HasModulsForCell("HeaderS2") || AccessHelper.CurrentPageInfo.HasModulsForCell("HeaderS3"))
+            {
+                <header class="container_12 @(hasRight ? "container12_wide" : "")">
+                    <div class="grid_3">
+                        @RenderSection("HeaderS1", false)
+                    </div>
+                    <div class="grid_6">
+                        @RenderSection("HeaderS2", false)
+                    </div>
+                    <div class="grid_3 last-cell">
+                        @RenderSection("HeaderS3", false)
+                    </div>
+                </header>
+
+            }
+            else
+            {
+                @RenderSection("HeaderS1", false)
+                @RenderSection("HeaderS2", false)
+                @RenderSection("HeaderS3", false)
+            }
+
+            @RenderSection("HeaderTop", false)
+
+
+            <div class="container_12 @(hasRight ? "container12_wide" : "")">
+                <aside class="main_navigate @(hasRight?"grid_3_left":"")">
+                    @RenderSection("LeftColumn", false)
+                </aside>
+                <div class="grid_9 main_content @(hasRight ? "grid_9_to_6" : "")">
+                    @*@RenderSection("RightColumn", false)*@
+                    @RenderBody()
+
+                </div>
+                @if (hasRight)
+                {
+                    <div class="grid_3 grid_3_right">
+                        @RenderSection("RightColumn", false)
+                    </div>
+                }
+                else
+                {
+                    @RenderSection("RightColumn", false)
+                }
+            </div>
+            @if (AccessHelper.CurrentPageInfo.HasModulsForCell("ContentLower"))
+            {
+                <aside class="module_info_gray_big right full color_dark">
+                    <div class="container_12 text_12 link_dark @(hasRight ? "container12_wide" : "")">
+                        @RenderSection("ContentLower", false)
+                    </div>
+                </aside>
+            }
+            else
+            {
+                @RenderSection("ContentLower", false)
+            }
+        </article>
+        @RenderSection("BodyBottom", false)
+
+    </div>
+    <footer class="container_12 text_12 decor_footer @(hasRight ? "container12_wide" : "")">
+        <div class="grid_4">
+            @RenderSection("FooterS1", false)
+        </div>
+        <div class="grid_4">
+            @RenderSection("FooterS2", false)
+        </div>
+        <div class="grid_4">
+            @RenderSection("FooterS3", false)
+        </div>
+    </footer>
+    <div class="layer_decor bottom" style="border-top:none !important;"></div>
+    @if (Request["from"].IsFilled())
+    {
+        @Html.Action("Socials", "SocialAuth", new { needHide = true })
+    }
+
+    <div id="fixed-left">
+
+        <div id="Go_Top_Left" class="fixed_left">
+            <a class="fixett_left" id="Go_Top0" style="opacity: 0.5;">
+                <img src="/content/theme_main/img/arrow-up.png" alt="Наверх" title="Наверх">
+            </a>
+        </div>
+    </div>
+    <div id="fixed">
+
+        <div id="Go_Top" class="fixed">
+            <a class="fixett" id="Go_Top1" style="opacity: 0.5;">
+                <img src="/content/theme_main/img/arrow-up.png" alt="Наверх" title="Наверх">
+            </a>
+        </div>
+    </div>
+    <div id="dialog" style="display: none">
+        <p>Выбранный товар успешно добавлен в корзину</p>
+        <a href="/order" class="el_form small btn btn_green btn_toBasket" style="margin-top: 8px">Оформить заказ</a>
+    </div>
+    @Html.Action("ChatWidget", "Chat")
+    @Html.Action("UpperNav", "Cabinet")
+</body>
+@Html.Action("Counters", "CommonBlocks")
+</html>

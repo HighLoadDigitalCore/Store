@@ -1,0 +1,362 @@
+﻿@model UserProfile
+<div class="artisan-form" id="ArtisanForm">
+    <style>
+        .contentpane {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+  /*      .artisan-form {
+            padding: 20px;
+        }
+        */
+        
+         .titleCell label {
+            font-weight: bold;
+            text-align: left;
+            float: left;
+            display: block;
+        }
+
+        .titleCell {
+            vertical-align: middle;
+            padding-right: 15px;
+            width: 33%;
+            min-height: 32px;
+        }
+
+        .help-tip {
+            display: block;
+        }
+
+        .req {
+            color: red;
+        }
+
+        .artisan-form input[type=text], .artisan-form input[type=password], .artisan-form input[type=file] {
+            width: 97%;
+            height: 24px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .artisan-form input[type=file] {
+            padding-left: 0;
+        }
+
+        .artisan-form input[type=checkbox] {
+            margin-left: 0;
+        }
+
+        .artisan-form select {
+            width: 100%;
+            height: 32px;
+        }
+
+        .artisan-form textarea {
+            width: 97%;
+            height: 60px;
+        }
+
+        .artisan-form .contentpane td {
+            padding: 3px 0;
+        }
+
+        .fieldCell {
+            clear: both;
+            overflow: hidden;
+        }
+
+        .messages_alert {
+            /*color: red;*/
+            margin-bottom: 20px;
+        }
+    </style>
+    <script type="text/javascript" src="/Scripts/FileUpload/jquery.fileupload.js"></script>
+    <script>
+        function formComplete() {
+            initDefForm();
+            loadTips();
+            avatar();
+            if ($('#redirect').val().length) {
+                document.location.href = $('#redirect').val();
+            }
+        }
+
+        $().ready(function() {
+            initDefForm();
+            avatar();
+        });
+        function initDefForm() {
+            $('.cbx-list input[type="checkbox"]').change(function () {
+                //Specs
+                var v = '';
+                $('.cbx-list input[type="checkbox"]:checked').each(function () {
+                    if (v.length) {
+                        v += ";";
+                    }
+                    v += $(this).val();
+                });
+                $('#Specs').val(v);
+            });
+
+            var specs = $('#Specs').val().split(';');
+            for (var s in specs) {
+                
+                $('.cbx-list input[type="checkbox"][value="' + specs[s] + '"]').prop('checked', true);
+            }
+
+            $('#Region').val($('#Region').attr('v'));
+            //$('#Region option[value="' + $('#Region').attr('value') + '"]').prop('selected', true);
+        }
+
+        function avatar() {
+            $('#AvatarFile').each(function () {
+                var fu = $(this);
+                fu.fileupload({
+                    autoUpload: true,
+                    url: '/Master/ru/Artisan/UploadAvatar?uid=' + $('#UserID').val(),
+                    dataType: 'json',
+                    add: function (e, data) {
+
+
+                        //$('#message').html('Загрузка изображения...');
+
+                        var jqXHR = data.submit()
+                            .success(function (data, textStatus, jqXHR) {
+                                if (data.isUploaded) {
+                                    var img = $('.fieldCell.avatar').find('img');
+                                    if (!img.length) {
+                                        $('<img style="max-height:100px;max-width:100px" src="' + data.path + '"/><input type="hidden" value="1" id="AV" name="AV"/>').insertBefore('#AvatarFile');
+                                        //$('.fieldCell.avatar div').insert;
+                                    } else {
+                                        img.attr('src', data.path);
+                                    }
+
+
+                                } else {
+                                    //$('#message').html(data.message);
+                                }
+
+                            })
+                            .error(function (data, textStatus, errorThrown) {
+                                if (typeof (data) != 'undefined' || typeof (textStatus) != 'undefined' || typeof (errorThrown) != 'undefined') {
+                                    alert("onerror:" + textStatus + errorThrown + data);
+                                }
+                            });
+                    },
+                    fail: function (event, data) {
+                        if (data.files[0].error) {
+                            alert("onfail:" + data.files[0].error);
+                        }
+                    }
+                });
+            });
+        }
+
+    </script>
+
+
+    <input type="hidden" id="redirect" value="@ViewBag.Redirect" />
+    @using (Ajax.BeginForm("Form", "Artisan", new { userID = Model.UserID }, new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "ArtisanForm", OnComplete = "formComplete()" }))
+    {
+
+        if (ViewContext.ViewData.ModelState.Any(n => n.Key != "Login" && n.Value.Errors.Count > 0))
+        {
+
+            <div class="messages_alert">
+                <span>@Html.Raw(string.Join("<br>", ViewContext.ViewData.ModelState.Where(n => n.Key != "Login" && n.Value.Errors.Count > 0).SelectMany(n => n.Value.Errors).Select(n => n.ErrorMessage)))</span>
+            </div>
+        }
+
+        @Html.HiddenFor(x=> x.UserID)
+
+        @*    @using (Html.BeginForm("Form", "Artisan", new { userID = Model.UserID }))*@
+        <table class="contentpane">
+
+            <tbody>
+                <tr>
+                    <td class="titleCell"><label>Аватар</label><i class="help-tip" content="При необходимости изображение будет уменьшено до нужных размеров. Изображение не должно превышать 2000 килобайт. Зарегистрировавшись на сайте вы подтверждаете, что являетесь обладателем прав на изображение."></i></td>
+                    <td class="fieldCell avatar">
+                        <div>
+                            @if (!Model.UserID.IsEmpty() && Model.Avatar != null && Model.Avatar.Length > 0)
+                            {
+                                <img style="max-width: 100px; max-height: 100px;" src="@Model.GetAvatarLink(100)" />
+                            }
+                            <input type="file" name="AvatarFile" id="AvatarFile" />
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="titleCell"><label title="Укажите ваше имя.">Имя<span class="req">*</span></label><i class="help-tip" content="Укажите ваше имя. Поле обязательно для заполнения."></i></td>
+                    <td class="fieldCell">
+                        @Html.TextBoxFor(x => x.Name, new { requred = "required" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="titleCell"><label title="Укажите вашу фамилию.">Фамилия<span class="req">*</span></label><i class="help-tip" content="Укажите вашу фамилию. Поле обязательно для заполнения."></i></td>
+                    <td class="fieldCell">
+                        @Html.TextBoxFor(x => x.Surname, new { @class = "required" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="titleCell"><label>E-mail<span class="req">*</span></label><i class="help-tip" content="Укажите ваш E-mail. Поле обязательно для заполнения."></i></td>
+                    <td class="fieldCell">
+                        @Html.TextBoxFor(x => x.Email, new { @class = "required" })
+
+                    </td>
+                </tr>
+                @*
+                    <tr>
+                        <td><br/></td>
+                        <td></td>
+                    </tr>
+                *@
+                <tr>
+                    <td class="titleCell"><label title="Укажите соответствующий требованиям пароль. Пробелы недопустимы, как минимум 6 знаков, состоящее из прописных и заглавных букв, чисел и специальных знаков.">Пароль<span class="req">*</span></label><i class="help-tip" content="Укажите соответствующий требованиям пароль. Пробелы недопустимы, как минимум 6 знаков, состоящее из прописных и заглавных букв, чисел и специальных знаков."></i></td>
+                    <td class="fieldCell">
+                        @Html.TextBoxFor(x => x.Password, new { @class = "required", type = "password" })
+                    </td>
+                </tr>
+                @if (Model.UserID.IsEmpty())
+                {
+                    <tr>
+                        <td class="titleCell"><label title="Укажите соответствующий требованиям пароль. Пробелы недопустимы, как минимум 6 знаков, состоящее из прописных и заглавных букв, чисел и специальных знаков.">Пароль повторно<span class="req">*</span></label><i class="help-tip" content="Укажите соответствующий требованиям пароль. Пробелы недопустимы, как минимум 6 знаков, состоящее из прописных и заглавных букв, чисел и специальных знаков."></i></td>
+                        <td class="fieldCell"><input type="password" name="PasswordRepeat" value="" /></td>
+                    </tr>
+                }
+                <tr>
+                    <td class="titleCell"><label>Выберите вашу область</label></td>
+                    <td class="fieldCell">
+                        <select name="Region" v="@Model.Region" id="Region" class="required">
+                            <option value=""> </option>
+                            <option value="Московская область" id="cbf355">Московская область</option>
+                            <option value="Москва" id="cbf356">Москва</option>
+                            <option value="Санкт-Петербург" id="cbf357">Санкт-Петербург</option>
+                            <option value="Адыгея" id="cbf358">Адыгея</option>
+                            <option value="Башкортостан" id="cbf359">Башкортостан</option>
+                            <option value="Бурятия" id="cbf360">Бурятия</option>
+                            <option value="Алтай" id="cbf361">Алтай</option>
+                            <option value="Дагестан" id="cbf362">Дагестан</option>
+                            <option value="Ингушетия" id="cbf363">Ингушетия</option>
+                            <option value="Кабардино-Балкария" id="cbf364">Кабардино-Балкария</option>
+                            <option value="Калмыкия" id="cbf365">Калмыкия</option>
+                            <option value="Карачаево-Черкессия" id="cbf366">Карачаево-Черкессия</option>
+                            <option value="Карелия" id="cbf367">Карелия</option>
+                            <option value="Коми" id="cbf368">Коми</option>
+                            <option value="Марий Эл" id="cbf369">Марий Эл</option>
+                            <option value="Мордовия" id="cbf370">Мордовия</option>
+                            <option value="Саха (Якутия)" id="cbf371">Саха (Якутия)</option>
+                            <option value="Северная Осетия - Алания" id="cbf372">Северная Осетия - Алания</option>
+                            <option value="Татарстан" id="cbf373">Татарстан</option>
+                            <option value="Тыва" id="cbf374">Тыва</option>
+                            <option value="Удмуртия" id="cbf375">Удмуртия</option>
+                            <option value="Хакасия" id="cbf376">Хакасия</option>
+                            <option value="Алтайский край" id="cbf377">Алтайский край</option>
+                            <option value="Краснодарский край" id="cbf378">Краснодарский край</option>
+                            <option value="Красноярский край" id="cbf379">Красноярский край</option>
+                            <option value="Приморский край" id="cbf380">Приморский край</option>
+                            <option value="Ставропольский край" id="cbf381">Ставропольский край</option>
+                            <option value="Хабаровский край" id="cbf382">Хабаровский край</option>
+                            <option value="Амурская область" id="cbf383">Амурская область</option>
+                            <option value="Архангельская область" id="cbf384">Архангельская область</option>
+                            <option value="Астраханская область" id="cbf385">Астраханская область</option>
+                            <option value="Белгородская область" id="cbf386">Белгородская область</option>
+                            <option value="Брянская область" id="cbf387">Брянская область</option>
+                            <option value="Владимирская область" id="cbf388">Владимирская область</option>
+                            <option value="Волгоградская область" id="cbf389">Волгоградская область</option>
+                            <option value="Вологодская область" id="cbf390">Вологодская область</option>
+                            <option value="Воронежская область" id="cbf391">Воронежская область</option>
+                            <option value="Ивановская область" id="cbf392">Ивановская область</option>
+                            <option value="Иркутская область" id="cbf393">Иркутская область</option>
+                            <option value="Калининградская область" id="cbf394">Калининградская область</option>
+                            <option value="Калужская область" id="cbf395">Калужская область</option>
+                            <option value="Камчатский край" id="cbf396">Камчатский край</option>
+                            <option value="Кемеровская область" id="cbf397">Кемеровская область</option>
+                            <option value="Кировская область" id="cbf398">Кировская область</option>
+                            <option value="Костромская область" id="cbf399">Костромская область</option>
+                            <option value="Курганская область" id="cbf400">Курганская область</option>
+                            <option value="Курская область" id="cbf401">Курская область</option>
+                            <option value="Ленинградская область" id="cbf402">Ленинградская область</option>
+                            <option value="Липецкая область" id="cbf403">Липецкая область</option>
+                            <option value="Магаданская область" id="cbf404">Магаданская область</option>
+                            <option value="Мурманская область" id="cbf405">Мурманская область</option>
+                            <option value="Нижегородская область" id="cbf406">Нижегородская область</option>
+                            <option value="Новгородская область" id="cbf407">Новгородская область</option>
+                            <option value="Новосибирская область" id="cbf408">Новосибирская область</option>
+                            <option value="Омская область" id="cbf409">Омская область</option>
+                            <option value="Оренбургская область" id="cbf410">Оренбургская область</option>
+                            <option value="Орловская область" id="cbf411">Орловская область</option>
+                            <option value="Пензенская область" id="cbf412">Пензенская область</option>
+                            <option value="Пермский край" id="cbf413">Пермский край</option>
+                            <option value="Псковская область" id="cbf414">Псковская область</option>
+                            <option value="Ростовская область" id="cbf415">Ростовская область</option>
+                            <option value="Рязанская область" id="cbf416">Рязанская область</option>
+                            <option value="Самарская область" id="cbf417">Самарская область</option>
+                            <option value="Саратовская область" id="cbf418">Саратовская область</option>
+                            <option value="Сахалинская область" id="cbf419">Сахалинская область</option>
+                            <option value="Свердловская область" id="cbf420">Свердловская область</option>
+                            <option value="Смоленская область" id="cbf421">Смоленская область</option>
+                            <option value="Тамбовская область" id="cbf422">Тамбовская область</option>
+                            <option value="Тверская область" id="cbf423">Тверская область</option>
+                            <option value="Томская область" id="cbf424">Томская область</option>
+                            <option value="Тульская область" id="cbf425">Тульская область</option>
+                            <option value="Тюменская область" id="cbf426">Тюменская область</option>
+                            <option value="Ульяновская область" id="cbf427">Ульяновская область</option>
+                            <option value="Челябинская область" id="cbf428">Челябинская область</option>
+                            <option value="Забайкальский край" id="cbf429">Забайкальский край</option>
+                            <option value="Ярославская область" id="cbf430">Ярославская область</option>
+                            <option value="Еврейская автономная область" id="cbf431">Еврейская автономная область</option>
+                            <option value="Республика Крым" id="cbf432">Республика Крым</option>
+                            <option value="Ненецкий автономный округ" id="cbf433">Ненецкий автономный округ</option>
+                            <option value="Ханты-Мансийский автономный округ" id="cbf434">Ханты-Мансийский автономный округ</option>
+                            <option value="Чукотский автономный округ" id="cbf435">Чукотский автономный округ</option>
+                            <option value="Ямало-Ненецкий автономный округ" id="cbf436">Ямало-Ненецкий автономный округ</option>
+                            <option value="Калининградская область" id="cbf437">Калининградская область</option>
+                            <option value="Чеченская республика" id="cbf438">Чеченская республика</option>
+                            <option value="Чувашская Республика" id="cbf439">Чувашская Республика</option>
+                            <option value="Севастополь" id="cbf440">Севастополь</option>
+                        </select>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="titleCell"><label>Телефон</label></td>
+                    <td class="fieldCell">@Html.TextBoxFor(x => x.HomePhone)</td>
+                </tr>
+                <tr>
+                    <td class="titleCell"><label title="Укажите через запятую города, в которых оказываете услуги">Города </label><i class="help-tip" content="Укажите через запятую города, в которых оказываете услуги"></i></td>
+                    <td class="fieldCell">@Html.TextBoxFor(x => x.Town)</td>
+                </tr>
+                <tr class="sectiontableentry2 cbft_multiselect">
+                    <td class="titleCell"><label title="Выберите специализацию">Выберите специализацию </label><i class="help-tip" content="Выберите одну или несколько своих специализаций"></i></td>
+                    <td class="fieldCell cbx-list" style="padding: 10px 0 10px 0">
+                        @Html.HiddenFor(x => x.Specs)
+                        <label><input type="checkbox" value="Строительство домов" />Строительство домов</label>
+                        <label><input type="checkbox" value="Общестроительные работы" />Общестроительные работы</label>
+                        <label><input type="checkbox" value="Фундаменты" />Фундаменты</label>
+                        <label><input type="checkbox" value="Отделка" />Отделка</label>
+                        <label><input type="checkbox" value="Отопление" />Отопление</label>
+                        <label><input type="checkbox" value="Водоснабжение и канализация" />Водоснабжение и канализация</label>
+                        <label><input type="checkbox" value="Вентиляция" />Вентиляция</label>
+                        <label><input type="checkbox" value="Электрика" />Электрика</label>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="titleCell"><label>О себе</label></td>
+                    <td class="fieldCell">
+                        @Html.TextAreaFor(x => x.AboutMe)
+                    </td>
+                </tr>
+                <tr class="submit-row ">
+                    <td colspan="2">
+                        <button class="el_form btn btn_green" style="margin-left: 0">@Html.Raw(Model.UserID.IsEmpty() ? "Зарегистрироваться" : "Сохранить")</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
+
+</div>

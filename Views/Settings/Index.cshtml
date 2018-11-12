@@ -1,0 +1,189 @@
+﻿@model IEnumerable<SiteSetting>
+@{
+    ViewBag.Title = "Настройки системы";
+    Layout = "~/Views/Shared/_Master.cshtml";
+    var titleBlock = ViewBag.TitleBlock == null ? "Шапка" : ViewBag.TitleBlock;
+}
+@section Header
+{
+    @titleBlock
+}
+@section Description
+{
+    @*На этой странице можно задать различные настройки системы*@
+}
+@section Preview
+{
+    <a class="previewsite preview-link" target="_blank" href="@AccessHelper.SiteUrl"><img src="/content/admin/eye-pict.png">Посмотреть на сайте</a>
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+<script type="text/javascript">
+    $().ready(function() {
+        
+        $('.controls input[id *="Color"]').click(function () {
+            $(this).parents('.controls').find('.color-cell').toggle('active-map');
+        });
+        $('.map-area').click(function() {
+            $(this).parents('.controls').find('.color-cell').removeClass('active-map');
+        });
+        $('.control-label').click(function () {
+            $(this).parent().next().find('.color-cell').toggle('active-map');
+        });
+    });
+</script>
+<div class="tab-vert">
+    @using (Html.BeginForm("Index", "Settings", FormMethod.Post))
+    {
+        @Html.Partial("MessageBox")
+        var grouped = Model.GroupBy(x => x.GroupName);
+        var counter = 0;
+        foreach (var group in grouped)
+        {
+            counter++;
+            <div class="form-legend group-name" gid="@counter"><a href="#">@group.Key</a></div>
+            <div class="group-content" gid="@counter">
+                @foreach (var setting in group)
+                {
+                    <div class="control-group row-fluid">
+                        @if (@setting.Editor != "Hidden")
+                        {
+                            <div class="span3">
+                                <label class="control-label">@setting.Title</label>
+                            </div>
+                        }
+                        @if (@setting.Editor.Contains(";"))
+                        {
+                            var splitted = setting.Editor.Split<string>(new[] { ";" }).ToList();
+                            if (splitted[0] == "DropDown")
+                            {
+                                <div class="span9">
+                                    <div class="controls" editor="@splitted[0]">
+                                        @Html.DropDownList(setting.Setting, SiteSetting.GetDataSource(splitted[1], setting.Value))
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            if (@setting.Editor == "Hidden")
+                            {
+                                <div class="span9">
+                                    <div class="controls" editor="@setting.Editor">
+                                        @Html.Hidden(setting.Setting, setting.Value)
+                                    </div>
+                                </div>
+
+                            }
+                            else if (@setting.Editor == "TextArea")
+                            {
+                                <div class="span9">
+                                    <div class="controls" editor="@setting.Editor">
+                                        @Html.TextArea(setting.Setting, setting.Value)
+                                    </div>
+                                </div>
+                            }
+                            else if (@setting.Editor == "FileUpload")
+                            {
+                                <div class="span9">
+                                    <div class="controls" editor="@setting.Editor">
+                                        <br />
+                                        @if ((setting.Value ?? "").HasImageExtension() || setting.Value.IsNullOrEmpty())
+                                        {
+                                            <div id="@(setting.Setting)_Cell" style="@((setting.Value ?? "").IsFilled() ? "" : "display:none")">
+                                                <img id="@(setting.Setting)_Preview" src="@setting.Value" style="max-width: 300px" />
+                                                <br />
+                                                <br />
+                                            </div>
+                                        }
+                                        @if (!(setting.Value ?? "").HasImageExtension() || setting.Value.IsNullOrEmpty())
+                                        {
+                                            <div id="@(setting.Setting)_CellFile" style="@((setting.Value ?? "").IsFilled() ? "" : "display:none")">
+                                                <a style="font-weight: bold" id="@(setting.Setting)_PreviewFile" target="_blank" href="@setting.Value">@setting.Value</a>
+                                                <br />
+                                            </div>
+                                        }
+                                        @Html.TextBox(setting.Setting + "_Input", "", new { @class = "file-img-upload", type = "file", name = setting.Setting + "_Input", path = "/content/UploadedFiles/images/" })
+                                        @Html.Hidden(setting.Setting, (setting.Value ?? ""))
+                                    </div>
+                                </div>
+                            }
+                            else if (@setting.Editor == "Color")
+                            {
+                                <div class="span7 colorAdnFon">
+                                    <div class="controls" id="chat-model" editor="@setting.Editor">
+                                        @Html.TextBox(setting.Setting, setting.Value, new { style = "background-color: " + setting.Value })
+                                        @Html.Partial("~/Views/CommonBlocks/ColorPicker.cshtml", setting.Title)
+                                        @*<div id="ColorPicker_@(setting.ID.ToString())" rel="ColorPicker" arg="@setting.ID"></div>*@
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="span9">
+                                    <div class="controls" editor="@setting.Editor">
+                                        @if (setting.Editor.ToLower() == "checkbox")
+                                        {
+                                            <label class="checkbox">
+                                                @Html.Editor(setting.Setting, setting.TemplateName)
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            @Html.Editor(setting.Setting, setting.TemplateName)
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
+        if (grouped.Any())
+        {
+            <div class="control-group row-fluid" style="border-top: 1px solid #D1D7DF">
+                <div class="controls">
+                    <div class="span12">
+                        <br />
+                        <br />
+                        <input type="submit" value="Сохранить" class="btn" />
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
+</div>
+@section scripts
+{
+    <script type="text/javascript" src="/Content/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript">
+        $().ready(function () {
+
+            $('#Redirects').css('overflow', 'scroll').css('white-space', 'nowrap').css('height', '150px');
+
+            $('.editor-field[editor="TextArea"]').each(function () {
+                
+                //CKEDITOR.replace($(this).find('textarea').attr('id'), {
+                //    filebrowserBrowseUrl: '/Content/ckeditor/ckfinder/ckfinder.html',
+                //    filebrowserImageBrowseUrl: '/Content/ckeditor/ckfinder/ckfinder.html?type=Images',
+                //    filebrowserFlashBrowseUrl: '/Content/ckeditor/ckfinder/ckfinder.html?type=Flash',
+                //    filebrowserUploadUrl: '/Content/ckeditor/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+                //    filebrowserImageUploadUrl: '/Content/ckeditor/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+                //    filebrowserFlashUploadUrl: '/Content/ckeditor/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash'
+                //});
+
+            });
+        });
+    </script>
+}

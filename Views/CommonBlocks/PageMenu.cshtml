@@ -1,0 +1,49 @@
+﻿@{
+    bool isOrdering = AccessHelper.CurrentPageInfo.IsProfilePage;
+}
+
+@if (!isOrdering)
+{
+        
+    <div class="sb_menu">
+        <div id="menu">
+            <ul class="mega-menu">
+                @{
+                    var types = CMSPage.GetTypes("TextPage");
+                    var firstLevel = CMSPage.FullPageTable.Where(x => x.TreeLevel == 0 && types.Any(z => z == x.Type));
+                    var counter = 0;
+                }
+                @foreach (var pg in firstLevel)
+                {
+                    <li class="line@((counter % 2) + 1)"><a href="@pg.FullUrl" class="a">@pg.PageName</a>
+                        @if (pg.GetChildren().Any())
+                        {
+                            <ul>
+                                <li>
+                                    <div class="column1">
+                                        <h3>@pg.PageName</h3>
+                                        @foreach (var page in pg.GetHalfOfChildren(true, 19))
+                                        {
+                                            <a href="@page.FullUrl" class="point">@page.PageName</a>
+                                        }
+                                    </div>
+                                    <div class="column1">
+                                        <h3></h3>
+                                        @foreach (var page in pg.GetHalfOfChildren(false, 19))
+                                        {
+                                            <a href="@page.FullUrl" class="point">@page.PageName</a>
+                                        }
+                                        <a href="@pg.FullUrl" class="all">Все товары</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        }
+                    </li>
+                                    counter++;
+                }
+
+            </ul>
+        </div>
+    </div>
+   
+}

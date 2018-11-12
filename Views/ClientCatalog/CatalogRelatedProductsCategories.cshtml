@@ -1,0 +1,55 @@
+﻿@using System.Collections.Generic
+@using System.Linq
+@model IEnumerable<System.Linq.IGrouping<string, StoreCategoryRelation>>
+@{
+    var menus = new Dictionary<string, string>();
+    menus.Add("recomend", "Рекомендуем купить");
+    menus.Add("related", "С этим товаром покупают");
+    menus.Add("similar", "Похожие товары");
+    var shopcart = new ShopCart().InitCart();
+    
+}
+@if (Model.Any())
+{
+    <div class="element_tabs_wrapper item_other_links">
+        <div class="element_tabs_btn related-items">
+            @foreach (var group in Model)
+            {
+                <a href="javascript:void(0);" class="@(group.Key == menus.First().Key || Model.Count() == 1 ? "selected" : "")" arg="@group.Key">@menus[group.Key]</a>
+            }
+        </div>
+        <div class="element_tabs_cnt related-items">
+            @foreach (var group in Model.OrderBy(x=> x.Key))
+            {
+                <div class="page_item_crosslink @(group.Key == menus.First().Key || Model.Count() == 1 ? "selected" : "hidden")" arg="@group.Key">
+                    <div>
+                        <div class="grid_9 slider ">
+                            <div class="slider_wrap">
+                                <div class="slider_content goods_container">
+                                    @foreach (var item in group)
+                                    {
+                                        <div data-item_id="@item.RelatedProductID" class="goods_view_small">
+                                            <div class="goods_pic">
+                                                <div class=" icon_goods"></div>
+                                                <a href="@item.StoreProduct.FullUrl">
+                                                    <img src="@item.StoreProduct.DefaultThumbURL"></a>
+                                            </div>
+
+                                            <a title="@item.StoreProduct.NameOrDef" class="goods_caption" href="@item.StoreProduct.FullUrl">@item.StoreProduct.NameOrDef</a>
+                                            <div class="price color_black">@item.StoreProduct.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp;руб.</span></div>
+                                            <button arg="@item.RelatedProductID" class="el_form small btn @(shopcart.ActiveProducts.Any(z => z.ProductID == item.StoreProduct.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(shopcart.ActiveProducts.Any(z => z.ProductID == item.StoreProduct.ID) ? "В корзине" : "Купить")</button>
+
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <a class="icon_slide-green-left" href="#goprev"></a><a class="icon_slide-green-right" href="#gonext"></a>
+                        </div>
+                    </div>
+                </div>                
+            }
+
+
+        </div>
+    </div>
+}

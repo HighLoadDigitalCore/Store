@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Экспорт прайс-листа ";
+    Layout = "~/Views/Shared/_MasterLoader.cshtml";
+}
+
+
+@Html.Partial("MessageBox")
+@using (Html.BeginForm("ProductExport", "Export", new { Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+
+   
+    @Html.Hidden("CategoryID", Request.QueryString["Category"])
+    <div class="control-group row-fluid">
+        <div class="controls">
+            <div class="span12">
+                <div class="backref" style="padding: 0; margin: 0;">
+                    <input type="submit" class="btn" value="Выгрузить товары" style="width: 140px; margin-left: 0" name="all" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <br/>
+    <div class="control-group row-fluid">
+        <div class="controls">
+            <div class="span12">
+                <div class="backref" style="padding: 0; margin: 0;">
+                    <input type="submit" class="btn" value="Выгрузить картинки" style="width: 140px; margin-left: 0" name="picts" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+}

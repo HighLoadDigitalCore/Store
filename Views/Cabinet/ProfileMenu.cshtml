@@ -1,0 +1,9 @@
+﻿@model CabinetMenu
+<h1>@CabinetMenu.Names.ElementAt(Model.CurrentMenuIndex)</h1>
+<div class="private_office_nav">
+    @foreach (var css in CabinetMenu.CSS)
+    {
+        var index = CabinetMenu.CSS.IndexOf(css);
+        <a class="@css @(Model.CurrentMenuIndex == index ? "current":"")" href="@CabinetMenu.BaseURL?view=@CabinetMenu.URL.ElementAt(index)"><i></i>@CabinetMenu.Names.ElementAt(index)</a>    
+    }
+</div>

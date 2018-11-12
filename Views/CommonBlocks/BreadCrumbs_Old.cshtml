@@ -1,0 +1,21 @@
+﻿@model BreadCrumbModel
+<div class="container_12">
+    <div class="bread_crumbs color_dark">
+        @if (Model.ShowMain)
+        {
+            <a href="/"><i class="icon_home"></i></a>
+        }
+        @Html.Raw(Model.Html)
+    </div>
+    <div id="bread_with_catalogue">
+        <div class="fade_wrap">
+            <div class="fade_area">&nbsp;</div>
+        </div>
+        <nav data-megamenu="1" class="navigate_left clearfix">
+            <div class="megamenu_content"></div>
+            <div class="catalogue_menu_wrapper">
+            </div>
+            <section class="menu-back"></section>
+        </nav>
+    </div>
+</div>

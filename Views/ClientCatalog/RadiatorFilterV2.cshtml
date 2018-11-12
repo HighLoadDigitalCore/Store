@@ -1,0 +1,217 @@
+﻿@model RadiatorFilter
+@{
+    var connect = Model.Get("Подключение");
+    var power = Model.Get("Мощность");
+    var type = Model.Get("Тип");
+    var height = Model.Get("Высота");
+    var width = Model.Get("Ширина");
+}
+<div id="module_content_action_top_hidden" class="container_12 module_content_action_top_filter_2_hidden" style="display: none">
+    <div class="collapse">
+        <a href="#" onclick="toggleFilter(1);">раскрыть</a>
+    </div>
+    <p onclick="toggleFilter(1);">Подобрать радиатор</p>
+</div>
+<div id="module_content_action_top" class="container_12 module_content_action_top_filter_2" style="display: none">
+    <div class="grid_12">
+        <div class="collapse">
+            <a href="#" onclick="toggleFilter(0);">cвернуть</a>
+        </div>
+        <input type="hidden" value="@(width.FilteredValues.Any() ? width.FilteredValues.First() : "400")" id="Width" name="Width" arg="@width.CharacterID"/>
+        <input type="hidden" value="@(height.FilteredValues.Any() ? height.FilteredValues.First() : "300")" id="Height" name="Height" arg="@height.CharacterID"/>
+        <table class="rad-table">
+            <tr class="top-head">
+
+                <td colspan="22">Выберите ширину от 400мм до 2000мм</td>
+            </tr>
+            <tr class="top-head digit">
+                <td class="first"></td>
+                <td arg="1">100</td>
+                <td arg="2">200</td>
+                <td arg="3">300</td>
+                <td arg="4">400</td>
+                <td arg="5">500</td>
+                <td arg="6">600</td>
+                <td arg="7">700</td>
+                <td arg="8">800</td>
+                <td arg="9">900</td>
+                <td arg="10">1000</td>
+                <td arg="11">1100</td>
+                <td arg="12">1200</td>
+                <td arg="13">1400</td>
+                <td arg="14">1600</td>
+                <td arg="15">1800</td>
+                <td arg="16">2000</td>
+            </tr>
+            <tr class="fr">
+
+                <td class="left-head" arg="1">100&nbsp;</td>
+                <td class="fc" w="100" h="100"></td>
+                <td class="fc" w="200" h="100"></td>
+                <td class="fc" w="300" h="100"></td>
+                <td class="fc" w="400" h="100"></td>
+                <td class="fc" w="500" h="100"></td>
+                <td class="fc" w="600" h="100"></td>
+                <td class="fc" w="700" h="100"></td>
+                <td class="fc" w="800" h="100"></td>
+                <td class="fc" w="900" h="100"></td>
+                <td class="fc" w="1000" h="100"></td>
+                <td class="fc" w="1100" h="100"></td>
+                <td class="fc" w="1200" h="100"></td>
+                <td class="fc twin" w="1400" h="100"></td>
+                <td class="fc twin" w="1600" h="100"></td>
+                <td class="fc twin" w="1800" h="100"></td>
+                <td class="fc twin last-row" w="2000" h="100"></td>
+            </tr>
+            <tr class="fr">
+                <td class="left-head" arg="2">200&nbsp;</td>
+                <td class="fc" w="100" h="200"></td>
+                <td class="fc" w="200" h="200"></td>
+                <td class="fc" w="300" h="200"></td>
+                <td class="fc" w="400" h="200"></td>
+                <td class="fc" w="500" h="200"></td>
+                <td class="fc" w="600" h="200"></td>
+                <td class="fc" w="700" h="200"></td>
+                <td class="fc" w="800" h="200"></td>
+                <td class="fc" w="900" h="200"></td>
+                <td class="fc" w="1000" h="200"></td>
+                <td class="fc" w="1100" h="200"></td>
+                <td class="fc" w="1200" h="200"></td>
+                <td class="fc twin" w="1400" h="200"></td>
+                <td class="fc twin" w="1600" h="200"></td>
+                <td class="fc twin" w="1800" h="200"></td>
+                <td class="fc twin last-row" w="2000" h="200"></td>
+            </tr>
+            <tr class="fr">
+                <td class="left-head" arg="3">300&nbsp;</td>
+                <td class="fc" w="100" h="300"></td>
+                <td class="fc" w="200" h="300"></td>
+                <td class="fc" w="300" h="300"></td>
+                <td class="fc" w="400" h="300"></td>
+                <td class="fc" w="500" h="300"></td>
+                <td class="fc" w="600" h="300"></td>
+                <td class="fc" w="700" h="300"></td>
+                <td class="fc" w="800" h="300"></td>
+                <td class="fc" w="900" h="300"></td>
+                <td class="fc" w="1000" h="300"></td>
+                <td class="fc" w="1100" h="300"></td>
+                <td class="fc" w="1200" h="300"></td>
+                <td class="fc twin" w="1400" h="300"></td>
+                <td class="fc twin" w="1600" h="300"></td>
+                <td class="fc twin" w="1800" h="300"></td>
+                <td class="fc twin last-row" w="2000" h="300"></td>
+            </tr>
+            <tr class="fr">
+                <td class="left-head" arg="4">400&nbsp;</td>
+                <td class="fc" w="100" h="400"></td>
+                <td class="fc" w="200" h="400"></td>
+                <td class="fc" w="300" h="400"></td>
+                <td class="fc" w="400" h="400"></td>
+                <td class="fc" w="500" h="400"></td>
+                <td class="fc" w="600" h="400"></td>
+                <td class="fc" w="700" h="400"></td>
+                <td class="fc" w="800" h="400"></td>
+                <td class="fc" w="900" h="400"></td>
+                <td class="fc" w="1000" h="400"></td>
+                <td class="fc" w="1100" h="400"></td>
+                <td class="fc" w="1200" h="400"></td>
+                <td class="fc twin" w="1400" h="400"></td>
+                <td class="fc twin" w="1600" h="400"></td>
+                <td class="fc twin" w="1800" h="400"></td>
+                <td class="fc twin last-row" w="2000" h="400"></td>
+            </tr>
+            <tr class="fr">
+                <td class="left-head" arg="5">500&nbsp;</td>
+                <td class="fc" w="100" h="500"></td>
+                <td class="fc" w="200" h="500"></td>
+                <td class="fc" w="300" h="500"></td>
+                <td class="fc" w="400" h="500"></td>
+                <td class="fc" w="500" h="500"></td>
+                <td class="fc" w="600" h="500"></td>
+                <td class="fc" w="700" h="500"></td>
+                <td class="fc" w="800" h="500"></td>
+                <td class="fc" w="900" h="500"></td>
+                <td class="fc" w="1000" h="500"></td>
+                <td class="fc" w="1100" h="500"></td>
+                <td class="fc" w="1200" h="500"></td>
+                <td class="fc twin" w="1400" h="500"></td>
+                <td class="fc twin" w="1600" h="500"></td>
+                <td class="fc twin" w="1800" h="500"></td>
+                <td class="fc twin last-row" w="2000" h="500"></td>
+            </tr>
+            <tr class="last-line fr">
+                <td class="left-head last" arg="6">600&nbsp;</td>
+                <td class="fc" w="100" h="600"></td>
+                <td class="fc" w="200" h="600"></td>
+                <td class="fc" w="300" h="600"></td>
+                <td class="fc" w="400" h="600"></td>
+                <td class="fc" w="500" h="600"></td>
+                <td class="fc" w="600" h="600"></td>
+                <td class="fc" w="700" h="600"></td>
+                <td class="fc" w="800" h="600"></td>
+                <td class="fc" w="900" h="600"></td>
+                <td class="fc" w="1000" h="600"></td>
+                <td class="fc" w="1100" h="600"></td>
+                <td class="fc" w="1200" h="600"></td>
+                <td class="fc twin" w="1400" h="600"></td>
+                <td class="fc twin" w="1600" h="600"></td>
+                <td class="fc twin" w="1800" h="600"></td>
+                <td class="fc twin last-row" w="2000" h="600"></td>
+            </tr>
+        </table>
+        <div class="rad2-type">
+            <div class="rad2-head">Выберите тип:</div>
+            <div class="rad2-type-cell @(type.FilteredValues.Any(x => x == "11") ? "active" : "")">
+                <div class="ccell">
+                    Тип 11
+                    <input type="checkbox" id="Type11" class="type-box" @(type.FilteredValues.Any(x => x == "11") ? "checked" : "") arg="@(type.CharacterID)" value="11"/>
+                </div>
+                <img style="width: 159px; height: 21px!important" src="/content/theme_main/img/type11.png" />
+            </div>
+            <div class="rad2-type-cell @(type.FilteredValues.Any(x => x == "12") ? "active" : "")">
+                <div class="ccell" style="margin-top: 1px">
+                    Тип 12
+                    <input type="checkbox" id="Type12" class="type-box" @(type.FilteredValues.Any(x => x == "12") ? "checked" : "") arg="@(type.CharacterID)" value="12"/>
+                </div>
+                <img style="width: 153px; height: 22px!important" src="/content/theme_main/img/type12.png" />
+            </div>
+            <div class="rad2-type-cell @(type.FilteredValues.Any(x => x == "22") ? "active" : "")" >
+                <div class="ccell" style="margin-top: 6px">
+                    Тип 22
+                    <input type="checkbox" id="Type22" class="type-box" @(type.FilteredValues.Any(x => x == "22") ? "checked" : "") arg="@(type.CharacterID)" value="22"/>
+                </div>
+                <img style="width: 150px; height: 31px!important" src="/content/theme_main/img/type22.png" />
+            </div>
+            <div class="rad2-type-cell @(type.FilteredValues.Any(x => x == "33") ? "active" : "")">
+                <div class="ccell" style="margin-top: 12px">
+                    Тип 33
+                    <input type="checkbox" id="Type33" class="type-box" @(type.FilteredValues.Any(x => x == "33") ? "checked" : "") arg="@(type.CharacterID)" value="33"/>
+                </div>
+                <img style="width: 142px; height: 41px!important" src="/content/theme_main/img/type33.png" />
+            </div>
+        </div>
+        <div class="rad2-type rad2-con">
+            <div class="rad2-head">Подключение:</div>
+            <div class="rad2-type-cell con-cel  @(connect.FilteredValues.Any(x => x == "Боковое") ? "active" : "")">
+                <div class="ccell" style="margin-top: 0px">
+                    <input type="checkbox" id="ConLeft" class="con-box" @(connect.FilteredValues.Any(x => x == "Боковое") ? "checked" : "")  arg="@(connect.CharacterID)" value="Боковое"/>
+                    Боковое
+                </div>
+                <img style="width: auto; height: 40px!important" src="/content/theme_main/img/con1.png" />
+            </div>
+            <div class="rad2-type-cell con-cel  @(connect.FilteredValues.Any(x => x == "Нижнее") ? "active" : "")">
+                <div class="ccell" style="margin-top: 0px; width: 100px">
+                    <input type="checkbox" id="ConBottom" class="con-box" @(connect.FilteredValues.Any(x => x == "Нижнее") ? "checked" : "") arg="@(connect.CharacterID)" value="Нижнее"/>
+                    Нижнее
+                </div>
+                <img style="width: auto; height: 47px!important" src="/content/theme_main/img/con2.png" />
+            </div>
+        </div>
+    </div>
+    <div class="clr"></div>
+    <div class="rad2-size">
+        Высота: <span id="heightVal">@(height.FilteredValues.Any() ? height.FilteredValues.First() : "300")</span>, Ширина: <span id="widthVal">@(height.FilteredValues.Any() ? height.FilteredValues.First() : "400")</span>
+    </div>
+    <input type="submit" value="Подобрать" style="margin-left: 225px" onclick="showRadFilterResultB();" class="el_form btn btn_green rad-choise" />
+    <div class="found" style="display: none">Найдено: <a href="#">20 товар(ов)</a></div>
+</div>

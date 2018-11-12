@@ -1,0 +1,80 @@
+﻿@{
+    var user = HttpContext.Current.GetCurrentUser();
+}
+<script type="text/javascript" src="/Scripts/FileUpload/jquery.fileupload.js"></script>
+<div style="overflow: hidden;" id="ProfileProfile">
+    @using (Ajax.BeginForm("ProfileProfile", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "ProfileProfile", OnComplete = "loadAvatarEdit()" }))
+    {
+        if (ViewBag.Message != null)
+        {
+            <div class="container_12" style="margin-top: 20px">
+                <div class="messages_alert" style="display: block;">
+                    <div class="cart_exception_cost_min"><span>@ViewBag.Message</span></div>
+                </div>
+            </div>
+        }
+        
+        <h2 class="private_office_title">Персональные данные</h2>
+        <div class="profile_form">
+            <h3>Личная информация</h3>
+            <div class="grid_9 alpha omega">
+                <div class="grid_4 alpha">
+                    <div class="form_field">
+                        <label>Имя и отчество<input type="text" class="el_form" required="" name="Name" value="@user.Profile.NameAndPatrinomic"></label>
+                    </div>
+                    <div class="form_field">
+                        <label>Фамилия<input type="text" class="el_form" required="" name="Surname" value="@user.Profile.Surname"></label>
+                    </div>
+                </div>
+                <div class="profile_avatar grid_4 prefix_1 omega">
+                    <img class="user_pic" arg="@HttpContext.Current.GetCurrentUserUID()" alt="avatar" src="@user.Profile.GetAvatarLink(40)">
+                    <label class="chose_file" for="upload_avatar_field">
+                        <input type="file" id="AvatarUpload"/>
+                        <ins>Загрузить аватарку</ins>
+                    </label><p>Будет видна в отзывах к товарам</p>
+                    @if (user.Profile.Avatar != null)
+                    {
+                        <a class="action_delete_avatar" href="#nogo"><span>×</span><ins>Удалить аватар</ins></a>
+                    }
+                </div>
+                <div class="clear_hr"></div>
+                <div class="grid_4 alpha">
+                    <h3>Контактная информация</h3>
+                    <div class="form_field">
+                        <label>
+                            Телефон<div class="phone_change_modal">
+                                       <input type="text" class="el_form profile_phone" name="Phone" value="@user.Profile.MobilePhone">
+                                   </div>
+                        </label>
+                    </div>
+                    <div class="form_field">
+                        <label>Электронная почта<input type="email" class="el_form" name="Email" value="@user.Profile.Email"></label>
+                    </div>
+                </div>
+                <div class="grid_4 prefix_1 omega">
+                    <h3>Изменение пароля</h3>
+                    <div class="form_field">
+                        <label>
+                            Старый пароль
+                           
+                            <input type="password" class="el_form" name="OldPassword" value=""></label>
+                    </div>
+                    <div class="form_field">
+                        <label>
+                            Новый пароль
+                           
+                            <input type="password" class="el_form" name="NewPassword" value=""></label>
+                    </div>
+                    <div class="form_field">
+                        <label>
+                            Новый пароль еще раз
+                           
+                            <input type="password" class="el_form" name="NewPasswordConfirm" value=""></label>
+                    </div>
+                </div>
+                <div class="clear_hr"></div>
+                <input type="submit" class="el_form btn btn_green save_profile_button" value="Сохранить изменения">
+            </div>
+        </div>
+    }
+</div>

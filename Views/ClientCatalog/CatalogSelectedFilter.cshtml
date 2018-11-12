@@ -1,0 +1,25 @@
+﻿@model CatalogCharacterFilters
+@if (Model.Filters.Any(x => x.IsFilled))
+{
+    <div class="properties_selected">
+        @foreach (var filter in Model.Filters.Where(x => x.IsFilled))
+        {
+            if (filter.IsSlider)
+            {
+            <div class="value">
+                <span class="title">@filter.Header:
+                        @Html.Raw(filter.Range)</span><a href="@Model.ExcludeParam(filter)" class="deselect icon_list_delete"></a>
+            </div>
+            }
+            else
+            {
+                foreach (var value in filter.FilteredValues)
+                {
+                    <div class="value"><span class="title">@filter.Header: @value</span>
+                        <a href="@Model.ExcludeParam(value)" class="deselect icon_list_delete"></a></div>
+                }
+            }
+        }
+    </div>
+}
+@Html.Partial("CatalogSection", Model.CreateCategory(AccessHelper.CurrentPageInfo.ID))

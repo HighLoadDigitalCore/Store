@@ -1,0 +1,64 @@
+﻿@model FeedBackModel
+<div id="FeedBackPopup">
+    @using (Ajax.BeginForm("FeedBackPopupV2", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "FeedBackPopup" }))
+    {
+        <div id="el_modal_window">
+            <div class="modal_wrap_content feed-back">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div id="FormContent" style="@(Model.Sent ? "display:none" : "")">
+                            <div class="suggest_wrapper" style="width: 350px">
+                                <h2>Обратная связь</h2>
+                                @if (Model.ErrorText.IsFilled())
+                                {
+                                    <div class="messages_alert">
+                                        <span>@Model.ErrorText</span>
+                                    </div>
+                                }
+                                <p>Мы очень дорожим вашим мнением и готовы выслушать все, что вы хотите сообщить. Ответим в течение суток с момента отправки сообщения.</p>
+                                <div>
+                                    <label>
+                                        <span>Ваше сообщение</span>
+                                        <textarea required="required" class="el_form" name="Text">@Model.Text</textarea>
+                                        <span class="help">Укажите максимально продробную информацию: адреса магазинов, описание проблемы</span>
+                                    </label>
+
+                                    <label>
+                                        <span>Номер заказа</span><input type="text" style="width: 150px" value="@Model.Order" class="el_form" name="Order">
+                                        <span class="help">Поможет нам получить больше деталей</span>
+                                    </label>
+
+
+                                    <label><span>Ваше имя</span><input type="text" required="required" value="@Model.Name" class="el_form" name="Name"></label>
+                                    <label><span>Электронная почта</span><input type="email" required="required" value="@Model.Mail" class="el_form" name="Mail"></label>
+                                    <label><span>Телефон</span><input type="text" value="@Model.Phone" class="el_form" name="Phone"></label>
+                                    <button class="el_form btn btn_green send_button" onclick="return DoAjaxPostAndMore(this);" type="submit">Отправить</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="SentContent" style="@(!Model.Sent ? "display:none" : "")">
+                            <div class="suggest_wrapper" style="width: 350px">
+                                <h2 class="sent-succes">Сообщение отправлено</h2>
+                                @if (Model.Mail.IsFilled())
+                                {
+                                    <p>Мы ответим в течение суток на адрес электронной почты @Model.Mail</p>
+                                }
+                                else
+                                {
+                                    <p>Мы ответим в течение суток по телефону @Model.Phone</p>
+                                }
+                                <p class="write-again">
+                                    <a href="#" onclick="$('#SentContent').hide();$('#FormContent').show(); return false;">Написать еще</a>
+                                </p>
+                                <p>
+                                    <button onclick="return closeDialog(this);" class="el_form btn btn-close-dialog">Закрыть окно</button>
+                                </p>
+                            </div>
+                        </div>
+                        <a class="modal_window_close icon_close" href="#nogo" onclick="return closeDialog(this);"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

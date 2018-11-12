@@ -1,0 +1,16 @@
+﻿@model CMSPage
+<div id="DeletePage">
+    <input type="hidden" id="PreviewLink" value="@Model.FullUrl" />
+    <input type="hidden" id="Description" value="" />
+    <input type="hidden" id="Header" value="Удаление папки '@Model.PageName'" />
+
+    @using (Ajax.BeginForm(new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "DeletePage", }))
+    {
+        <div class="form-legend">Вы уверены, что хотите удалить эту папки со всеми вложенными данными?</div>
+        <div class="control-group row-fluid">
+            <div class="span12 span-inset" style="padding-left:0">
+                <input class="btn" type="submit" value="Удалить" />
+            </div>
+        </div>
+    }
+</div>

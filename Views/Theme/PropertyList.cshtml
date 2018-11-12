@@ -1,0 +1,161 @@
+﻿@model IEnumerable<ThemeProperty>
+@{
+    ViewBag.Title = "Внешний вид";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+Цвет и фон
+}
+@section Description
+{
+@*На этой странице можно задать различные настройки внешнего вида сайта*@
+}
+@section Preview
+{
+    <a href="@AccessHelper.SiteUrl" class="preview-link previewsite" target="_blank"><img src="/content/admin/eye-pict.png" />Посмотреть на сайте</a>
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+<script type="text/javascript">
+    $().ready(function() {
+        var min = 0;
+        $('.form-legend.group-name').each(function () {
+            var w = $(this).find('a').width() + 22;
+            if (w > min)
+                min = w;
+            
+            
+        });
+        $('.form-legend.group-name').css('width', min + 'px');
+
+        $('.controls input[id *="Color"]').click(function () {
+            $(this).parents('.controls').find('.color-cell').toggle('active-map');
+        });
+        $('.map-area').click(function() {
+            $(this).parents('.controls').find('.color-cell').removeClass('active-map');
+        });
+        $('.control-label').click(function () {
+            $(this).parent().next().find('.color-cell').toggle('active-map');
+        });
+    });
+</script>
+<div class="tab-vert">
+    
+    @using (Html.BeginForm())
+    {
+        <div class="control-group row-fluid control-btn-top">
+            <div class="controls">
+                <div class="span12 propertycolor">
+                    @{
+                        if (ViewContext.ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+                        {
+                            @*<div class="control-group row-fluid" style="padding: 0">*@
+                            @*<div class="span12 span-inset" style="padding: 0">*@
+
+                            <div class="alert alert-block" style="float: right; margin-left: 5px;">
+                                <button data-dismiss="alert" class="close" type="button">×</button>
+                                <strong>
+                                    @Html.Raw(ViewContext.ViewData.ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).JoinToString("<br>"))
+                                </strong>
+
+                            </div>
+                            @*</div>*@
+                            @*</div>*@
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        
+        var grouped = Model.GroupBy(x => x.GroupName);
+        var counter = 0;
+        foreach (var group in grouped)
+        {
+            counter++;
+            <div class="form-legend group-name" gid="@counter"><a href="#">@group.Key</a>
+            </div>
+            <div class="group-content" gid="@counter">
+                @foreach (var setting in group)
+                {
+                    <div class="control-group row-fluid">
+                        @if (@setting.Editor != "Hidden")
+                        {
+                            <div class="span5 colorAdnFon">
+                                <label class="control-label">@setting.Name</label>
+                            </div>
+                        }
+                        @if (@setting.Editor == "Hidden")
+                        {
+                            <div class="span7 colorAdnFon">
+                                <div class="controls" editor="@setting.Editor">
+                                    @Html.Hidden(setting.InputName, setting.ValueText)
+                                </div>
+                            </div>
+
+                        }
+                        else if (@setting.Editor == "Color")
+                        {
+                            <div class="span7 colorAdnFon">
+                                <div class="controls" editor="@setting.Editor">
+                                    @Html.TextBox(setting.InputName, setting.ValueText, new { style = "background-color: " + setting.ValueText})
+                                    @Html.Partial("~/Views/CommonBlocks/ColorPicker.cshtml", setting.InputName)
+                                    @*<div id="ColorPicker_@(setting.ID.ToString())" rel="ColorPicker" arg="@setting.ID"></div>*@
+                                </div>
+                            </div>
+                        }
+                        else if (@setting.Editor == "ImageUpload")
+                        {
+                            <div class="span7">
+                                <div class="controls" editor="@setting.Editor">
+                                    @Html.TextBox(setting.InputName, "", new {@class = "db-img-upload", type = "file"})
+                                    @Html.Hidden(setting.InputName + "_Path")
+                                    <br/>
+                                    <div clear-handler="@setting.DeleteWrapper" id="@(setting.InputName)_Preview" style="display: @(setting.IsNullImage ? "none" : "block")">
+                                        <img src="@setting.ImageWrapper" style="max-width: 200px; max-height: 200px"/>
+                                        <br/>
+                                        <a class="delete-img-btn" href="#">Удалить изображение</a>
+                                        <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (@setting.Editor == "TextBox")
+                        {
+                            <div class="span7 colorAdnFon">
+                                <div class="controls" editor="@setting.Editor">
+                                    @Html.TextBox(setting.InputName, setting.ValueText)
+
+                                </div>
+                            </div>
+
+                        }
+                        else
+                        {
+
+                        }
+
+                    </div>
+                }
+            </div>
+        }
+        <div class="control-group row-fluid control-btn-bottom fixed-btn-save">
+            <div class="controls">
+                <div class="span12 propertycolor">
+                    <input type="submit" value="Сохранить" class="btn"/>
+                    <a class="previewsite preview-link prev-head propertycolor" title="Посмотреть на сайте" target="_blank" id="pageView" href="@AccessHelper.SiteUrl"><img src="/content/Eye-icon.png"></a>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

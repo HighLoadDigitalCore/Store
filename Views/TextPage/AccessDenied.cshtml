@@ -1,0 +1,10 @@
+﻿<div class="err404">
+    <h2>@Html.LangLabel("Ошибка 403 - Доступ запрещен")</h2>
+    <div class="descr404">
+        @Html.LangLabel("У вас недостаточно прав для просмотра данной страницы.")<br /><br />
+        @Html.Raw(LabelDictionary.Translate("Воспользуйтесь меню для навигации по сайту или пройдите <a href=\"#nogo\" onclick=\"showAuthPopup()\">авторизацию</a>"))
+        <br/>
+        @Html.Raw(LabelDictionary.Translate("Если вы еще не зарегистрированы в системе, то пройдите <a href=\"#nogo\" onclick=\"showRegPopup()\">регистрацию</a>"))
+    </div>
+    <img src="/Content/error403.png" />
+</div>

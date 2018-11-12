@@ -1,0 +1,64 @@
+﻿@using System.Collections
+@model UniversalEditorPagedData
+@{
+    var counter = 0;
+}
+@foreach (var row in (IEnumerable)Model.PagedData)
+{
+    <tr class="@(counter%2 == 0 ? "even":"odd") @(counter == ((IEnumerable<object>)Model.PagedData).Count() - 1 ? "last-grid-row":"")">
+        @foreach (var field in Model.Settings.ShowedFieldsInList)
+        {
+            <td @(field.Width.HasValue ? "style=width:" + field.Width + "px" : "")>
+                <div class="cell-content">
+                    @if (field.Template.IsFilled())
+                    {
+                        @Html.Raw(field.Template.Substring(0, field.Template.IndexOf("{{0}}", StringComparison.CurrentCulture)))
+                    }
+                    @if (field.IsLinkToEdit)
+                    {
+                        var text = field.CheckedText(row.GetPropertyValue(field.FieldName));
+                        if (field.ImageField.IsFilled())
+                        {
+                            text = string.Format("<img style='max-height:40px;' src='{0}' title='{1}'>", row.GetPropertyValue(field.ImageField), text);
+                        }
+                        @Html.Raw(HttpContext.Current.Server.HtmlDecode(Html.ActionLinkQuery(text, Model.CallerAction, Model.CallerController, Model.FullParamList, new { Type = "Edit", UID = row.GetPropertyValue(Model.Settings.UIDColumnName), Page = Request.QueryString["Page"].ToInt() }, new { onclick = Model.IsPartial ? "loadByLink(this); return false;" : "return true;" }).ToString()))
+                    }
+                    else if (field.IsOrderColumn)
+                    {
+                        if (field.ComplexReorder == null)
+                        {
+                            <div style="width: 100px;">
+                                @Html.TextBox("OrderNum_" + row.GetPropertyValue(Model.Settings.UIDColumnName), row.GetPropertyValue(field.FieldName), new { box = "orderbox", target = "UniversalEditor", action = "changeOrder", arg = row.GetPropertyValue(Model.Settings.UIDColumnName), page = Model.PagedData.GetPropertyValue("PageIndex"), oldval = row.GetPropertyValue(field.FieldName), tablename = Model.Settings.TableName, uidname = Model.Settings.UIDColumnName, ordername = field.FieldName, cc = Model.CallerController, ca = Model.CallerAction, style = "width:50px;margin:0", addqs = Model.AddQueryParamsJoin })
+                                <a box="orderboxDown" title="Перместить вниз" class="image-down" style="float: right; margin: 6px; cursor: pointer"></a>
+                                <a box="orderboxUp" title="Переместить вверх" class="image-up" style="float: right; margin-top: 6px; cursor: pointer"></a>
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.TextBox("OrderNum_" + row.GetPropertyValue(field.FieldName), field.TextFunction(row.GetPropertyValue(field.FieldName)), new { box = "orderboxComplex", target = "UniversalEditor", action = "changeOrderComplex", uid1 = field.ComplexReorder.Key1, uid2 = field.ComplexReorder.Key2, arg1 = field.ComplexReorder.TextFunction1(row.GetPropertyValue(field.FieldName)), arg2 = field.ComplexReorder.TextFunction2(row.GetPropertyValue(field.FieldName)), page = Model.PagedData.GetPropertyValue("PageIndex"), oldval = field.TextFunction(row.GetPropertyValue(field.FieldName)), tablename = field.ComplexReorder.TableName, ordername = field.ComplexReorder.OrderName, cc = Model.CallerController, ca = Model.CallerAction, style = "width:50px;margin:0", addqs = Model.AddQueryParamsJoin })
+                        }
+                    }
+                    else
+                    {
+                        @Html.Raw(field.CheckedText(row.GetPropertyValue(field.FieldName)))
+                    }
+                    @if (field.Template.IsFilled())
+                    {
+                        @Html.Raw(field.Template.Substring(field.Template.IndexOf("{{0}}", StringComparison.CurrentCulture) + 5))
+                    }
+                </div>
+            </td>
+        }
+        @if (Model.Settings.HasDeleteColumn)
+        {
+            
+            <td class="td-delete">
+                <div class="cell-content cell-content-delete">
+                    @Html.ActionLinkQuery("удалить", Model.CallerAction, Model.CallerController, Model.FullParamList, Model.GetFullParamsValuesForDelete(row), new { onclick = Model.IsPartial ? "loadByLink(this); return false;" : "return true;" })
+                </div>
+            </td>
+        }
+    </tr>
+    counter++;
+}
+

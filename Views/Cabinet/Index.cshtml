@@ -1,0 +1,3 @@
+﻿@model CabinetMenu
+@Html.Partial("ProfileMenu", Model)
+@Html.Partial("Profile" + CabinetMenu.URL.ElementAt(Model.CurrentMenuIndex).ToNiceForm())

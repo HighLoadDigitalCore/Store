@@ -1,0 +1,76 @@
+﻿@model IEnumerable<RecicleItem>
+
+@{
+    ViewBag.Title = "Корзина";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+    Удаленные страницы и товары
+}
+@section Description
+{
+    На этой странице находятся все удаленные разделы и товары
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm())
+{
+    @Html.Partial("MessageBox")
+
+    <div class="control-group row-fluid">
+        <fieldset>
+            <table class="mygrid" style="width: 100%;">
+                <tr>
+                    <th><div class="form-legend">Название</div></th>
+                    <th class="last-td">
+                        <div class="form-legend" style="padding-left: 9px">
+                            @if (Model.Any())
+                            {
+                                <input type="checkbox" value="all" onclick=" $('.mygrid td input').prop('checked', $(this).prop('checked')) " />
+                            }
+                        </div>
+                    </th>
+                </tr>
+
+                @{
+    var counter = 0;
+                }
+                @foreach (var item in Model)
+                {
+
+                    <tr class="@(counter%2 == 0 ? "even":"odd") @(counter == Model.Count() - 1 ? "last-grid-row":"")">
+                        <td>
+                            <div class="cell-content">
+                                @item.Name
+                            </div>
+                        </td>
+                        <td class="td-delete">
+                            <div class="cell-content cell-content-delete">
+                                <input type="checkbox" name="@item.Code" value="@item.Code" />
+                            </div>
+                        </td>
+                    </tr>
+                    counter++;
+                }
+            </table>
+            <br />
+
+        </fieldset>
+    </div>
+    <input type="submit" class="btn" name="Restore" value="Восстановить выбранное" style="float: left" />
+
+
+    <input type="submit" class="btn-gray" name="Clear" value="Очистить корзину" style="float: right" />
+    <input type="submit" class="btn-gray" name="Delete" value="Удалить выбранное" style="float: right; margin-right: 20px" />
+
+}

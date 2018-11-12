@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /action/*
+Disallow: /en/*
+Disallow: /Master/*
+
+User-Agent: Googlebot
+Disallow: /action/*
+Disallow: /en/*
+Disallow: /Master/*
+
+Host: https://boiler-gas.ru
+Sitemap: https://boiler-gas.ru/sitemap.xml

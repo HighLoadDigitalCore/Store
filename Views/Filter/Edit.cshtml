@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "Редактирование фильтра";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model Smoking.Models.Filter
+
+@section Header{
+Их месторасположение
+}
+@section Description
+{
+@*Выберите раздел сайта, затем заполните необходимую информацию*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+<div id="Filter">
+    <div id="message" style="color: red; margin: 15px 0 0 10px">@ViewBag.Message</div>
+    @using (Html.BeginForm("Edit", "Filter", FormMethod.Post))
+    {
+        <input type="hidden" value="@Model.ID" name="ID"/>
+        <input type="hidden" name="SelectedSection" id="SelectedSection" value="@Model.SelectedSection"/>
+        <div class="base-product">
+            <h4 id="sel" style="width: 400px; font-size: 14px; margin: 0; line-height: 20px"></h4>
+            <h2 style="margin: 0; line-height: 20px">
+                <small style="font-size: 13px">Выберите раздел:</small>
+            </h2>
+            
+            <div class="sidebarMenuHolder" style="width: 500px; height: 500px">
+                <div class="JStree" style="text-align: left;">
+                    <div id="tree-inner">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="base-product-right" style="min-height: 500px">
+            <h2>
+                <small style="font-size: 13px">Отображать фильтр на сайте:</small>
+            </h2>
+            <div class="controls">
+                @Html.CheckBox("Visible", Model.Visible)
+            </div>
+            <br/>
+            <input type="submit" class="btn" value="Сохранить" style="margin-left: 0" />
+        </div>
+    }
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            loadInnerTree();
+        });
+
+
+        function loadInnerTree() {
+            //$('#tree').jstree("destroy");
+            //debugger;
+            $.getJSON('@Url.Action("getTreeData", "Filter")', {}, function (res) {
+                console.log(res);
+                $('#tree-inner').jstree({
+                    "plugins": [
+                        "themes", "json_data", "ui", "cookies"
+                    ],
+                    "json_data": { "data": res, "progressive_render": true },
+                    "cookies": {
+                        "save_selected": "node_selected_fed",
+                        "save_opened": "node_opened_fed"
+                    },
+                }).bind("select_node.jstree", function (e, data) {
+                    console.log(data);
+                    if (data.rslt.obj.attr('id') != 'x0') {
+                        $('#SelectedSection').val(data.rslt.obj.attr('id'));
+                        $('#sel').html('Выбранный раздел: ' + data.rslt.obj.find(' > a').text().trim());
+                    } else {
+                        $('#sel').html('');
+                        $('#SelectedSection').val('');
+                    }
+
+                });
+
+
+            });
+        }
+    </script>
+}

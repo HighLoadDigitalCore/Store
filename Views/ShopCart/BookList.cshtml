@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ShopCartItem>                    
+<div class="in-tab">
+    @foreach(var item in Model)
+    {
+        <div class="book-line">
+            <a href="@item.StoreProduct.FullUrl"><img src="@item.StoreProduct.DefaultThumbURL" width="118" height="171"></a>
+            <div class="bl-info bl-info-cart">
+                <div class="in-bl-info">
+                    <h2>@Html.Raw(item.StoreProduct.NameOrDef)<span class="price"><strong>@item.PriceForOffer.ForDisplaing()</strong> руб</span>
+                        <br><b class="code">Артикул: @item.StoreProduct.Article</b>
+                        <br/>
+                                            
+                        @if (item.StoreProduct.Weight.HasValue)
+                        {
+                            <p class="char">Вес: <i>@(item.StoreProduct.Weight*item.Count)</i></p>
+                        }
+                        @if (item.StoreProduct.Volume.HasValue)
+                        {
+                            <p class="char">Объем: <i>@(item.StoreProduct.Volume*item.Count)</i></p>
+                        }
+                    
+
+                    </h2>
+                    <div class="number">
+                        <label>Количество:
+                            <input type="number" value="@item.Count"></label>
+                        <label class="mt">Итого:<span class="price"><strong>@((item.Count*item.PriceForOffer).ForDisplaing())</strong> руб</span></label>
+                    </div>
+                    <span class="name">
+                        @*@item.StoreProduct.BookDescriptionCatalog.AuthorsByComma*@
+                    </span>
+                    @*<span class="date">Дата отправки: @DateTime.Now.AddDays(1).ToString("dd.MM.yyyy")</span>*@
+                    <div class="links">
+                        <a class="link-green" href="#" arg="@item.ID" action="delay">@(item.IsDelayed?"Купить":"Отложить на потом")</a>
+                        <a class="link-red" href="#" arg="@item.ID" action="delete">@(item.IsDelayed?"Удалить":"Удалить из заказа")</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

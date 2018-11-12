@@ -1,0 +1,12 @@
+﻿@{
+    var cart = new ShopCart().InitCart();
+}
+<div class="grid_3 fixpanel_basket icon-pack" id="head-count">
+    <a class="fixpanel_basket_icon icon_c_basket_circle" href="/order">
+        <span total="@((int)cart.TotalSum)" total-fm="@((int)cart.TotalSum == 0 ? "0": ((int)cart.TotalSum).ToString("### ### ###"))" class="fixpanel_basket_count @(cart.TotalCount > 0 ? "" : "hidden")">@cart.TotalCount</span>
+    </a>
+    <div class="fixpanel_basket_content" style="margin-top: 10px;" >
+        @*<div class="panel_in_basket_sum">@cart.TotalSum.ToNiceDigit()&nbsp;руб.</div>*@
+        @*<a href="/order" style="text-decoration:none;">Купить</a>*@
+    </div>
+</div>

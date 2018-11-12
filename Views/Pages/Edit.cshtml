@@ -1,0 +1,335 @@
+﻿@model CMSPage
+@{
+    var vtype = (int)ViewBag.VType;
+}
+<div id="EditPage">
+    <script type="text/javascript" src="/Scripts/group-toggler.js"></script>
+    @*<input type="hidden" id="PreviewLink" value="@Model.FullUrl" />*@
+    <input type="hidden" id="Description" value="" />
+    @*Укажите название и свойства страницы и ключевые слова, по которым страница будет индексироваться поисковыми системами*@
+    <input type="hidden" id="Header" value="@(Model.ID == 0 ? "Создание новой папки" : "Редактирование папки " + @Model.PageName)" />
+
+    <div class="horiz-menu horiz-menu-page">
+
+        @if (Model.ID > 0)
+        {
+            <div class="form-legend group-name @(vtype == 1 ? "active":"")">
+                <a href="#" onclick="return editPage(@(Model.ID), 1, loadWidth)">Настройки</a>
+            </div>
+            <div class="form-legend group-name">
+                <a href="#" onclick="loadContent('x@(Model.ID)'); return false; ">Описание</a>
+            </div>
+        }
+        <div class="form-legend group-name @(vtype == 2 ? "active":"")">
+            <a href="#" onclick="return editPage(@(Model.ID), 2, loadWidth)">SEO</a>
+        </div>
+        <a class="previewsite preview-link prev-head" title="Посмотреть на сайте" target="_blank" id="pageView" href="@Model.FullUrl"><img src="/content/Eye-icon.png"></a>
+        <input type="submit" value="Сохранить" class="btn" onclick="$('form').submit();" />
+    </div>
+
+    @Html.Partial("MessageBox")
+    @if (Model != null)
+    {
+        using (Ajax.BeginForm("Edit", "Pages", new { id = Model.ID }, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "EditPage", InsertionMode = InsertionMode.Replace }))
+        {
+            <div id="group-content">
+                @*<div class="form-legend">Основные данные:</div>*@
+                @Html.HiddenFor(model => model.ID)
+                <input type="hidden" name="vtype" value="@vtype" />
+                <div class="control-group row-fluid" style="@(vtype == 2 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.PageName, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.EditorFor(model => model.PageName)
+                            @Html.ValidationMessageFor(model => model.PageName)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group row-fluid" style="@(vtype == 2 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.URL, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.EditorFor(model => model.URL)
+                            @Html.ValidationMessageFor(model => model.URL)
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" style="@(vtype == 2 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.Title, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.EditorFor(model => model.Title)
+                            @Html.ValidationMessageFor(model => model.Title)
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" style="@(vtype == 2 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.Keywords, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.TextAreaFor(model => model.Keywords)
+                            @Html.ValidationMessageFor(model => model.Keywords)
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" style="@(vtype == 2 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.TextAreaFor(model => model.Description)
+                            @Html.ValidationMessageFor(model => model.Description)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group row-fluid" style="display: none">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.ParentID, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.ParentID, ViewBag.Parents as SelectList)
+                            @Html.ValidationMessageFor(model => model.ParentID)
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" style="@(vtype == 1 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.DropDownListFor(model => model.Type, ViewBag.Types as SelectList)
+                            @Html.ValidationMessageFor(model => model.Type)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group row-fluid" style="@(vtype == 1 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.Visible, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            <label class="checkbox">
+                                @Html.EditorFor(model => model.Visible)
+                                @Html.ValidationMessageFor(model => model.Visible)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" style="@(vtype == 1 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.ViewMenu, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            <label class="checkbox">
+                                @Html.EditorFor(model => model.ViewMenu)
+                                @Html.ValidationMessageFor(model => model.ViewMenu)
+                            </label>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                @*<div class="form-legend">Поисковая оптимизация:</div>*@
+
+
+                <div class="control-group row-fluid" style="@(vtype == 2 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.EditorFor(model => model.FullName)
+                            @Html.ValidationMessageFor(model => model.FullName)
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" style="@(vtype == 2 ? "":"display:none")">
+                    <div class="span3">
+                        @Html.LabelFor(model => model.FullNameH2, new { @class = "control-label" })
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @Html.EditorFor(model => model.FullNameH2)
+                            @Html.ValidationMessageFor(model => model.FullNameH2)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-legend" style="@(vtype == 1 ? "":"display:none")">Права доступа:</div>
+
+                <div class="control-group row-fluid" style="@(vtype == 1 ? "":"display:none")">
+                    <div class="controls">
+                        <div class="span12">
+                            <div class="checkbox-group">
+                                @foreach (var role in Model.RolesList)
+                                {
+                                    <label class="checkbox">
+                                        @Html.CheckBox("ID_" + role.RoleID.ToString(), role.Selected)
+                                        @role.RoleName
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="control-group row-fluid" style="@(vtype == 1 ? "":"display:none")">
+                    <div class="controls">
+                        <div class="span3">
+                            <label class="control-label">
+                                Расположение
+                            </label>
+                        </div>
+                        <div class="span9">
+                            @Html.Hidden("ParentID", Model.ParentID ?? 0)
+
+                            <div class="JStree" style="text-align: left">
+                                <div id="ParentID_Tree">
+                                </div>
+                            </div>
+
+                        </div>
+                        <script type="text/javascript">
+                            var single = true;
+                            var uncheck_trig = false;
+                            function loadTree_ParentID(sectionsPlain) {
+                                $.getJSON('/Master/ru/Home/getTreeDataForPage', { SelectedSection: sectionsPlain }, function (res) {
+                                    $('#ParentID_Tree').jstree({
+                                        "plugins": [
+                                            "themes", "json_data", "ui", /*"cookies",*/ "checkbox"
+                                        ],
+                                        "cookies": {
+
+                                            "save_selected": "node_selected_ued1",
+                                            "save_opened": "node_opened_ued1",
+
+                                            "cookie_options": { expires: 365 }
+                                        },
+                                        "checkbox": {
+                                            "two_state": true
+                                        },
+
+                                        /* "themes": {
+                                             "theme": "apple",
+                                             "url": "/Content/themes/apple/style.css"
+                                         },*/
+                                        "json_data": { "data": res, "progressive_render": true }
+                                    }).bind("loaded.jstree", function (event, data) {
+
+
+                                        //$(this).jstree('close_all');
+
+
+                                    }).bind("check_node.jstree", function (event, data) {
+                                        if (single) {
+                                            var sections = $('#ParentID_Tree').jstree("get_checked", null, true);
+                                            uncheck_trig = true;
+                                            sections.each(function () {
+
+                                                if ($(this).attr('id') != data.rslt.obj.attr('id'))
+                                                    $('#ParentID_Tree').jstree("uncheck_node", this);
+
+                                            });
+                                            uncheck_trig = false;
+                                            $('#ParentID').val(data.rslt.obj.attr('id').replace('x', '').replace('c', '').replace('p', ''));
+                                        }
+
+                                    }).bind("uncheck_node.jstree", function (event, data) {
+                                        if (single) {
+                                            //uncheck_trig = true;
+                                            console.log(data);
+                                            if (!uncheck_trig)
+                                                $('#ParentID_Tree').jstree("check_node", data.rslt.obj);
+                                            //uncheck_trig = false;
+
+                                        }
+                                    });
+
+                                });
+                            }
+                            $(document).ready(function () {
+
+                                $('input[type="submit"]').click(function () {
+                                    var sections = $('#ParentID_Tree').jstree("get_checked", null, true);
+
+                                    if (!sections.length && !$('#ParentID').val().length) {
+
+                                        return false;
+                                    }
+                                    var sectionsPlain = '';
+                                    sections.each(function () {
+                                        if (sectionsPlain.length) {
+                                            sectionsPlain += ";";
+                                        }
+                                        sectionsPlain += $(this).attr('id').replace('x', '').replace('c', '').replace('p', '');
+                                    });
+
+                                    if (sectionsPlain)
+                                        $('#ParentID').val(sectionsPlain);
+                                    return true;
+                                });
+                                console.log($('#ParentID').val());
+                                loadTree_ParentID($('#ParentID').val());
+                            });
+
+                        </script>
+
+
+                    </div>
+                </div>
+                @*
+                    <div class="control-group row-fluid">
+                        <div class="controls">
+                            <div class="span12">
+                                <input type="submit" value="Сохранить изменения" class="btn" />
+                            </div>
+                        </div>
+                    </div>
+                *@
+            </div>
+        }
+    }
+    
+    <div class="horiz-menu horiz-menu-page">
+
+        @if (Model.ID > 0)
+        {
+            <div class="form-legend group-name @(vtype == 1 ? "active":"")">
+                <a href="#" onclick="return editPage(@(Model.ID), 1, loadWidth)">Настройки</a>
+            </div>
+            <div class="form-legend group-name">
+                <a href="#" onclick="loadContent('x@(Model.ID)'); return false; ">Описание</a>
+            </div>
+        }
+        <div class="form-legend group-name @(vtype == 2 ? "active":"")">
+            <a href="#" onclick="return editPage(@(Model.ID), 2, loadWidth)">SEO</a>
+        </div>
+        <a class="previewsite preview-link prev-head" title="Посмотреть на сайте" target="_blank" id="pageView" href="@Model.FullUrl"><img src="/content/Eye-icon.png"></a>
+        <input type="submit" value="Сохранить" class="btn" onclick="$('form').submit();" />
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    $().ready(function () {
+        loadWidth();
+    });
+</script>
+

@@ -1,0 +1,25 @@
+﻿@model StoreProduct
+<div class="clear_wrap comment_control">
+    <div class="buyers_choice"></div>
+    <div data-item_id="@Model.ID" class="average_rate">@Model.VoteOverage.ToString("f1")</div>
+    <div class="total_votes">
+        <div data-itemid="@Model.ID" class="rating_star">
+            @for (int i = 5; i >= 1; i--)
+            {
+                <span data-ratingpos="@i" class="@(Math.Round(Model.VoteOverage, 0) >= i ? "selected" : "")"></span>
+            }
+        </div>
+        <div data-item_id="@Model.ID" class="number_votes_text">@Model.VoteCount голос@(Model.VoteCount.GetStringPostfix(WordKind.Man))</div>
+    </div>
+    <div class="customer_rate">
+        <div>Насколько вы довольны покупкой?</div>
+        <div class="page_stars_large">
+            <div auth-user="@(HttpContext.Current.User.Identity.IsAuthenticated.ToIntString())" data-itemid="@Model.ID" class="rating_star large enabled">
+                <span data-ratingpos="5" class=""></span><span data-ratingpos="4" class=""></span><span data-ratingpos="3" class=""></span><span data-ratingpos="2" class=""></span><span data-ratingpos="1" class=""></span>
+            </div>
+            <div class="page_rating_thanks">
+                Спасибо за вашу оценку!
+            </div>
+        </div>
+    </div>
+</div>

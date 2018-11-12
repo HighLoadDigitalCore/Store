@@ -1,0 +1,19 @@
+﻿@model List<CMSPageSlider>
+@if (Model != null && Model.Any())
+{
+    <div class="b-slider">
+        <div class="slider-cell">
+            <div id="Slider">
+                @foreach (var item in Model)
+                {
+
+                    <a href="@(string.IsNullOrEmpty(item.Link) ? "#" : item.Link)" title="@item.Name">
+                        <div>
+                            <img height="@UniversalEditorPagedData.GetImageHeight(item.Img)" width="@(UniversalEditorPagedData.GetImageWidth(item.Img))" src="@UniversalEditorPagedData.GetImageWrapper("CMSPageSliders", "ID", @item.ID.ToString(), "Img")" class="attachment-slideshow" alt="@item.Alt" title="#@(item.ID)caption" /><div id='@(item.ID)caption' class='nivo-html-caption'><h2>@item.Name</h2><h4>@item.Text</h4></div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+}

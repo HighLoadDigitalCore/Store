@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/themes/base/css", "~/Content/css")
+    <script src="/Scripts/jquery-1.10.2.js"></script>
+    <script src="/Scripts/jquery-ui-1.10.4.custom.js"></script>
+    <script src="/Scripts/jquery-ui-timepicker-addon.js"></script>
+    <script src="/Scripts/modernizr-2.6.2.js"></script>
+
+
+    <script src="/Scripts/jquery.cookie.js"></script>
+    <script src="/Scripts/jquery.jstree.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.json-2.3.min.js"></script>
+
+    <script src="/Scripts/jquery.validate.min.js"></script>
+    <script src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script src="/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script src="/Scripts/master.js"></script>
+
+
+    <script src="/Scripts/FileUpload/jquery.fileupload.js"></script>
+    <script src="/Scripts/FileUpload/jquery.fileuploadui.js"></script>
+    <script src="/Scripts/FileUpload/jquery.iframe-transport.js"></script>
+    <script src="/Scripts/FileUpload/jquery.upload-init.js"></script>
+
+
+    @RenderSection("scripts", required: false)
+
+</head>
+<body>
+
+    <table class="master-tbl">
+        <tr>
+            <td class="left-master-tbl">
+                @*
+                <div class="backref">
+                    Язык заполнения:&nbsp;
+                    @Html.DropDownList("MasterLang", AccessHelper.CurrentLang.LanguageList)
+                    @Html.Hidden("MasterLangURL", string.Join("/", Request.RawUrl.Split<string>("/").Skip(2)))
+                </div>
+                <hr />
+*@
+                <div class="backref">
+                    <ul>
+                        @foreach (var item in AdminMenu.ItemList)
+                        {
+                            <li>
+                                @Html.ActionLink(item.Name, item.Action, item.Controller)
+                                @if (item.Children != null && item.Children.Any())
+                                {
+                                    <ul>
+                                        @foreach (var subitem in item.Children)
+                                        {
+                                            <li>
+                                                @Html.ActionLink(subitem.Name, subitem.Action, subitem.Controller)
+                                            </li>
+
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </td>
+            <td style="padding: 0 20px; vertical-align: top;">
+                @RenderBody()
+            </td>
+        </tr>
+    </table>
+
+
+</body>
+</html>

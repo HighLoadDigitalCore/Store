@@ -1,0 +1,34 @@
+﻿@model Order
+@{
+    ViewBag.Title = "Удаление заказа";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+@section Header
+{
+    Удаление заказа
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm())
+{
+    <div class="form-legend">Вы действительно хотите удалить заказ с номером @Model.OrderNumber и все связанные с ним данные из системы?</div>
+    <div class="control-group row-fluid">
+        <div class="span12 span-inset">
+            <input class="btn" type="submit" value="Удалить" />
+            <div class="backref">
+                @Html.ActionLinkQuery("Назад к списку", "Index", "Orders", new[] {"query", "page" })
+            </div>
+        </div>
+    </div>
+}
+

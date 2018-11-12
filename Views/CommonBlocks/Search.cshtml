@@ -1,0 +1,34 @@
+﻿@model CommonSearch
+@using (Html.BeginForm("Search", "CommonBlocks", FormMethod.Post, new { @class = Model.CSS }))
+{
+    if (Model.CSS != "form-search_large")
+    {
+    <div id="search-cat-dropdown" class="input-group-btn dropdown b-form-search__dropdown">
+        @*<button id="search-cat-b" data-toggle="dropdown" title="Везде" class="btn btn-xs btn-default dropdown-toggle" type="button">*@
+            @*<i class="b-ico b-ico_lupa_10x10"></i>*@
+            @*<div style="max-width: 116px;" id="search-cat-t">Везде</div>
+            <span class="caret"></span>
+        </button>*@
+        <input type="hidden" value="@Request.QueryString["section"]" id="current-section"/>
+        <ul id="search-cat-menu" role="menu" class="dropdown-menu b-drop-shadow b-form-search__dropdown-menu">
+            <li class="selected"><a arg="0" class="search-cat" href="#">Везде</a></li>
+            @foreach (var cat in CatalogBrowser.Root.Children)
+            {
+                <li class=""><a class="search-cat" arg="@cat.ID" href="#">@cat.Name</a></li>
+            }
+        </ul>
+    </div>
+    }
+    <div class="search el_form-search">
+        @Html.TextBox("SearchQuery", Model.SearchQuery.IsFilled() ? Model.SearchQuery : "", new { @class = "el_form bradius_c-r text blur-box", def = "Поиск товаров", req = "1", placeholder= "Название или артикул" })
+        <button class="el_form btn bradius_c-l"><i class="icon icon_search"></i></button>
+    </div>
+    @*<div class="tip">Например, <a href="/search?word=радиатор kermi" onclick="$(this).parent().prev().find('input').val('радиатор kermi'); return false;">радиатор kermi</a></div>*@
+    if (Model.NeedShowSection)
+    {
+    <div class="this_cat_only">
+        <label for="this_cat_only">
+            <input type="checkbox" arg="@Model.SectionID" cn="@CatalogBrowser.GetCategory(Model.SectionID ?? 0).Name" class="el_form" id="this_cat_only"><span>только в текущем разделе</span></label>
+    </div>
+    }
+}

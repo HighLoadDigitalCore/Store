@@ -1,0 +1,17 @@
+﻿@using BotDetect.Web.UI.Mvc
+<div id="Ask">
+    @using (Ajax.BeginForm("Ask", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "Ask", InsertionMode = InsertionMode.Replace}))
+    {
+
+        MvcCaptcha sampleCaptcha = new MvcCaptcha("SampleCaptcha");
+        sampleCaptcha.Reset();
+
+        <p style="color: red">@ViewBag.Error</p>
+
+        @Html.Captcha(sampleCaptcha)
+        @Html.TextBox("CaptchaCode")
+        <br/>
+        <br/>
+    <input type="submit" class="el_form btn btn_green btn_toBasket" value="Отправить" />
+    }
+</div>

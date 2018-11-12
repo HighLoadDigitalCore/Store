@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Группы пользователей";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+@model IEnumerable<Role>
+@section Header
+{
+    Группы пользователей
+}
+@section Description
+{
+    @*На этой странице перечислены все группы пользователей*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+<div class="control-group row-fluid">
+    <fieldset>
+
+        <table class="mygrid" style="width: 100%;">
+            <tr>
+                <th>
+                    <div class="form-legend">Идентификатор</div>
+                </th>
+                <th>
+                    <div class="form-legend">Название</div>
+                </th>
+                <th>
+                    <div class="form-legend">&nbsp;</div>
+                </th>
+                <th class="last-td">
+                    <div class="form-legend">&nbsp;</div>
+                </th>
+            </tr>
+            @{
+                var counter = 0;
+            }
+            @foreach (var role in Model)
+            {
+                <tr class="@(counter%2 == 0 ? "even":"odd") @(counter == Model.Count() - 1 ? "last-grid-row":"")">
+                    <td>
+                        <div class="cell-content">@Html.ActionLink(role.RoleName, "Edit", "Roles", new { RoleID = role.RoleId }, null)</div>
+                    </td>
+                    <td>
+                        <div class="cell-content">@role.Description</div>
+                    </td>
+                    <td>
+                        <div class="cell-content">@Html.ActionLink("пользователи", "Index", "Users", new { role = role.RoleId }, null)</div>
+                    </td>
+                    <td class="td-delete">
+                        <div class="cell-content cell-content-delete">@(role.CanDelete ? Html.ActionLink("удалить", "Delete", "Roles", new { RoleID = role.RoleId }, null) : new MvcHtmlString(""))</div>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </table>
+    </fieldset>
+</div>
+<br/>
+@Html.ActionLink("Добавить", "Edit", null, new { @class = "btn" })
+

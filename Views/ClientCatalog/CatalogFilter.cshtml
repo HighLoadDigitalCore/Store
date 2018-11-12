@@ -1,0 +1,63 @@
+﻿@model CatalogCharacterFilters
+@if (Model.Filters.Any()/* && (CatalogBrowser.Init().CurrentCategory.ID > 1 || AccessHelper.CurrentPageInfo.CurrentPageType == "Search")*/)
+{
+    <div class="catalogue_menu_wrapper properties">
+        <input type="hidden" id="ObjID" name="ObjID" value="@(CatalogBrowser.Init().CurrentCategory.ID>1 ? ("c"+CatalogBrowser.Init().CurrentCategory.ID):("x"+AccessHelper.CurrentPageInfo.ID))"/>
+        @*<div class="filter-header">Подбор товара</div>*@
+        @foreach (var filter in Model.Filters)
+        {
+            if (filter.IsSlider)
+            {
+                <div class="int property ">
+                    <div class="values int">
+                        <div class="title" onclick="$(this).parent().parent().toggleClass('collapse', 1000)">
+                            <i class="arrs"></i>
+                            <span>@filter.Header</span>
+                            @if (filter.Help.IsFilled())
+                            {
+                                <i class="help-tip" content="@filter.Help.ClearHTML()"></i>
+                            }
+                            
+                        </div>
+                        <div class="cnt">
+                            <div class="rng">
+                                <span>от</span>
+                                <input parent="Slider_@filter.CharacterID" class="from" id="Slider_@(filter.CharacterID)_From" type="text" value="@((int)decimal.Parse(filter.Values.ElementAt(0)))" />
+                                <span>до</span>
+                                <input parent="Slider_@filter.CharacterID" class="to" id="Slider_@(filter.CharacterID)_To" type="text" value="@((int)decimal.Parse(filter.Values.ElementAt(1)))" />
+                            </div>
+                            <input id="Slider_@filter.CharacterID" arg="@filter.CharacterID" from="@filter.Values.ElementAt(0).Replace(",", ".")" to="@filter.Values.ElementAt(1).Replace(",", ".")" type="slider" name="area" value="@filter.GetValue(0).Replace(",", ".");@filter.GetValue(1).Replace(",", ".")" />
+                            
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="list property" arg="@filter.CharacterID">
+                    <div class="values list">
+                        <div class="title" onclick="$(this).parent().parent().toggleClass('collapse', 500)">
+                            <i class="arrs"></i>
+                            <span>@filter.Header</span>
+                            @if (filter.Help.IsFilled())
+                            {
+                                <i class="help-tip" content="@filter.Help.ClearHTML()"></i>
+                            }
+                            
+                        </div>
+                        <div class="cnt">
+                        @foreach (var val in filter.Values)
+                        {
+                            <label class="list_value inactive">
+                                <input type="checkbox" @((filter.FilteredValues ?? new List<string>()).Contains(val) ? "checked" : "") value="@val"><span>@val</span></label>    
+                        }
+                            </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="controls">
+            <button arg="@Request.RawUrl" class="el_form btn small btn_green" id="btn-choose">Применить фильтры</button><a href="@Model.BaseURL">Сбросить</a>
+        </div>
+    </div>
+}

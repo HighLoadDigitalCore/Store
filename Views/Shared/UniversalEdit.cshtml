@@ -1,0 +1,651 @@
+﻿@using System.Collections
+@model UniversalEditorPagedData
+@helper treeJS()
+{
+    @Model.Settings.EditedFieldsList.Where(x => x.FieldType == UniversalEditorFieldType.TreeEditor).Aggregate("", (current, treeEditor) => current + ("loadTree_" + treeEditor.TreeDataSource.Name + "();")).JoinToString("");
+}
+<div id="UF">
+    @using (Ajax.BeginForm("UniversalEdit", "UniversalEditor", Model.GetFullParamsValuesForEdit(Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName)), new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "UF", OnComplete = "ajaxComplete();loadUIElems();" + treeJS() }))
+    {
+        @Html.Partial("MessageBox")
+        if (!Model.HorizTabs)
+        {
+            if (Model.IsAddingNew)
+            {
+                <div class="form-legend">Добавление новой записи</div>
+            }
+            else
+            {
+
+                var name = Model.EditedRow.GetPropertyValue(Model.Settings.ShowedFieldsInList.First(x => x.IsLinkToEdit).FieldName).ToString().ClearHTML().TruncateToPoint(100);
+                if (name.IsNullOrEmpty())
+                {
+                    try
+                    {
+                        name = Model.EditedRow.GetPropertyValue("Name").ToString().ClearHTML().TruncateToPoint(100);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                if (name.IsNullOrEmpty())
+                {
+                    name = Model.EditedRow.GetPropertyValue("ID").ToString().ClearHTML().TruncateToPoint(100);
+                }
+
+                <div class="form-legend">Редактирование записи &laquo;@name&raquo;</div>
+            }
+        }
+        @Html.HiddenFor(model => model.CallerAction)
+        @Html.HiddenFor(model => model.CallerController)
+        @Html.HiddenFor(model => model.AddQueryParamsJoin)
+        @Html.HiddenFor(model => model.EditorUID)
+        var source = Model.Settings.EditedFieldsList;
+        if (Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName).Equals(0))
+        {
+            source = source.Where(x => x.FieldType != UniversalEditorFieldType.Custom).ToList();
+        }
+        var grouped = source.GroupBy(x => x.GroupName);
+        var gc = grouped.Count();
+        var count = 1;
+        <div class="@(Model.HorizTabs? "tab-horiz": "tab-vert")">
+            @foreach (var group in grouped)
+            {
+                if (grouped.Count() > 1)
+                {
+                    <div class="form-legend group-name @(gc == count? "last-group":"")" gid="@group.Key"><a href="#">@group.Key</a></div>
+                }
+                if (!Model.IsAddingNew && Model.Settings.EditLinks != null && gc == count)
+                {
+                    foreach (var link in Model.Settings.EditLinks)
+                    {
+                        <div class="form-legend group-name" gid="">
+                            <a onclick="@(link.IsPartial ? "loadByLink(this); return false;" : "return true;")" href="@link.Link">@link.Name</a>
+                            <br />
+                        </div>
+                    }
+
+                }
+
+                <div class="group-content" gid="@group.Key" style="@(grouped.Count() <= 1? "display:block!important":"")">
+                    @foreach (var field in group)
+                    {
+
+                        <div class="control-group row-fluid" @(field.Hidden || field.FieldType == UniversalEditorFieldType.Hidden ? "style=display:none" : "")>
+                            <div class="span3" @(field.Hidden || field.FieldType == UniversalEditorFieldType.Hidden || field.FieldType == UniversalEditorFieldType.ProductSelect || field.FieldType == UniversalEditorFieldType.RelatedTable || field.FieldType == UniversalEditorFieldType.Custom || field.FieldType == UniversalEditorFieldType.Delimeter ? "style=display:none" : "")>
+                                @Html.Label(field.HeaderText, new { @for = field.FieldName, @class = "control-label" })
+                            </div>
+                            <div class="@(field.FieldType == UniversalEditorFieldType.ProductSelect || field.FieldType == UniversalEditorFieldType.RelatedTable || field.FieldType == UniversalEditorFieldType.Delimeter || field.FieldType == UniversalEditorFieldType.Custom ? "span12 no-left" : "span9")" @(field.Hidden ? "style=display:none" : "")>
+                                <div class="controls">
+
+                                    @if (field.FieldType == UniversalEditorFieldType.Delimeter)
+                                    {
+                                        <hr />
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.TextBox)
+                                    {
+                                        @Html.TextBox(field.FieldName, field.TextFunction == null ? Model.EditedRow.GetPropertyValue(field.FieldName) : field.TextFunction(Model.EditedRow.GetPropertyValue(field.FieldName)), new { inactive = field.ReadOnly ? "1" : "0" })
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.Hidden)
+                                    {
+                                        @Html.Hidden(field.FieldName, field.TextFunction == null ? Model.EditedRow.GetPropertyValue(field.FieldName) : field.TextFunction(Model.EditedRow.GetPropertyValue(field.FieldName)), new { inactive = field.ReadOnly ? "1" : "0" })
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.TextArea)
+                                    {
+                                        @Html.TextArea(field.FieldName, (string)Model.EditedRow.GetPropertyValue(field.FieldName), 4, 20, new { inactive = field.ReadOnly ? "1" : "0" })
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.CheckBox)
+                                    {
+                                        <label class="checkbox">
+                                            @Html.CheckBox(field.FieldName, (bool)Model.EditedRow.GetPropertyValue(field.FieldName), new { inactive = field.ReadOnly ? "1" : "0" })
+                                        </label>
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.DropDown && field.InnerListDataSource != null)
+                                    {
+                                        if (field.InnerListDataSource.TextFunction != null)
+                                        {
+                                            foreach (var obj in (IEnumerable)field.InnerListDataSource.Source)
+                                            {
+                                                obj.SetPropertyValue(field.InnerListDataSource.ValueField, field.InnerListDataSource.TextFunction(obj.GetPropertyValue(field.InnerListDataSource.ValueField)));
+                                            }
+                                        }
+
+                                        if (field.InnerListDataSource.HasEmptyDef)
+                                        {
+                                            @Html.DropDownList(field.FieldName, new SelectList((IEnumerable)field.InnerListDataSource.Source, field.InnerListDataSource.KeyField, field.InnerListDataSource.ValueField, field.InnerListDataSource.CalculatedDef(field.FieldName, Model)), "", new { inactive = field.ReadOnly ? "1" : "0" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownList(field.FieldName, new SelectList((IEnumerable)field.InnerListDataSource.Source, field.InnerListDataSource.KeyField, field.InnerListDataSource.ValueField, field.InnerListDataSource.CalculatedDef(field.FieldName, Model)), "", new { inactive = field.ReadOnly ? "1" : "0" })
+                                        }
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.Calendar)
+                                    {
+                                        @Html.TextBox(field.FieldName, Model.EditedRow.GetPropertyValue(field.FieldName).ToTypedValue<DateTime?>().HasValue && Model.EditedRow.GetPropertyValue(field.FieldName).ToTypedValue<DateTime?>().Value != DateTime.MinValue ? Model.EditedRow.GetPropertyValue(field.FieldName).ToTypedValue<DateTime?>().Value.ToString("dd.MM.yyyy HH:mm:ss") : "", new { rel = "calendar", inactive = field.ReadOnly ? "1" : "0" })
+
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.Label)
+                                    {
+                                        <b>
+                                            @Html.Raw(field.CheckedText(Model.EditedRow.GetPropertyValue(field.FieldName)))
+                                        </b>
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.DBImageUpload)
+                                    {
+                                        <div style="clear: both; overflow: hidden">
+                                            @Html.TextBox(field.FieldName, "", new { @class = "db-img-upload", type = "file", style = "float:left" })
+                                            @Html.Hidden(field.FieldName + "_Path")
+                                            <div class="db-image-btn-cell" style="display: @(Model.IsNullImage(field.FieldName) ? "none" : "block")">
+                                                <a class="download-img-btn" href="@Model.GetImageWrapper(field.FieldName, forDL:true)">Скачать</a>
+                                                <a class="delete-img-btn" href="#">Удалить</a>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div clear-handler="@Model.GetDeleteWrapper(field.FieldName)" id="@(field.FieldName)_Preview" style="display: @(Model.IsNullImage(field.FieldName) ? "none" : "block")">
+                                            <img src="@Model.GetImageWrapper(field.FieldName)&nocache=1&rnd=@(new Random(DateTime.Now.Millisecond).Next(1000, 9999))" style="max-width: 200px; max-height: 200px; float: left" />
+                                        </div>
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.FileImageUpload)
+                                    {
+                                        if (field.AdditionalTypeFlag)
+                                        {
+                                            <div id="@(field.FieldName)_Cell" style="@((Model.EditedRow.GetPropertyValue(field.FieldName) ?? "").ToString().IsFilled() ? "" : "display:none")">
+                                                <img id="@(field.FieldName)_Preview" src="@Model.EditedRow.GetPropertyValue(field.FieldName)" style="max-width: 300px" />
+                                                <br />
+                                                <br />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div id="@(field.FieldName)_CellFile" style="@((Model.EditedRow.GetPropertyValue(field.FieldName) ?? "").ToString().IsFilled() ? "" : "display:none")">
+                                                <a style="font-weight: bold;" id="@(field.FieldName)_PreviewFile" target="_blank" href="@Model.EditedRow.GetPropertyValue(field.FieldName)">@Model.EditedRow.GetPropertyValue(field.FieldName)</a>
+                                                <br />
+                                                <br />
+                                            </div>
+                                        }
+                                        @Html.TextBox(field.FieldName + "_Input", "", new { @class = "file-img-upload", type = "file", name = field.FieldName + "_Input", path = field.AdditionalData.IsNullOrEmpty() ? "/content/Catalog/" : field.AdditionalData })
+                                        @Html.Hidden(field.FieldName, (Model.EditedRow.GetPropertyValue(field.FieldName) ?? "").ToString(), new { isimg = field.AdditionalTypeFlag ? "1" : "0" })
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.TextEditor)
+                                    {
+                                        <div class="text-editor-cell @((Model.EditedRow.GetPropertyValue(field.FieldName) ?? "").ToString().Trim().Length == 0?"empty":"filled")" style="min-width: 950px">
+                                            <div class="show-text-editor" onclick="showTextEditor(this);" style="clear:both; overflow: hidden"><span style="border-bottom: 1px dotted gray; cursor: pointer; float: left; margin-right: 10px; display: block;">Показать редактор</span><span class="image-down" style="float: left"></span></div>
+                                            <div class="hidden-text-editor" style="display: none">
+                                                <iframe id="EditorFrame_@field.FieldName" style="height: 600px!important" frameborder="0" src="@UniversalEditorSettings.GetTelerikEditorFrame(Model.Settings.TableName, field.FieldName, Model.Settings.UIDColumnName, Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName).ToString())" width="100%" height="600px"></iframe>
+                                                @*<textarea arg="@Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName)" class="text-editor" name="@field.FieldName" id="@field.FieldName" style="display: none!important">@(Model.EditedRow.GetPropertyValue(field.FieldName) ?? "")</textarea>*@
+                                                @Html.TextArea(field.FieldName, (Model.EditedRow.GetPropertyValue(field.FieldName) ?? "").ToString(), new { @class = "text-editor", style = "display: none", arg = Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName) })
+                                            </div>
+                                        </div>
+
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.TreeEditor)
+                                    {
+                                        @Html.Hidden(field.FieldName, field.TreeDataSource.Values)
+                                        @*<div class="sidebarMenuHolder">*@
+                                        <div class="JStree" style="text-align: left">
+                                            <div id="@(field.TreeDataSource.Name + "_Tree")">
+                                            </div>
+                                        </div>
+                                        /*</div>*/
+                                        <script type="text/javascript">
+                                            var single = '@(field.AdditionalDataObject)' == '1';
+                                            var uncheck_trig = false;
+                                            function loadTree_@(field.TreeDataSource.Name)() {
+                                                $.getJSON('@(field.TreeDataSource.DataLink)', {}, function (res) {
+
+                                                    //$('#UF input[type="submit"]').attr('disabled', 'disabled');
+
+                                                    $('#@(field.TreeDataSource.Name + "_Tree")').jstree({
+                                                        "plugins": [
+                                                            "themes", "json_data", "ui", /*"cookies",*/ "checkbox"
+                                                        ],
+                                                        "cookies": {
+
+                                                            "save_selected": "node_selected_ued1",
+                                                            "save_opened": "node_opened_ued1",
+
+                                                            "cookie_options": { expires: 365 }
+                                                        },
+                                                        "checkbox": {
+                                                            "two_state": true
+                                                        },
+
+                                                        /* "themes": {
+                                                             "theme": "apple",
+                                                             "url": "/Content/themes/apple/style.css"
+                                                         },*/
+                                                        "json_data": { "data": res, "progressive_render": true }
+                                                    }).bind("loaded.jstree", function (event, data) {
+
+                                                        /*
+                                                                                                                var depth = 1;
+                                                                                                                data.inst.get_container().find('li').each(function (i) {
+                                                                                                                    if (data.inst.get_path($(this)).length <= depth) {
+                                                                                                                        data.inst.open_node($(this));
+
+                                                                                                                    }
+                                                                                                                });
+
+                                                        */
+                                                        //$(this).jstree('close_all');
+                                                        //$('#UF input[type="submit"]').removeAttr('disabled');
+                                                        //data.instance.open_all();
+
+
+                                                    }).bind("check_node.jstree", function (event, data) {
+                                                        if (single) {
+                                                            var sections = $('#@(field.TreeDataSource.Name + "_Tree")').jstree("get_checked", null, true);
+                                                            uncheck_trig = true;
+                                                            sections.each(function () {
+
+                                                                if ($(this).attr('id') != data.rslt.obj.attr('id'))
+                                                                    $('#@(field.TreeDataSource.Name + "_Tree")').jstree("uncheck_node", this);
+
+                                                            });
+                                                            uncheck_trig = false;
+                                                            $('#@(field.FieldName)').val(data.rslt.obj.attr('id').replace('x', '').replace('c', '').replace('p', ''));
+                                                        }
+
+                                                    }).bind("uncheck_node.jstree", function (event, data) {
+                                                        if (single) {
+                                                            //uncheck_trig = true;
+                                                            console.log(data);
+                                                            if (!uncheck_trig)
+                                                                $('#@(field.TreeDataSource.Name + "_Tree")').jstree("check_node", data.rslt.obj);
+                                                            //uncheck_trig = false;
+
+                                                        }
+                                                    });
+
+                                                    //$('#@(field.TreeDataSource.Name + "_Tree")').jstree("open_all");
+                                                });
+                                            }
+
+                                            $(document).ready(function () {
+
+                                                $('#UF input[type="submit"]').click(function () {
+                                                    var sections = '';
+                                                    try {
+                                                        sections = $('#@(field.TreeDataSource.Name + "_Tree")').jstree("get_checked", null, true);
+                                                    } catch (e) {
+
+                                                    }
+
+                                                    if (!sections.length && !$('#@(field.FieldName)').val().length) {
+                                                        alert('@(field.TreeDataSource.Message)');
+                                                        return false;
+                                                    }
+                                                    var sectionsPlain = '';
+                                                    sections.each(function () {
+                                                        if (sectionsPlain.length) {
+                                                            sectionsPlain += ";";
+                                                        }
+                                                        if ($(this).attr('id').indexOf('_Tree') < 0) {
+                                                            sectionsPlain += $(this).attr('id').replace('x', '').replace('c', '').replace('p', '');
+                                                        }
+                                                    });
+                                                    if (sectionsPlain && sectionsPlain.length)
+                                                        $('#@(field.FieldName)').val(sectionsPlain);
+                                                    return true;
+                                                });
+                                                loadTree_@(field.TreeDataSource.Name)();
+                                            });
+
+                                        </script>
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.ProductSelect)
+                                    {
+                                        var pds = field.TreeDataSource as TreeProductDataSource;
+                                        <h5>@pds.Message</h5>
+                                        <div class="sidebarMenuHolder" style="width: 45%; float: left">
+                                            <div class="JStree" style="text-align: left">
+                                                <div id="@(field.TreeDataSource.Name + "_Tree")">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sidebarItems">
+                                        </div>
+
+                                        <script type="text/javascript">
+                                            function loadTree_@(field.TreeDataSource.Name)() {
+                                                $.getJSON('@(field.TreeDataSource.DataLink)', {}, function (res) {
+
+                                                    var tree = $('#@(field.TreeDataSource.Name + "_Tree")').jstree({
+                                                        "plugins": [
+                                                            "themes", "json_data", "ui", "cookies"
+                                                        ],
+                                                        "cookies": {
+
+                                                            "save_selected": "node_selected_ued",
+                                                            "save_opened": "node_opened_ued",
+                                                            "cookie_options": { expires: 365 }
+                                                        },
+                                                        "json_data": { "data": res, "progressive_render": true }
+                                                    }).bind("select_node.jstree", function (e, data) {
+                                                        var link = '@pds.ItemsDataHandler?group=' + "@pds.GroupName&cat=" + data.rslt.obj.attr('id').substr(1);
+                                                        $('.sidebarItems').html('');
+                                                        $.get(link, function (data) {
+                                                            for (var i = 0; i < data.length; i++) {
+                                                                var item = data[i];
+                                                                $('.sidebarItems').append('<div class="pc"><label><input type="checkbox" arg="' + item.ID + '" ' + item.Checked + '/>' + item.Name + '</label></div>');
+                                                            }
+                                                            $('.sidebarItems input').change(function () {
+                                                                $.post('@pds.SaveDataHandler?group=@pds.GroupName&item=' + $(this).attr('arg') + '&status=' + ($(this).is(':checked') ? '1' : '0'), function (d) {
+
+                                                                });
+                                                            });
+                                                        });
+
+
+                                                    }).bind("loaded.jstree", function (event, data) {
+
+
+                                                        var depth = 1;
+                                                        data.inst.get_container().find('li').each(function (i) {
+                                                            if (data.inst.get_path($(this)).length <= depth) {
+                                                                data.inst.open_node($(this));
+                                                            }
+                                                        });
+
+                                                    });
+                                                });
+                                            }
+                                            $(document).ready(function () {
+                                                $('#UF input[type="submit"]').click(function () {
+                                                    var sections = $('#@(field.TreeDataSource.Name + "_Tree")').jstree("get_checked", null, true);
+                                                    if (!sections.length) {
+                                                        alert('@(field.TreeDataSource.Message)');
+                                                        return false;
+                                                    }
+                                                    var sectionsPlain = '';
+                                                    sections.each(function () {
+                                                        sectionsPlain += $(this).attr('id').replace('x', '') + ";";
+                                                    });
+                                                    $('#@(field.FieldName)').val(sectionsPlain);
+                                                    return true;
+                                                });
+                                                loadTree_@(field.TreeDataSource.Name)();
+                                            });
+
+                                        </script>
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.TagBox)
+                                    {
+                                        <input rel="tags" name="@field.FieldName" id="@field.FieldName" value="@(Model.EditedRow.GetPropertyValue(field.FieldName) ?? "")" />
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.RelatedTable)
+                                    {
+                                        <input type="hidden" name="@field.FieldName" />
+                                        <div id="@(field.FieldName)_Cell" rel="ht" data-link="@field.AdditionalData"></div>
+                                        <script type="text/javascript">
+                                            $(document).ready(function () {
+                                                $('#UF input[type="submit"]').click(function () {
+                                                    $('#@(field.FieldName)').val(getJsonChars('#@(field.FieldName)_Cell'));
+                                                    return true;
+                                                });
+
+                                                function getJsonChars(id) {
+
+                                                    var cnt = 0;
+                                                    var tbl = $(id).find('.inline-edit tr');
+                                                    var arr = new Array();
+                                                    tbl.each(function () {
+                                                        if (cnt > 0 && cnt < tbl.length - 1) {
+                                                            var cells = $(this).find('td input');
+                                                            var line = new Array();
+                                                            cells.each(function () {
+                                                                if ($(this).is(':checkbox')) {
+                                                                    line.push($(this).is(':checked'));
+                                                                } else {
+                                                                    line.push($(this).val());
+                                                                }
+                                                            });
+                                                            cells.each(function () {
+                                                                if ($(this).not(':checkbox') && $(this).attr('old') && $(this).attr('old').length) {
+                                                                    line.push($(this).attr('old'));
+                                                                }
+                                                            });
+                                                            arr.push(line);
+                                                        }
+                                                        cnt++;
+                                                    });
+
+                                                    console.log(arr);
+                                                    //console.log(JSON.stringify(arr));
+                                                    $('input[name="' + id.replace('_Cell', '').replace('#', '') + '"]').val(JSON.stringify(arr));
+
+                                                }
+                                            });
+                                        </script>
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.Custom && !Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName).Equals(0))
+                                    {
+                                        <iframe src="@field.AdditionalData" width="100%" height="800px" frameborder="0" scrolling="no"></iframe>
+                                    }
+                                    else if (field.FieldType == UniversalEditorFieldType.CatalogSlider || field.FieldType == UniversalEditorFieldType.ProductSlider || field.FieldType == UniversalEditorFieldType.CatalogVideo)
+                                    {
+
+                                        <div class="modul">
+                                            <div class="cell-head">
+                                                <table class="cell-controlls">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                @if (field.FieldType == UniversalEditorFieldType.CatalogSlider || field.FieldType == UniversalEditorFieldType.ProductSlider)
+                                                                {
+                                                                    @Html.Raw("Слайдер")
+                                                                }
+                                                                else if (field.FieldType == UniversalEditorFieldType.CatalogVideo)
+                                                                {
+                                                                    @Html.Raw("Видео")
+                                                                }
+
+                                                            </td>
+                                                            <td>
+                                                                @if (field.FieldType == UniversalEditorFieldType.CatalogSlider || field.FieldType == UniversalEditorFieldType.ProductSlider)
+                                                                {
+                                                                    <div class="contr-group">
+                                                                        <a href="#" onclick="deleteCatalogSlider(@Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName), '@(field.FieldType == UniversalEditorFieldType.CatalogSlider ? "catalog":"product")'); return false;" title="Удалить слайдер" class="delpage"></a>
+                                                                        <a onclick="return showModulEdit('Slider', 'TableEditors', 0, 0, @(field.FieldType == UniversalEditorFieldType.CatalogSlider ? Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName):0), @(field.FieldType == UniversalEditorFieldType.ProductSlider ? Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName):0));" href="#" class="editpage" title="Редактировать слайдер"></a>
+                                                                    </div>
+
+                                                                }
+                                                                else if (field.FieldType == UniversalEditorFieldType.CatalogVideo)
+                                                                {
+                                                                    <div class="contr-group">
+                                                                        <a href="#" onclick="deleteCatalogVideo(@Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName), 'catalog'); return false;" title="Удалить видео" class="delpage"></a>
+                                                                        <a onclick="return showModulEdit('VideoEditor', 'TableEditors', 0, 0, @Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName), 0);" href="#" class="editpage" title="Редактировать видео"></a>
+
+                                                                    </div>
+
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                            <div class="cell-content">
+                                                @if (field.FieldType == UniversalEditorFieldType.CatalogSlider || field.FieldType == UniversalEditorFieldType.ProductSlider)
+                                                {
+                                                    @Html.Raw(" Слайдер с изображениями, меняющимися через определенный интервал времени")
+                                                }
+                                                else if (field.FieldType == UniversalEditorFieldType.CatalogVideo)
+                                                {
+                                                    @Html.Raw("Список видеороликов для отображения в описании категории")
+                                                }
+
+
+
+                                            </div>
+                                        </div>
+
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                    count++;
+            }
+
+        </div>
+
+        <br />
+        
+      
+        
+        <div class="dialog-text-edit-cell">
+            <div id="dialog-text-edit" style="display: none">
+                <div class="dt">
+                    <span>Редактирование текста</span>
+                    <div class="btnss">
+                        <a onclick="refreshText(this); return false;" title="Обновить содержимое" class="reload-button"></a>
+                        <a onclick="showFullScreen(this); return false;" title="На весь экран" class="expand-button"></a>
+                        <a onclick="closeDialog(this); return false;" title="Закрыть окно" class="close-button"></a>
+                    </div>
+                </div>
+                <div class="editor">
+                    <div class="edit-text-cell">
+                        <div id="PopupText"></div>
+                    </div>
+                    <input type="submit" style="float: left; margin-left: 5px; background-color: lightcoral; background-image: none;" href="javascript:void(0);" id="btn-cancel" onclick="$('#dialog-text-edit').dialog('close')" class="btn" value="Отмена" />
+                    <input type="submit" style="float: right; margin-right: 5px;" id="btn-save" onclick="saveText(); return false;" class="btn" value="Сохранить" />
+                </div>
+            </div>
+
+            <style>
+                .ui-dialog .ui-dialog-content {
+                    border: #9CBCE6 5px solid;
+                }
+
+                #dialog-text-edit {
+                    padding: 0;
+                }
+
+                .ui-dialog {
+                    border: #61708F 2px solid;
+                    border-radius: 0;
+                }
+
+                .ui-dialog .ui-dialog-titlebar {
+                    display: none;
+                }
+
+
+                .dt .btnss:hover {
+                    width: 108px;
+                    height: 22px;
+                }
+
+                .dt .btnss a {
+                    background-image: url('/content/admin/popup.gif');
+                }
+
+                .dt {
+                    background-color: #9CBCE6;
+                    width: 100%;
+                    height: 25px;
+                    margin-bottom: 10px;
+                }
+
+                .dt span {
+                    font-weight: bold;
+                    color: white;
+                    font-size: 14px;
+                    margin-top: 3px;
+                    display: inline-block;
+                }
+
+                .reload-button {
+                    /*background-position: -120px -20px;*/
+                    background-position: -120px 0px;
+                    border: 1px solid lightgray;
+                }
+
+                .reload-button:hover {
+                    background-position: -120px 0px;
+                    border: 1px solid black;
+                    border-radius: 2px;
+                    height: 18px;
+                    width: 28px;
+                }
+
+                .close-button {
+                    /*background-position: -90px -20px;*/
+                    background-position: -90px 0px;
+                    border: 1px solid lightgray;
+                }
+
+                .close-button:hover {
+                    background-position: -90px 0px;
+                    border: 1px solid black;
+                    border-radius: 2px;
+                    height: 18px;
+                    width: 28px;
+                }
+
+                .expand-button {
+                    /*background-position: -60px -20px;*/
+                    background-position: -60px 0px;
+                    border: 1px solid lightgray;
+                }
+
+                .expand-button:hover {
+                    background-position: -60px 0px;
+                    border: 1px solid black;
+                    border-radius: 2px;
+                    height: 18px;
+                    width: 28px;
+                }
+
+                .dt .btnss {
+                    float: right;
+                    clear: both;
+                    overflow: hidden;
+                    width: 108px;
+                    height: 22px;
+                }
+
+                .dt .btnss a {
+                    display: block;
+                    height: 20px;
+                    width: 30px;
+                    float: left;
+                    margin-left: 4px;
+                }
+            </style>
+        </div>
+        
+        
+        <input type="submit" class="btn" value="Сохранить" onclick="return checkAndToggle(this);" style="" />
+    }
+    @Html.Hidden("RedirectURL", Model.RedirectURL)
+    @Html.Hidden("IsPartial", Model.IsPartial ? "1" : "0")
+    @Html.Hidden("NewNode", Model.NewNode)
+
+    @if (Model.Settings.EditedFieldsList.Any(x => x.FieldType == UniversalEditorFieldType.TextEditor))
+    {
+
+    }
+
+    @if (Model.AddView != null && Model.AddView.InEditor)
+    {
+        @Html.Action(Model.AddView.Action, Model.AddView.Controller, Model.AddView.Routes)
+    }
+    @if (!Model.IsPartial)
+    {
+        <div class="backref">
+            @if (Request["BackOverride"] != null)
+            {
+                <a onclick="@(Model.IsPartial ? "loadByLink(this); return false;" : "return true;")" href="@HttpUtility.UrlDecode(Request["BackOverride"])">Назад к списку</a>
+            }
+            else
+            {
+                @Html.ActionLinkQuery("Назад к списку", Model.CallerAction, Model.CallerController, Model.FullParamList, Model.GetFullParamsValuesForList(), new { onclick = Model.IsPartial ? "loadByLink(this); return false;" : "return true;" })
+            }
+        </div>
+    }
+</div>

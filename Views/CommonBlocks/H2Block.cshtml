@@ -1,0 +1,6 @@
+﻿@{
+    var catalogBrowser = CatalogBrowser.Init();
+}
+<h2 class="inner-head">
+    @(Request.QueryString["filter"].IsNullOrEmpty()?(catalogBrowser.IsProductPage ? catalogBrowser.CurrentProduct.PageH2OrName : (catalogBrowser.IsCategoryPage && catalogBrowser.CurrentCategory.ID>1 ? catalogBrowser.CurrentCategory.PageSubHeader : AccessHelper.CurrentPageInfo.FullPageNameH2)):"Подбор товара")
+</h2>

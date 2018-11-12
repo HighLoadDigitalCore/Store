@@ -1,0 +1,47 @@
+﻿@model ShopCart  
+@if(Model.AllTypesCount>0)
+{
+    <div class="tabs">
+        <ul class="tabNavigation">
+            @if (Model.ActiveProducts.Any())
+            {
+                <li><a href="#first" class="one selected">Ваш заказ <span>(@Model.ActiveProducts.Sum(x=> x.Count))</span></a></li>
+            }
+            @if (Model.DelayesProducts.Any())
+            {
+                <li><a href="#second" class="two">Отложенные товары <span>(@Model.DelayesProducts.Sum(x=> x.Count))</span></a></li>
+            }
+            @if (Model.AbsentProducts.Any())
+            {
+                <li><a href="#third" class="three">Временно нет в продаже <span>(@Model.AbsentProducts.Sum(x=> x.Count))</span></a></li>
+            }
+        </ul>
+        <div id="first" style="display: block;">
+            @{ Html.RenderPartial("BookList", Model.ActiveProducts); }
+        </div>
+        <div id="second" style="display: none;">
+            @{ Html.RenderPartial("BookList", Model.DelayesProducts); }
+        </div>
+        <div id="third" style="display: none;">
+            @{ Html.RenderPartial("BookList", Model.AbsentProducts); }
+        </div>
+    </div>
+    <div class="tab-bottom">
+        <a class="left" href="/">Продолжить покупки</a>
+        @if(Model.ActiveProducts.Any())
+        {
+            <a class="right" href="/order?step=@(HttpContext.Current.User.Identity.IsAuthenticated?"2":"1")">Оформить заказ</a>
+        }
+    </div>
+}
+else
+{
+    
+    <div class="tabs" style="height: 100px">
+        <h2>Корзина заказов пуста.</h2>
+    </div>
+        <div class="tab-bottom">
+        <a class="left" href="/">Продолжить покупки</a>
+     
+    </div>
+}

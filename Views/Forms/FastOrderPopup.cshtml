@@ -1,0 +1,276 @@
+﻿@model FastOrderModel
+<div id="FeedBackPopup">
+    @using (Ajax.BeginForm("FastOrderPopup", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "FeedBackPopup" }))
+    {
+        <div id="el_modal_window">
+            <div class="modal_wrap_content">
+                <div>
+                    <div class="modal_window_content empty fast_order">
+                        <div class="suggest_wrapper">
+                            <h2>Оформить заказ</h2>
+                            @if (Model.ErrorText.IsFilled())
+                            {
+                                <div class="messages_alert">
+                                    <span>@Html.Raw(Model.ErrorText)</span>
+                                </div>
+                            }
+                            <div>
+                                <div class="suggest_type">
+                                    <label>
+                                        <input arg="1" onchange="setOrderForm(1);" type="radio" @(Model.Type == "Физическое лицо" ? "checked=\"checked\"" : "") value="Физическое лицо" name="Type" class="el_form"><div style="width: 112px">Физическое лицо</div>
+                                        <b class="thanks"></b>
+                                    </label>
+                                    <label>
+                                        <input arg="3" onchange="setOrderForm(3);" type="radio" @(Model.Type == "Регионы РФ:Физическое лицо" ? "checked=\"checked\"" : "") value="Регионы РФ:Физическое лицо" name="Type" class="el_form"><div><strong>Регионы РФ:</strong> Физическое лицо</div>
+                                        <b class="thanks"></b>
+                                    </label>
+
+                                </div>
+                                <div class="suggest_type">
+                                    <label>
+                                        <input arg="2" onchange="setOrderForm(2);" type="radio" @(Model.Type == "Юридическое лицо" ? "checked=\"checked\"" : "") value="Юридическое лицо" name="Type" class="el_form"><div>Юридическое лицо</div>
+                                        <b class="thanks"></b>
+                                    </label>
+
+                                    <label>
+                                        <input arg="4" onchange="setOrderForm(4);" type="radio" @(Model.Type == "Регионы РФ:Юридическое лицо" ? "checked=\"checked\"" : "") value="Регионы РФ:Юридическое лицо" name="Type" class="el_form"><div><strong>Регионы РФ:</strong> Юридическое лицо</div>
+                                        <b class="thanks"></b>
+                                    </label>
+                                </div>
+                                <div arg="1" @(Model.Type != "Физическое лицо" ? "style=display:none" : "")>
+                                    <label>
+                                        <span>Фамилия Имя Отчество <i class="req">*</i>:</span><input type="text" required="required" value="@Model.FullName" class="el_form" name="FullName">
+                                        <span class="help">Например: Петров Василий Сергеевич</span>
+                                    </label>
+                                    <label>
+                                        <span>Контактный телефон <i class="req">*</i>:</span><input type="text" required="required" value="@Model.Phone" class="el_form" name="Phone">
+                                        <span class="help">Например: 495 123 4567</span>
+                                    </label>
+
+                                    <label>
+                                        <span>Email <i class="req">*</i>:</span><input type="text" required="required" value="@Model.Email" class="el_form" name="Email">
+                                        <span class="help">Например: petrov@mail.ru</span>
+                                    </label>
+                                    <label>
+                                        <span>Адрес доставки <i class="req">*</i>:</span><textarea required="required" placeholder="" class="el_form" name="Address">@Model.Address</textarea>
+                                        <span class="help">Укажите адрес доставки, например: улица Дорожная,<br />
+                                            д.15/2, кв. 34. Домофон: 34#234</span>
+                                    </label>
+                                </div>
+                                <div arg="3" @(Model.Type != "Регионы РФ:Физическое лицо" ? "style=display:none" : "") class="double-cell">
+                                    <div class="col">
+                                        <label>
+                                            <span>Фамилия Имя Отчество <i class="req">*</i>:</span><input type="text" required="required" value="@Model.FullNameA" class="el_form" name="FullNameA">
+                                            <span class="help">Например: Петров Василий Сергеевич</span>
+                                        </label>
+                                        <label>
+                                            <span>Контактный телефон <i class="req">*</i>:</span><input type="text" required="required" value="@Model.PhoneA" class="el_form" name="PhoneA">
+                                            <span class="help">Например: 495 123 4567</span>
+                                        </label>
+
+                                        <label>
+                                            <span>Email <i class="req">*</i>:</span><input required="required" type="text" value="@Model.EmailA" class="el_form" name="EmailA">
+                                            <span class="help">Например: petrov@mail.ru</span>
+                                        </label>
+                                        <label>
+                                            <span>Адрес доставки <i class="req">*</i>:</span><textarea required="required" placeholder="" class="el_form" name="AddressA">@Model.AddressA</textarea>
+                                            <span class="help">Укажите адрес доставки, например: улица Дорожная,<br />
+                                                д.15/2, кв. 34. Домофон: 34#234</span>
+                                        </label>
+                                        <label>
+                                            <span>Жесткая обрешетка <i class="req">*</i>:</span>
+                                            <select name="TargetFixedA" class="el_form" style="margin-left: 0">
+                                                <option value="Да" @(Model.TargetFixedA == "Да" ? "selected" : "")>Да</option>
+                                                <option value="Нет" @(Model.TargetFixedA == "Нет" ? "selected" : "")>Нет</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label>
+                                            <span>Ф.И.О. конечного грузополучателя <i class="req">*</i>:</span><input type="text" required="required" value="@Model.TargetFullNameA" class="el_form" name="TargetFullNameA">
+                                            <span class="help">Например: Петров Василий Сергеевич</span>
+                                        </label>
+                                        <label>
+                                            <span>Паспортные данные <i class="req">*</i>:</span><input type="text" required="required" value="@Model.TargetPassA" class="el_form" name="TargetPassA">
+                                            <span class="help">Например: 12 34 567 890, ОВД р-на «Дмитровский», г. Москвы 21.06.1984</span>
+                                        </label>
+                                        <label>
+                                            <span>Адрес регистрации <i class="req">*</i>:</span><textarea required="required" placeholder="" class="el_form" name="TargetAddressA">@Model.TargetAddressA</textarea>
+                                            <span class="help">Например: улица Дорожная, д.15/2, кв. 34.</span>
+                                        </label>
+                                        <label>
+                                            <span>Транспортная компания:</span><input type="text" value="@Model.TargetTransA" class="el_form" name="TargetTransA">
+                                            <span class="help linklist">
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Автотрейдинг»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Грузовозов»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Деловые линии»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Желдорэкспедиция»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Стейл»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Байкал-Сервис»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Ир-Траст»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«ПЭК»</a>
+                                                <a href="#" onclick="return setField('TargetTransA', this)">«Энергия»</a></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div arg="2" @(Model.Type != "Юридическое лицо" ? "style=display:none" : "") class="double-cell">
+                                    <div class="col">
+                                        <label>
+                                            <span>Наименование организации <i class="req">*</i>:</span><input type="text" required="required" value="@Model.OrgName" class="el_form" name="OrgName">
+                                            <span class="help">Например: ООО ВАСИЛЁК</span>
+                                        </label>
+                                        <label>
+                                            <span>Контактное лицо <i class="req">*</i>:</span><input type="text" required="required" value="@Model.OrgPerson" class="el_form" name="OrgPerson">
+                                            <span class="help">Например: Петров Василий Сергеевич</span>
+                                        </label>
+                                        <label>
+                                            <span>Телефон контактного лица <i class="req">*</i>:</span><input type="text" required="required" value="@Model.OrgPhone" class="el_form" name="OrgPhone">
+                                            <span class="help">Например: 495 123 4567</span>
+                                        </label>
+                                        <label>
+                                            <span>Email контактного лица <i class="req">*</i>:</span><input type="text" placeholder="" required="required" value="@Model.OrgMail" class="el_form" name="OrgMail">
+                                            <span class="help">Например: mycompany@mail.ru</span>
+                                        </label>
+                                        <label>
+                                            <span>ИНН <i class="req">*</i>:</span><input type="text" placeholder="" required="required" value="@Model.OrgINN" class="el_form" name="OrgINN">
+                                            <span class="help">Например: 7705590489</span>
+                                        </label>
+                                        <label>
+                                            <span>КПП:</span><input type="text" placeholder="" value="@Model.OrgKPP" class="el_form" name="OrgKPP">
+                                            <span class="help">Например: 770501001</span>
+                                        </label>
+                                        <label>
+                                            <span>ОКПО:</span><input type="text" placeholder="" value="@Model.OrgOKPO" class="el_form" name="OrgOKPO">
+                                            <span class="help">Например: 180757612</span>
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label>
+                                            <span>Корр счет <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgKorr" class="el_form" name="OrgKorr">
+                                            <span class="help">Например: 30101810300000000123</span>
+                                        </label>
+                                        <label>
+                                            <span>Расчетный счет <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgAccount" class="el_form" name="OrgAccount">
+                                            <span class="help">Например: 40702810900090003684</span>
+                                        </label>
+                                        <label>
+                                            <span>Наименование банка <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgBankName" class="el_form" name="OrgBankName">
+                                            <span class="help">Например: КБ Банк Новый (ЗАО)</span>
+                                        </label>
+                                        <label>
+                                            <span>БИК банка <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgBik" class="el_form" name="OrgBik">
+                                            <span class="help">Например: 044552591</span>
+                                        </label>
+                                        <label>
+                                            <span>Юридический адрес <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgJurAddr" class="el_form" name="OrgJurAddr">
+                                            <span class="help">Например: 112142, г.Москва, ул. Дорожная, д.15/2</span>
+                                        </label>
+                                        <label>
+                                            <span>Фактический адрес <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgFaktAddr" class="el_form" name="OrgFaktAddr">
+                                            <span class="help">Например: 112142, г.Москва, ул. Дорожная, д.15/2</span>
+                                        </label>
+                                        <label>
+                                            <span>Адрес доставки <i class="req">*</i>:</span><textarea required="required" placeholder="" class="el_form" name="OrgDelivAddr">@Model.OrgDelivAddr</textarea>
+                                            <span class="help">Укажите адрес доставки, например: улица Дорожная,<br />
+                                                д.15/2, кв. 34. Домофон: 34#234</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div arg="4" @(Model.Type != "Регионы РФ:Юридическое лицо" ? "style=display:none" : "") class="double-cell">
+                                    <div class="col">
+                                        <label>
+                                            <span>Наименование организации <i class="req">*</i>:</span><input type="text" required="required" value="@Model.OrgNameB" class="el_form" name="OrgNameB">
+                                            <span class="help">Например: ООО ВАСИЛЁК</span>
+                                        </label>
+                                        <label>
+                                            <span>Контактное лицо <i class="req">*</i>:</span><input type="text" required="required" value="@Model.OrgPersonB" class="el_form" name="OrgPersonB">
+                                            <span class="help">Например: Петров Василий Сергеевич</span>
+                                        </label>
+                                        <label>
+                                            <span>Телефон контактного лица <i class="req">*</i>:</span><input type="text" required="required" value="@Model.OrgPhoneB" class="el_form" name="OrgPhoneB">
+                                            <span class="help">Например: 495 123 4567</span>
+                                        </label>
+                                        <label>
+                                            <span>Email контактного лица <i class="req">*</i>:</span><input type="text" placeholder="" required="required" value="@Model.OrgMailB" class="el_form" name="OrgMailB">
+                                            <span class="help">Например: mycompany@mail.ru</span>
+                                        </label>
+                                        <label>
+                                            <span>Ф.И.О. конечного грузополучателя <i class="req">*</i>:</span><input type="text" placeholder="" required="required" value="@Model.OrgTargetPersonB" class="el_form" name="OrgTargetPersonB">
+                                            <span class="help">Например:Петров Василий Сергеевич</span>
+                                        </label>
+                                        <label>
+                                            <span>Паспортные данные <i class="req">*</i>:</span><input type="text" placeholder="" required="required" value="@Model.OrgTargetPassB" class="el_form" name="OrgTargetPassB">
+                                            <span class="help">Например: 12 34 567 890, ОВД р-на «Дмитровский»,
+                                                <br />
+                                                г. Москвы 21.06.1984</span>
+                                        </label>
+
+                                        <label>
+                                            <span>ИНН <i class="req">*</i>:</span><input type="text" placeholder="" required="required" value="@Model.OrgINNB" class="el_form" name="OrgINNB">
+                                            <span class="help">Например: 7705590489</span>
+                                        </label>
+                                        <label>
+                                            <span>КПП:</span><input type="text" placeholder="" value="@Model.OrgKPPB" class="el_form" name="OrgKPPB">
+                                            <span class="help">Например: 770501001</span>
+                                        </label>
+                                        <label>
+                                            <span>ОКПО:</span><input type="text" placeholder="" value="@Model.OrgOKPOB" class="el_form" name="OrgOKPOB">
+                                            <span class="help">Например: 180757612</span>
+                                        </label>
+                                    </div>
+                                    <div class="col">
+                                        <label>
+                                            <span>Корр счет <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgKorrB" class="el_form" name="OrgKorrB">
+                                            <span class="help">Например: 30101810300000000123</span>
+                                        </label>
+                                        <label>
+                                            <span>Расчетный счет <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgAccountB" class="el_form" name="OrgAccountB">
+                                            <span class="help">Например: 40702810900090003684</span>
+                                        </label>
+                                        <label>
+                                            <span>Наименование банка <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgBankNameB" class="el_form" name="OrgBankNameB">
+                                            <span class="help">Например: КБ Банк Новый (ЗАО)</span>
+                                        </label>
+                                        <label>
+                                            <span>БИК банка <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgBikB" class="el_form" name="OrgBikB">
+                                            <span class="help">Например: 044552591</span>
+                                        </label>
+                                        <label>
+                                            <span>Юридический адрес <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgJurAddrB" class="el_form" name="OrgJurAddrB">
+                                            <span class="help">Например: 112142, г.Москва, ул. Дорожная, д.15/2</span>
+                                        </label>
+                                        <label>
+                                            <span>Фактический адрес <i class="req">*</i>:</span><input placeholder="" type="text" required="required" value="@Model.OrgFaktAddrB" class="el_form" name="OrgFaktAddrB">
+                                            <span class="help">Например: 112142, г.Москва, ул. Дорожная, д.15/2</span>
+                                        </label>
+                                        <label>
+                                            <span>Адрес доставки <i class="req">*</i>:</span><textarea required="required" placeholder="" class="el_form" name="OrgDelivAddrB">@Model.OrgDelivAddrB</textarea>
+                                            <span class="help">Укажите адрес доставки, например: улица Дорожная,<br />
+                                                д.15/2, кв. 34. Домофон: 34#234</span>
+                                        </label>
+                                          <label>
+                                            <span>Транспортная компания:</span><input type="text" value="@Model.OrgTargetTransB" class="el_form" name="OrgTargetTransB">
+                                            <span class="help linklist">
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Автотрейдинг»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Грузовозов»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Деловые линии»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Желдорэкспедиция»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Стейл»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Байкал-Сервис»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Ир-Траст»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«ПЭК»</a>
+                                                <a href="#" onclick="return setField('OrgTargetTransB', this)">«Энергия»</a></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <button style="margin-top: 20px" class="el_form btn btn_green send_button" onclick="return DoAjaxPostAndMore(this);" type="submit">Отправить</button>
+                            </div>
+                        </div>
+                        <a class="modal_window_close icon_close" href="#nogo" onclick="return closeDialog(this);"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

@@ -1,0 +1,188 @@
+﻿@{
+    AccessHelper.Repository.Clear();
+}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    @if (SiteSetting.Get<string>("FavIcon").IsFilled())
+    {
+        <link rel="SHORTCUT ICON" href="@(SiteSetting.Get<string>("FavIcon"))">
+    }
+    else
+    {
+        <link rel="shortcut icon" href="/content/photon/favicon.ico" />
+    }
+    <!--    DEVELOPMENT LESS -->
+    <!--          <link rel="stylesheet/less" href="/content/photon/css/photon.less" media="all" />
+            <link rel="stylesheet/less" href="/content/photon/css/photon-responsive.less" media="all" /> -->
+    <!--    PRODUCTION CSS -->
+    <link rel="stylesheet" href="/content/photon/css/css/photon.css" media="all" />
+    <link rel="stylesheet" href="/content/photon/css/css/photon-pt2.css" media="all" />
+
+    @*<link rel="stylesheet" href="/content/photon/css/css/photon-responsive.css" media="all" />*@
+
+    <!--[if IE]>
+            <link rel="stylesheet" type="text/css" href="/content/photon/css/css_compiled/ie-only-min.css" />
+
+
+        <![endif]-->
+    <!--[if lt IE 9]>
+            <link rel="stylesheet" type="text/css" href="/content/photon/css/css_compiled/ie8-only-min.css" />
+            <script type="text/javascript" src="/content/photon/js/plugins/excanvas.js"></script>
+            <script type="text/javascript" src="/content/photon/js/plugins/html5shiv.js"></script>
+            <script type="text/javascript" src="/content/photon/js/plugins/respond.min.js"></script>
+            <script type="text/javascript" src="/content/photon/js/plugins/fixFontIcons.js"></script>
+        <![endif]-->
+    @*
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+    *@
+    <script type="text/javascript" src="/Scripts/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery-ui-1.10.3.min.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/tinymce/tinymce.min.js"></script>*@
+    
+    
+    <script type="text/javascript" src="/content/photon/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/modernizr.custom.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.pnotify.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/less-1.3.1.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/xbreadcrumbs.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.maskedinput-1.3.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.autotab-1.1b.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/charCount.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.textareaCounter.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/elrte.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/elrte.en.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/select2.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery-picklist.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.form.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.metadata.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.mockjax.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.uniform.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.tagsinput.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.rating.pack.js"></script>
+    @*<script type="text/javascript" src="/content/photon/js/plugins/farbtastic.js"></script>*@
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.timeentry.min.js"></script>
+    @*<script type="text/javascript" src="/content/photon/js/plugins/jquery.dataTables.min.js"></script>*@
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.jstree.js"></script>
+    @*<script type="text/javascript" src="/content/photon/js/plugins/dataTables.bootstrap.js"></script>*@
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.mousewheel.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.mCustomScrollbar.js"></script>
+    @*
+        <script type="text/javascript" src="/content/photon/js/plugins/jquery.flot.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/jquery.flot.stack.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/jquery.flot.pie.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/jquery.flot.resize.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/raphael.2.1.0.min.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/justgage.1.0.1.min.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/jquery.qrcode.min.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/jquery.clock.js"></script>
+        <script type="text/javascript" src="/content/photon/js/plugins/jquery.countdown.js"></script>
+    *@
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.jqtweet.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/bootstrap-fileupload.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/prettify/prettify.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/bootstrapSwitch.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/mfupload.js"></script>
+
+    <script type="text/javascript" src="/content/photon/js/common.js"></script>
+
+
+    <script type="text/javascript" src="/Scripts/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="/Scripts/modernizr-2.6.2.js"></script>
+
+
+    @*<script type="text/javascript" src="/Scripts/jquery.validate.min.js"></script>*@
+    <script type="text/javascript" src="/content/photon/js/plugins/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="/content/photon/js/plugins/additional-methods.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="/Scripts/FileUpload/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/Scripts/FileUpload/jquery.fileuploadui.js"></script>
+    <script type="text/javascript" src="/Scripts/FileUpload/jquery.iframe-transport.js"></script>
+    <script type="text/javascript" src="/Scripts/FileUpload/jquery.upload-init.js"></script>
+    @*<script type="text/javascript" src="/Content/ckeditor/ckeditor.js"></script>*@
+    
+    <script type="text/javascript" src="/Scripts/urltranslitter.js"></script>
+    <script type="text/javascript" src="/Scripts/master.js?v=3"></script>
+    <script type="text/javascript" src="/Scripts/group-toggler.js"></script>
+      
+    <script type="text/javascript" src="~/Scripts/tinymce/tinymce.min.js"></script>
+    
+    @RenderSection("scripts", required: false)
+</head>
+
+<body class="@AccessHelper.MasterPanel.BodyCSS">
+@Html.Partial("_MasterLeftMenu")
+<table class="container-tbl">
+    <tr>
+        @if (IsSectionDefined("LeftTab"))
+        {
+            <td id="side" class="side">
+                <div class="side1">
+                    <div class="side2">
+                        <input id="CatPageID" value="@((CatalogBrowser.ParentPage ?? new CMSPage()).ID)" type="hidden"/>
+                        @RenderSection("LeftTab", false)
+                    </div>
+                </div>
+            </td>
+            <td class="resize">
+                <div>
+                </div>
+            </td>
+        }
+        <td class="content">
+            <div class="content1">
+                <div class="title">
+                    <div class="title-in">
+                        <div class="title-in1">
+                            <h1>
+                                <img class="ico-page" alt="" src="/content/admin/ico-page.png">
+                                <span id="pageHeader"> @RenderSection("Header", false)</span>
+                                <small id="pageDescription">@RenderSection("Description", false)</small>
+                            </h1>
+                            @if (IsSectionDefined("Preview"))
+                            {
+                                @RenderSection("Preview", false)
+                            }
+                            else
+                            {
+                                <a class="previewsite preview-link" target="_blank" id="pageView" href="/"><img src="/content/admin/eye-pict.png">Посмотреть на сайте</a>
+                            }
+
+                        </div>
+                        @*<div class="secondary-nav" id="ctl00_PlhTitle_ctl00_contentMenu"><span><i>Редактирование</i></span><a href="/atilektcms/default.aspx?page=73" id="ctl00_PlhTitle_ctl00_act_1"><i>Настройки раздела</i></a><a href="/atilektcms/default.aspx?struct=73" id="ctl00_PlhTitle_ctl00_act_2"><i>Структура раздела</i></a></div>*@
+                    </div>
+                </div>
+                <table class="content2">
+                    <tr>
+                        <td class="content2-l">
+                            <div id="PageContent">
+                                @RenderBody()
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table class="footer">
+              @*  <tbody>
+                <tr>
+                    <td>
+
+                        &copy; @DateTime.Now.Year Разработка &mdash; <a href="http://kermi-fko.ru/">Группа компаний «Kermi-Fko»</a>
+                    </td>
+                    <td class="r">
+                        версия 9.0
+                    </td>
+                </tr>
+                </tbody>*@
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

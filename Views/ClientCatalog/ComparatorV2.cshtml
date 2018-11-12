@@ -1,0 +1,7 @@
+﻿@model Comparator
+<div class="compare @Model.CSS compc2" >
+    <label class="cb-checkbox cb-sm">
+        <input @(Model.InCompare ? "checked=checked" : "") type="checkbox" arg="@Model.ID" title="@Model.Text" />Добавить к сравнению
+    </label>
+    
+</div>

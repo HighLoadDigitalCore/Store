@@ -1,0 +1,194 @@
+﻿@{
+    ViewBag.Title = "Связанные товары";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+@section Header{
+    Связи категорий
+}
+@section Description
+{
+    @*Выберите товар в каталоге, затем отметьте какие товары вы хотите добавить в соответствующие блоки*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+<div id="message"></div>
+<div class="base-product" style="width: 45%">
+    <h2>
+        <small>Шаг 1. Выберите категорию:</small>
+    </h2>
+    <div class="sidebarMenuHolder" style="width: 100%; height: 500px">
+        <div class="JStree" style="text-align: left;">
+            <div id="tree-inner">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="base-product-right" style="display: none; width: 45%">
+    <h2>
+        <small>Шаг 2. Выберите товары для блока:</small>
+    </h2>
+    <div class="controls">
+        <select id="selector">
+            <option value="recomend" selected="selected">Рекомендуем купить</option>
+            <option value="related">С этим товаром покупают</option>
+            <option value="similar">Похожие товары</option>
+        </select>
+    </div>
+    <div class="sidebarMenuHolderRight" style="width: 100%; margin-bottom: 20px; height: 280px;">
+        <div class="JStree" style="text-align: left;">
+            <div id="tree-choise">
+            </div>
+        </div>
+    </div>
+    <div class="choosed-prods" style="display: none; width: 95%">
+
+    </div>
+    <br />
+    <input type="submit" class="btn" value="Сохранить" style="margin-left: 0" />
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        var rightTreeID;
+        $(document).ready(function () {
+            loadInnerTree();
+            $('#selector').change(function () {
+                if (rightTreeID) {
+                    loadRightTree(rightTreeID);
+                }
+            });
+            $('.btn').click(function () {
+                if (rightTreeID) {
+                    var choosed = ';';
+                    $('.choosed-prods span').each(function () {
+                        choosed += $(this).attr('arg') + ';';
+                    });
+                    $.post('@(Url.Action("saveRelationsCategory", "ClientCatalog"))', { baseID: rightTreeID, choosed: choosed, group: $('#selector').val() }, function (d) {
+                        $('#message').html('<div class="control-group row-fluid"><div class="span12 span-inset"><div class="alert alert-block"><i class="icon-alert icon-alert-info"></i><button type="button" class="close" data-dismiss="alert">×</button><strong>Данные сохранены</strong></div></div></div>')
+                    });
+                }
+            });
+        });
+
+        function loadRightTree(product) {
+            try {
+                $('#message').html('');
+                $('#tree-choise').jstree('destroy');
+                $('#tree-choise').html('');
+                $.getJSON('@Url.Action("getTreeDataCategory", "ClientCatalog")', { category: product, selector: $('#selector').val() }, function (res) {
+                    $('.base-product-right').show();
+
+                    $('#tree-choise').jstree({
+
+                        "plugins": [
+                            "themes", "json_data", "ui", "cookies", "checkbox"
+                        ],
+                        "json_data": { "data": res, "progressive_render": true },
+                        "cookies": {
+                            "save_selected": "node_selected_crer",
+                            "save_opened": "node_opened_crer"
+                        },
+                    }).bind("change_state.jstree", function (e, data) {
+                        //var arr = new Array();
+                        //debugger;
+                        var thisChecked = data.inst.data.checkbox.last_selected.hasClass('jstree-checked');
+                        var checked_ids = [];
+                        $("#tree-choise").jstree("get_checked", null, true).each(function () {
+                            checked_ids.push(this.id);
+                        });
+                        var choosed = ';';
+                        $('.choosed-prods span').each(function () {
+                            choosed += $(this).attr('arg') + ';';
+                        });
+                        var checked = checked_ids.join(';');
+                        if (!checked)
+                            checked = ';';
+
+                        var removed = ';';
+                        if (!thisChecked) {
+                            removed = data.inst.data.checkbox.last_selected.attr('id');
+                        }
+
+                        $.get('@(Url.Action("getNewRelData", "ClientCatalog"))', { exist: ';', added: checked, removed: removed }, function (d) {
+                            $('.choosed-prods').html('');
+                            if (d.length) {
+                                $('.choosed-prods').show();
+                            } else {
+                                $('.choosed-prods').hide();
+                            }
+                            for (var i = 0; i < d.length; i++) {
+                                $('.choosed-prods').append('<span arg="' + d[i].ID + '">' + d[i].Name + '</span>');
+                            }
+
+                        });
+
+                    });
+                });
+                $.getJSON('@(Url.Action("getRelDataCategory", "ClientCatalog"))', { category: product, selector: $('#selector').val() }, function (res) {
+                    $('.choosed-prods').html('');
+                    if (res.length) {
+                        $('.choosed-prods').show();
+                    } else {
+                        $('.choosed-prods').hide();
+                    }
+                    for (var i = 0; i < res.length; i++) {
+                        $('.choosed-prods').append('<span arg="' + res[i].ID + '">' + res[i].Name + '</span>');
+                    }
+                });
+            } catch (e) {
+                loadRightTree(product);
+            }
+
+        }
+
+        function loadInnerTree() {
+            //$('#tree').jstree("destroy");
+            //debugger;
+            $.getJSON('@Url.Action("getTreeDataCategory", "ClientCatalog")', {}, function (res) {
+                $('#tree-inner').jstree({
+                    "plugins": [
+                        "themes", "json_data", "ui", "cookies"
+                    ],
+                    "json_data": { "data": res, "progressive_render": true },
+                    "cookies": {
+                        "save_selected": "node_selected_crel",
+                        "save_opened": "node_opened_crel"
+                    },
+                }).bind("select_node.jstree", function (e, data) {
+
+                    if (data.rslt.obj.attr('id').indexOf('x') >= 0) {
+                        rightTreeID = data.rslt.obj.attr('id').replace('x', '');
+                        loadRightTree(data.rslt.obj.attr('id').replace('x', ''));
+
+                    } else {
+                        $('.base-product-right').hide();
+                        rightTreeID = null;
+                    }
+                    /*
+                                        $('#tree li .btns').each(function () {
+                                            if ($(this).parents('li').attr('id') != data.rslt.obj.attr('id'))
+                                                $(this).css('display', 'none');
+                                        });
+                    */
+
+
+                });
+
+
+            });
+        }
+    </script>
+}

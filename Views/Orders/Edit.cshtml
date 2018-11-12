@@ -1,0 +1,219 @@
+﻿@using System.Configuration
+@model Order
+@{
+    ViewBag.Title = "Просмотр заказа";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+    Просмотр заказа
+}
+@section Description
+{
+    
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+<div class="filter-block">
+    @using (Html.BeginForm())
+    {
+        @Html.Partial("MessageBox")
+        <div class="form-legend">Информация о заказе @Model.ID.ToString("d5"):</div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">
+                    Номер заказа:
+                </label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    <b style="font-size: 11px">@Model.ID.ToString("d5")</b>
+                </div>
+            </div>
+        </div>  <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">
+                    Дата заказа:
+                </label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    <b style="font-size: 11px">@Model.CreateDate.ToString("d MMMM yyyy, HH:mm")</b>
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.Label("StatusID", "Статус заказа:", new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.DropDownListFor(model => model.StatusID, Model.StatusList)
+                    @Html.ValidationMessageFor(model => model.StatusID)
+                </div>
+            </div>
+        </div>
+        <div class="form-legend">Заказанные товары:</div>
+        <div class="control-group row-fluid">
+            <div class="span12" style="padding: 0 10px">
+
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="width: 150px"><b>Артикул</b></td>
+                            <td><b>Название</b></td>
+                            <td style="width: 100px"><b>Количество</b></td>
+                            <td style="width: 100px"><b>Цена</b></td>
+                            <td style="width: 100px"><b>Сумма</b></td>
+                        </tr>
+                        @foreach (var item in Model.OrderedProducts)
+                        {
+                            <tr class="separated">
+                                <td>
+                                    @Html.Raw(item.StoreProduct != null ? item.StoreProduct.Article : "---")
+
+                                </td>
+                                @if (item.StoreProduct != null)
+                                {
+                                    <td><a href="@item.StoreProduct.FullUrl" target="_blank">@item.StoreProduct.NameOrDef</a></td>
+                                }
+                                else
+                                {
+                                    <td>@item.ProductName</td>
+                                }
+                                <td>@item.Amount</td>
+                                <td>@item.SalePrice.ToNiceDigit()</td>
+                                <td>@item.Sum.ToNiceDigit()</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="5">
+                                <hr style="margin: 0" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="3"><b>Скидка на товары:&nbsp;@((Model.OrderDetail.DiscountCost ?? 0).ToNiceDigit()) руб.</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="3"><b>Итого к оплате:&nbsp;@Model.TotalSum.ToNiceDigit() руб.</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="form-legend">Информация о покупателе:</div>
+        <div class="control-group row-fluid">
+            <div class="span12">
+                <div class="controls">
+                    <table style="width: 100%;">
+
+                        <tr>
+                            <td style="width: 300px">
+                                <label class="control-label">
+                                    ФИО:
+                                </label>
+                            </td>
+                            <td><b>@Model.User.Profile.FullName</b></td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td style="width: 300px">
+                                <label class="control-label">E-mail:</label>
+                            </td>
+                            <td><b>@Model.User.Profile.Email</b></td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td style="width: 300px"><label class="control-label">Телефон:</label></td>
+                            <td><b>@Model.User.Phone</b></td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td style="width: 300px"><label class="control-label">Способ оплаты:</label></td>
+                            <td><b>Оплата наличными</b></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 300px"><label class="control-label">Товары в XLS:</label></td>
+                            <td><b><a href="/content/Orders/@(Model.ID).xls">скачать</a></b></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-legend">Информация о доставке:</div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+
+                <label class="control-label">Адрес доставки:</label>
+
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    <label class="control-label" style="padding-left: 0" id="addr-cell">
+                        <b>@Model.OrderDetail.Address</b>
+                    </label>
+                </div>
+            </div>
+        </div>
+        if (Model.OrderDetail.AddressEntry.ID > 0 && Model.OrderDetail.AddressEntry.Comment.IsFilled())
+        {
+            <div class="control-group row-fluid">
+                <div class="span3">
+
+                    <label class="control-label">Комментарии для службы доставки:</label>
+
+                </div>
+                <div class="span9">
+                    <div class="controls">
+                        <label class="control-label" style="padding-left: 0">
+                            <b>@Model.OrderDetail.AddressEntry.Comment</b>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        }
+        if (Model.OrderDetail.AddressEntry.ID > 0)
+        {
+            <div class="control-group row-fluid">
+                <div class="span3">
+
+                    <label class="control-label">Положение на карте:</label>
+
+                </div>
+                <div class="span9">
+                    <div class="controls">
+
+                        <div id="gmap" style="width: 700px; height: 400px"></div>
+                        <script type="text/javascript" src="/Scripts/order-map.js"></script>
+                        @Html.Hidden("GoogleAPI", ConfigurationManager.AppSettings["GoogleApiKey"])
+                        <input type="hidden" name="Lat" id="Lat" value="@Model.OrderDetail.AddressEntry.Lat.ToString().Replace(",", ".")" />
+                        <input type="hidden" name="Lng" id="Lng" value="@Model.OrderDetail.AddressEntry.Lng.ToString().Replace(",", ".")" />
+                        <input type="hidden" name="Zoom" id="Zoom" value="@Model.OrderDetail.AddressEntry.Zoom" />
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="control-group row-fluid">
+            <div class="controls">
+                <div class="span12">
+                    <input type="submit" value="Сохранить изменения" class="btn" />
+                    <div class="backref">
+                        @Html.ActionLinkQuery("Назад к списку", "Index", "Orders", new[] { "query", "page", "status" })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>

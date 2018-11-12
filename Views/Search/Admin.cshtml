@@ -1,0 +1,34 @@
+﻿@model PagedData<fSearchResult>
+<style>
+    .pager {
+        text-align: left;
+    }
+</style>
+<div id="PageContent">
+    <div class="b-search-results">
+        <p class="request">По запросу <span class="key">@ViewBag.Word</span> найдено @ViewBag.Count записей.</p>
+        <input type="hidden" id="word" value="@ViewBag.Word" />
+
+        @Model.PagerMenu(Html)
+        <br />
+        
+
+        <ul>
+            @foreach (var data in Model)
+            {
+                var result = new fSearchResultItem(data);
+                var link = "http://" + HttpContext.Current.Request.Url.Host + result.Link;
+                <li>
+                    <p class="title">@data.PageName</p>
+                    <p class="link"><a onclick="loadContent('@result.Arg', 1); return false;" href="@link">@link</a> <a href="@link" target="_blank"><img style="width: 20px; height: 20px;" src="/content/Eye-icon.png"></a></p>
+                    <p style="font-size: 10px; color: gray">Релевантность - @data.Rank</p>
+                    <p>
+                        @result.Description
+                    </p>
+                </li>
+            }
+        </ul>
+    </div>
+
+
+</div>

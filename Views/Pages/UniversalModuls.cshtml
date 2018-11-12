@@ -1,0 +1,353 @@
+﻿@using System.Configuration
+@using Smoking.Controllers
+@model CMSPage
+@{
+    var db = new DB();
+    CMSPageTemplate template = null;
+    if (Model != null)
+    {
+        template = Model.PageType.CMSPageTemplate;
+    }
+    bool hideSettings = Request.Form["HideSettings"] == "1" || Request.QueryString["HideSettings"] == "1";
+    var moduls = TemplateEditorController.AvailableInfo;
+    var last = ViewBag.LastChange as List<LastChangeModel>;
+}
+<div id="PageContent">
+
+    @if (Model != null && template != null)
+    {
+        @*<input type="hidden" id="PreviewLink" value="@Model.FullUrl" />*@
+        <input type="hidden" id="Description" value="" />
+        @*<input type="hidden" id="Description" value="Перетаскивайте и добавляйте модули с помощью мыши, чтобы изменить содержимое страницы " />*@
+        <input type="hidden" id="Header" value="Редактирование папки '@Model.PageName'" />
+
+        @*
+            <div class="tmpl-info under">
+                Содержимое страницы <b>@Model.PageName</b>:
+            </div>
+        *@
+
+        <div class="horiz-menu horiz-menu-page">
+            <div class="form-legend group-name ">
+                <a href="#" onclick="return editPage(@(Model.ID), 1)">Настройки</a>
+            </div>
+            <div class="form-legend group-name active">
+                <a href="#" onclick="loadContent('x@(Model.ID)'); return false;">Описание</a>
+            </div>
+            <div class="form-legend group-name">
+                <a href="#" onclick="return editPage(@(Model.ID), 2)">SEO</a>
+            </div>
+            <a class="previewsite preview-link prev-head" title="Посмотреть на сайте" target="_blank" id="pageView" href="@Model.FullUrl"><img src="/content/Eye-icon.png"></a>
+        </div>
+
+        <div class="tmpl-info">
+            Для страницы используется шаблон <a href="/Master/ru/TableEditors/ViewManager?TypeID=@Model.Type" title="Редактировать шаблон">@Model.PageType.Description</a>
+        </div>
+        if (hideSettings)
+        {
+            <div class="add-modul">
+
+                <div class="fr">
+                    <img class="ico-greenplus am" alt="+" src="/content/admin/s.png">&nbsp;&nbsp;<strong style="float: left"><a id="jQAddModule" class="green big" href="#" onclick=" addModulShow(); return false;" style="font-size: 16px;margin-bottom: 9px;white-space: nowrap;display: block;">Добавить модуль</a></strong>
+                </div>
+                <div class="add-modul-content" title="Выберите модуль из списка и перетащите его в нужное место" style="display: none">
+                    <div class="modul-list">
+                        @foreach (var modul in moduls.OrderBy(x => TemplateEditorController.GetName(x.Action, x.Controller)))
+                        {
+                            <div class="modul-item modul" arg="M@(modul.ID)">
+                                <div class="header">@TemplateEditorController.GetName(modul.Action, modul.Controller)</div>
+                                @modul.Description
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <style>
+                .ui-dialog-titlebar-close {
+                    margin: -40px -11px 0 !important;
+                }
+            </style>
+        }
+        <hr />
+
+        <table class="containers">
+            @{ var max = template.CMSPageTemplateCells.Max(x => x.RowNum); }
+            @for (int i = 0; i <= max; i++)
+            {
+                var grouped = template.CMSPageTemplateCells.Where(x => x.RowNum == i).OrderBy(x => x.ColNum);
+
+                if (grouped.Any())
+                {
+                    var cnt = 1;
+                    <tr class="@(i == max ? "last-row" : "")">
+
+                        @foreach (var cell in grouped)
+                        {
+
+                            var cpc = Model.PageType.CMSPageCells.First(x => x.ColumnName == @cell.CellID);
+                            var cells = db.CMSPageCellViews.Where(x=> x.PageID == Model.ID && x.CellID == cpc.ID).OrderBy(x => x.OrderNum);
+
+                            <td class="@(cnt == grouped.Count() ? "last_cell" : "")" title="@cell.CellName" style="height: @(cell.MinHeight == 0 ? 20 : cell.MinHeight)px" colspan="@cell.ColSpan">
+                                <div class="cell-wrapper" arg="@cpc.ID">
+                                    @if (!hideSettings)
+                                    {
+                                        <a class="cell-edit" type="@Model.Type" cell="@cell.CellID" href="/Master/ru/TableEditors/ViewManager?TypeID=@(Model.Type)&CellID=@(cpc.ID)" title="Редактировать содержимое контейнера"></a>
+                                    }
+
+                                    @foreach (var view in cells)
+                                    {
+                                        var info = TemplateEditorController.AvailableInfo.First(x => x.Action == view.Action && x.Controller == view.Controller);
+                                        <div class="modul" arg="@view.ID">
+                                            <div class="cell-head">
+                                                <table class="cell-controlls">
+                                                    <tr>
+                                                        <td>@TemplateEditorController.GetName(view)</td>
+                                                        <td>
+                                                            <div class="contr-group" style="@(hideSettings /*&& info.DinamicAction != "TextEditor"*/ ? "":"margin-right:-20px;width:74px!important")">
+                                                                @if (hideSettings/* && info.DinamicAction != "TextEditor"*/)
+                                                                {
+                                                                    <a href="#" onclick="deleteModul(@view.ID); return false;" title="удалить" class="delpage"></a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div style="width: 20px;height: 1px; float: right"></div>
+                                                                }
+                                                                @if (info.DinamicAction.IsFilled() && info.DinamicController.IsFilled())
+                                                                {
+                                                                    <a onclick="@(info.DinamicAction == "TextEditor" ? string.Format("return showTextEdit({0}, {1});", Model.ID, view.ID) :( info.Popup ? string.Format("return showModulEdit('{0}', '{1}', {2}, {3}, {4});", info.DinamicAction, info.DinamicController, Model.ID, view.ID, 0) : ""))" href="@Url.Action(info.DinamicAction, info.DinamicController, new[] {"VideoEditor", "TextEditor" }.Contains(info.DinamicAction) ? (object) new {cmspageid=Model.ID, viewid=view.ID}: new {})" class="editpage" title="Редактировать модуль"></a>
+                                                                }
+                                                                @if (info.DinamicAction == "TextEditor")
+                                                                {
+                                                                    <a onclick="@(string.Format("return showSettingsEdit('{0}', {1});", "TextEditor", view.ID))" href="#" class="ico-params" title="Настройки модуля"></a>
+                                                                }
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </div>
+                                            <div class="cell-content">
+                                                @if (info.DinamicAction == "TextEditor")
+                                                {
+                                                    <iframe scrolling="no" src="/Master/ru/TextPage/AdminTextPreview?ID=@view.ID&CellID=@view.CellID&PageID=@Model.ID" frameborder="0" width="100%" height="100%"></iframe>
+                                                    @*@Html.Action(view.Action, view.Controller, new { ViewID = view.ID, view.CellID })*@
+                                                }
+                                                else
+                                                {
+                                                    @info.Description
+                                                }
+
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (!cells.Any())
+                                    {
+                                        <div class="modul" style="min-height: 50px" arg="0">
+                                        </div>
+                                    }
+
+                                </div>
+
+                            </td>
+                                    cnt++;
+                        }
+                    </tr>
+                }
+            }
+        </table>
+
+        <div id="dialog-text-edit" style="display: none">
+            <div class="dt">
+                <span>Редактирование текста</span>
+                <div class="btnss">
+                    <a onclick="refreshText(this); return false;" title="Обновить содержимое" class="reload-button"></a>
+                    <a onclick="showFullScreen(this); return false;" title="На весь экран" class="expand-button"></a>
+                    <a onclick="closeDialog(this); return false;" title="Закрыть окно" class="close-button"></a>
+                </div>
+            </div>
+            <div class="editor">
+                <input type="hidden" id="TelerikFrameDomain" value="@ConfigurationManager.AppSettings["TelerikFrameDomain"]" />
+                <div class="edit-text-cell">
+                    <div id="PopupText"></div>
+                </div>
+                <input type="submit" style="float: left; margin-left: 5px; background-color: lightcoral; background-image: none;" href="javascript:void(0);" id="btn-cancel" onclick="$('#dialog-text-edit').dialog('close')" class="btn" value="Отмена" />
+                <input type="submit" style="float: right; margin-right: 5px;" id="btn-save" onclick="saveText(); return false;" class="btn" value="Сохранить" />
+
+
+            </div>
+        </div>
+        <style>
+            .ui-dialog .ui-dialog-content {
+                border: #9CBCE6 5px solid;
+            }
+
+            #dialog-text-edit {
+                padding: 0;
+            }
+
+            .ui-dialog {
+                border: #61708F 2px solid;
+                border-radius: 0;
+            }
+
+                .ui-dialog .ui-dialog-titlebar {
+                    display: none;
+                }
+
+
+            .dt .btnss:hover {
+                width: 108px;
+                height: 22px;
+            }
+
+            .dt .btnss a {
+                background-image: url('/content/admin/popup.gif');
+            }
+
+            .dt {
+                background-color: #9CBCE6;
+                width: 100%;
+                height: 25px;
+                margin-bottom: 10px;
+            }
+
+                .dt span {
+                    font-weight: bold;
+                    color: white;
+                    font-size: 14px;
+                    margin-top: 3px;
+                    display: inline-block;
+                }
+
+            .reload-button {
+                /*background-position: -120px -20px;*/
+                background-position: -120px 0px;
+                border: 1px solid lightgray;
+            }
+
+                .reload-button:hover {
+                    background-position: -120px 0px;
+                    border: 1px solid black;
+                    border-radius: 2px;
+                    height: 18px;
+                    width: 28px;
+                }
+
+            .close-button {
+                /*background-position: -90px -20px;*/
+                background-position: -90px 0px;
+                border: 1px solid lightgray;
+            }
+
+                .close-button:hover {
+                    background-position: -90px 0px;
+                    border: 1px solid black;
+                    border-radius: 2px;
+                    height: 18px;
+                    width: 28px;
+                }
+
+            .expand-button {
+                /*background-position: -60px -20px;*/
+                background-position: -60px 0px;
+                border: 1px solid lightgray;
+            }
+
+                .expand-button:hover {
+                    background-position: -60px 0px;
+                    border: 1px solid black;
+                    border-radius: 2px;
+                    height: 18px;
+                    width: 28px;
+                }
+
+            .dt .btnss {
+                float: right;
+                clear: both;
+                overflow: hidden;
+                width: 108px;
+                height: 22px;
+            }
+
+                .dt .btnss a {
+                    display: block;
+                    height: 20px;
+                    width: 30px;
+                    float: left;
+                    margin-left: 4px;
+                }
+        </style>
+
+    }
+    else
+    {
+
+
+        <input type="hidden" id="PreviewLink" value="/" />
+        <input type="hidden" id="Description" value="" />
+        <input type="hidden" id="Header" value="Система управления сайтом @Request.Url.Host.ToNiceForm()" />
+        <div class="welcome">
+            <h1>Добро пожаловать в систему управления Photon.CMS</h1>
+            <br />
+            <br />
+            <img src="/content/photon/images/photon/panel_logo-light-2x-green.png" alt="Photon.CMS" />
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        if (last != null && last.Any())
+        {
+            var cnt = 0;
+            <h2 class="dblue">
+                <img class="ico-page" src="/content/admin/ico-page.png" style="border-width:0px;">Последние измененные страницы
+            </h2>
+            <div class="rnd">
+                <i class="t"><i></i></i>
+                <div class="cnt">
+                    <table class="tblv2">
+                        <tbody>
+                            <tr>
+                                <th class="td1">
+                                    Название страницы
+                                </th>
+                                <th>
+                                    Пользователь
+                                </th>
+                                <th>
+                                    Действие
+                                </th>
+                                <th class="td3">
+                                    Дата/Время
+                                </th>
+                            </tr>
+                            @foreach (var item in last)
+                            {
+                                <tr class="@(cnt % 2 == 0 ? "" : "clr")">
+                                    <td class="td1">
+                                        <img src="/content/admin/s.png" alt="" class="ico-folder-date">
+                                        <a href="" onclick="loadContent('@item.Arg', 1); return false;">@item.Name</a>
+                                    </td>
+                                    <td class="td2">
+                                        @item.UserName
+                                    </td>
+                                    <td class="td2">
+                                        @item.Action
+                                    </td>
+                                    <td class="td3">
+                                        @item.Date.ToString("d MMM yyyy, HH:mm")
+                                    </td>
+                                </tr>
+                                cnt++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <i class="b"><i></i></i>
+            </div>
+        }
+    }
+</div>

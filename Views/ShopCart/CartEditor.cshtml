@@ -1,0 +1,358 @@
+﻿@using System.Linq
+@model ShopCart
+@{
+    var os = new OrderSteps(0);
+}
+<div id="basket_content">
+    @if (!Model.ActiveProducts.Any())
+    {
+
+        <div class="container_12 page_basket_empty" style="width: 970px">
+            <h2>В вашей корзине еще нет товаров...</h2>
+            <div class="page_basket_desc">
+                Главная цель вашей корзины &ndash; хранить классные товары, которые вы можете купить в нашем магазине. Порадуйте корзину своим выбором, ищите кнопки «Купить» на сайте!<div><a class="el_form large btn btn_multi" href="@CatalogBrowser.BaseURL">Вернуться в каталог<span class="text_11">Продолжить поиск товаров</span></a></div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        if (Model.TotalSum < Model.MinSum)
+        {
+            <div class="container_12" style="width: 970px">
+                <div class="messages_alert" style="display: block;">
+                    <div class="cart_exception_cost_min"><span>Минимальная сумма заказа должна быть @Model.MinSum.ToNiceDigit() руб. Положите в корзину товаров еще на сумму @((Model.MinSum - Model.TotalSum).ToNiceDigit()) руб. для успешного оформления заказа.</span></div>
+                </div>
+            </div>
+        }
+        if (Model.TotalSumWithoutDiscount > Model.TotalSum)
+        {
+            <div class="container_12" style="width: 970px">
+                <div class="messages_alert" style="display: block;">
+                    <div class="cart_exception_cost_min"><span>При успешном завершении заказа, Вы получаете скидку @((Model.TotalSumWithoutDiscount - Model.TotalSum).ToNiceDigit()) руб.</span></div>
+                </div>
+            </div>
+
+        }
+        <div class="container_12 page_top_control">
+            <a href="@CatalogBrowser.BaseURL" class="el_form btn @(Model.TotalSum < Model.MinSum ? "btn_orange" : "")" style="float: left; margin-right: 165px">Вернуться к покупкам</a>
+            @*<a rel="fast-order" class="el_form btn @(Model.TotalSum < Model.MinSum ? "disabled" : "") go_to_master btn_orange" onclick="@(AccessHelper.IsAuth ? "":"return showAuthPopup();")" href="@(Model.TotalSum < Model.MinSum ? "#nogo" : os.NextStepUrl)" >Оформить заказ*@
+            @if (Model.ActiveProducts.Count() > 5)
+            {
+                <a rel="fast-order"  class="el_form btn @(Model.TotalSum < Model.MinSum ? "disabled" : "") go_to_master btn_orange" onclick="showOrderForm(this);return false;" href="@(Model.TotalSum < Model.MinSum ? "#nogo" : os.NextStepUrl)">
+                    Оформить заказ
+                </a>
+            }
+            @if (Model.ActiveProducts.Count() > 5)
+            {
+                <div class="top_basket_summ">
+                    <big>@Model.TotalSumForOrder.ToNiceDigit()&nbsp;руб.</big>Общая стоимость,<br />
+                    без учета доставки,<br />
+                    с учетом скидок
+                </div>
+            }
+        </div>
+        <div class="container_12" style="width: 970px">
+            <h2 class="goods_container_title" style="margin: 15px 0 0 0 !important">Товары в корзине:</h2>
+        </div>
+        <div class="container_12 goods_container" id="basket_all_goods" style="width: 970px">
+            @foreach (var item in Model.ActiveProducts)
+            {
+
+                var recomend = item.StoreProduct.StoreProductRelations.Where(x => x.BaseProductReverse != null && x.GroupName == "recomend" && Model.ActiveProducts.Select(z => z.ProductID).All(z => z != x.RelatedProductID)).Select(x => x.BaseProductReverse).ToList();
+                var related = item.StoreProduct.StoreProductRelations.Where(x => x.BaseProductReverse != null && x.GroupName == "related" && Model.ActiveProducts.Select(z => z.ProductID).All(z => z != x.RelatedProductID)).Select(x => x.BaseProductReverse).ToList();
+                var similar = item.StoreProduct.StoreProductRelations.Where(x => x.BaseProductReverse != null && x.GroupName == "similar" && Model.ActiveProducts.Select(z => z.ProductID).All(z => z != x.RelatedProductID)).Select(x => x.BaseProductReverse).ToList();
+                var first = "";
+                var any = false;
+                if (recomend.Any())
+                {
+                    first = "recomend";
+                    any = true;
+                }
+                else if (related.Any())
+                {
+                    first = "related";
+                    any = true;
+                }
+                else if (similar.Any())
+                {
+                    first = "similar";
+                    any = true;
+                }
+
+
+
+
+                <div class="container_float goods_view_basket @(any?"":"no-actions")" data-item_id="@item.ProductID">
+                    <div class="goods_pic">
+                        <a href="@item.StoreProduct.FullUrl">
+                            <img src="@item.StoreProduct.GetThumbURL(180, 180)" alt="@item.StoreProduct.NameOrDef">
+                        </a>
+                    </div>
+                    <div class="goods_data">
+                        <a href="@item.StoreProduct.FullUrl" class="goods_caption">
+                            @item.StoreProduct.NameOrDef
+                        </a>@if (item.StoreProduct.NeedShowArticle)
+                        {
+                            <span class="signature text_12">Артикул: @item.StoreProduct.Article</span>
+                        }
+                        @if (item.StoreProduct.Weight.HasValue && item.StoreProduct.Weight.Value > 24)
+                        {
+                            <div class="goods_weight"><i class="icon_weight"></i>@item.StoreProduct.Weight.Value.ToString("f2").Replace(".", ",") кг</div>
+                        }
+
+                        <a href="#nogo" class="basket_remove_good goods_remove">Удалить из корзины</a>
+                    </div>
+                    <div class="goods_form">
+                        <div class="goods_price @(item.StoreProduct.ProductDiscount > 0 ? "color_action" : "color_black")">
+                            @if (item.StoreProduct.PriceModule.SitePriceWithoutDiscount > item.StoreProduct.PriceModule.ShopCartPrice)
+                            {
+                                <del>@item.StoreProduct.PriceModule.SitePriceWithoutDiscount.ToNiceDigit()<span>&nbsp;руб.</span></del>
+                                @item.StoreProduct.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp; руб.</span>
+                            }
+                            else
+                            {
+                                @item.StoreProduct.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp; руб.</span>
+                            }
+                        </div>
+                        <span class="signature">@item.Count x @item.StoreProduct.PriceModule.ShopCartPrice.ToNiceDigit() &nbsp;руб.</span>
+                        <div class="el_form-quantity">
+                            <a class="el_form small btn bradius_c-r reduce"><i class="icon icon_minus"></i></a>
+                            <input type="text" value="@item.Count" name="count" min="1" class="el_form small bradius_c-r bradius_c-l"><a class="el_form small btn bradius_c-l increase"><i class="icon icon_plus"></i></a>
+                        </div>
+
+                    </div>
+                    <div class="goods_action">
+
+
+                        <div class="element_tabs_btn">
+                            @if (recomend.Any())
+                            {
+                                <a arg="recomend" onclick="switchTab(this)" class="@(first == "recomend" ? "selected" : "")" href="javascript:void(0);">
+                                    Рекомендуем<br />
+                                    купить
+                                </a>
+                            }
+                            @if (related.Any())
+                            {
+                                <a arg="related" onclick="switchTab(this)" class="@(first == "related" ? "selected" : "")" href="javascript:void(0);">
+                                    С этим товаром<br />
+                                    покупают
+                                </a>
+                            }
+                            @if (similar.Any())
+                            {
+                                <a arg="similar" onclick="switchTab(this)" class="@(first == "similar" ? "selected" : "")" href="javascript:void(0);">
+                                    Похожие<br />
+                                    товары
+                                </a>
+                            }
+                        </div>
+
+
+                        <div class="element_tabs_cnt">
+                            @if (recomend.Any())
+                            {
+                                <div arg="recomend" class="page_item_crosslink @(first != "recomend" ? "hidden" : "")">
+                                    <div>
+                                        <div class="grid_9 slider ">
+                                            <div class="slider_wrap">
+                                                <div class="slider_content goods_container" style="left: 0px;">
+                                                    @foreach (var p in recomend)
+                                                    {
+                                                        <div data-item_id="@p.ID" class="goods_view_small">
+                                                            <div class="goods_pic">
+                                                                <div class=" icon_goods"></div>
+                                                                <a href="@p.FullUrl">
+                                                                    <img src="@p.GetThumbURL(100, 100, skiplogo: true)">
+                                                                </a>
+                                                            </div>
+                                                            <a title="@p.NameOrDef" class="goods_caption" href="@p.FullUrl">@p.NameOrDef</a>
+                                                            <div class="price color_black">@p.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp;руб.</span></div>
+                                                            <button arg="@p.ID" onclick="toCartRelative(this);" class="el_form small btn @(Model.ActiveProducts.Any(z => z.ProductID == p.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(Model.ActiveProducts.Any(z => z.ProductID == p.ID) ? "В корзине" : "Купить")</button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            @if (recomend.Count > 3)
+                                            {
+                                                <a href="#goprev" onclick="moveLeftMini(this)" class="icon_slide-green-left" style="display: block;"></a>
+                                                <a href="#gonext" onclick="moveRightMini(this)" class="icon_slide-green-right" style="display: block;"></a>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (related.Any())
+                            {
+                                <div arg="related" class="page_item_crosslink @(first != "related" ? "hidden" : "")">
+                                    <div>
+                                        <div class="grid_9 slider ">
+                                            <div class="slider_wrap">
+                                                <div class="slider_content goods_container" style="left: 0px;">
+                                                    @foreach (var p in related)
+                                                    {
+                                                        <div data-item_id="@p.ID" class="goods_view_small">
+                                                            <div class="goods_pic">
+                                                                <div class=" icon_goods"></div>
+                                                                <a href="@p.FullUrl">
+                                                                    <img src="@p.GetThumbURL(100, 100, skiplogo: true)">
+                                                                </a>
+                                                            </div>
+                                                            <a title="@p.NameOrDef" class="goods_caption" href="@p.FullUrl">@p.NameOrDef</a>
+                                                            <div class="price color_black">@p.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp;руб.</span></div>
+                                                            <button arg="@p.ID" onclick="toCartRelative(this);" class="el_form small btn @(Model.ActiveProducts.Any(z => z.ProductID == p.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(Model.ActiveProducts.Any(z => z.ProductID == p.ID) ? "В корзине" : "Купить")</button>
+                                                        </div>
+
+                                                    }
+                                                </div>
+                                            </div>
+                                            @if (related.Count > 3)
+                                            {
+                                                <a href="#goprev" onclick="moveLeftMini(this); return false;" class="icon_slide-green-left" style="display: block;"></a>
+                                                <a href="#gonext" onclick="moveRightMini(this); return false;" class="icon_slide-green-right" style="display: block;"></a>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            @if (similar.Any())
+                            {
+                                <div arg="similar" class="page_item_crosslink @(first != "similar" ? "hidden" : "")">
+                                    <div>
+                                        <div class="grid_9 slider ">
+                                            <div class="slider_wrap">
+                                                <div class="slider_content goods_container" style="left: 0px;">
+                                                    @foreach (var p in similar)
+                                                    {
+                                                        <div data-item_id="@p.ID" class="goods_view_small">
+                                                            <div class="goods_pic">
+                                                                <div class=" icon_goods"></div>
+                                                                <a href="@p.FullUrl">
+                                                                    <img src="@p.GetThumbURL(100, 100, skiplogo: true)">
+                                                                </a>
+                                                            </div>
+                                                            <a title="@p.NameOrDef" class="goods_caption" href="@p.FullUrl">@p.NameOrDef</a>
+                                                            <div class="price color_black">@p.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp;руб.</span></div>
+
+                                                            <button arg="@p.ID" onclick="toCartRelative(this);" class="el_form small btn @(Model.ActiveProducts.Any(z => z.ProductID == p.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(Model.ActiveProducts.Any(z => z.ProductID == p.ID) ? "В корзине" : "Купить")</button>
+                                                        </div>
+
+                                                    }
+                                                </div>
+                                            </div>
+                                            @if (similar.Count > 3)
+                                            {
+                                                <a href="#goprev" onclick="moveLeftMini(this)" class="icon_slide-green-left" style="display: block;"></a>
+                                                <a href="#gonext" onclick="moveRightMini(this)" class="icon_slide-green-right" style="display: block;"></a>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+            }
+
+        </div>
+        if (Model.TotalSum < Model.MinSum)
+        {
+            <div class="container_12">
+                <div class="messages_alert" style="display: block;">
+                    <div class="cart_exception_cost_min"><span>Минимальная сумма заказа должна быть @Model.MinSum.ToNiceDigit() руб. Положите в корзину товаров еще на сумму @((Model.MinSum - Model.TotalSum).ToNiceDigit()) руб. для успешного оформления заказа.</span></div>
+                </div>
+            </div>
+        }
+        <div class="container_12 basket_foot">
+            <div class="grid_3 page_bottom_control">
+                <div class="container_float">
+                    <div id="basket_widget-inBasket" class="basket_summ">@Model.TotalSumForOrder.ToNiceDigit()&nbsp;руб.</div>
+                </div>
+                <div class="text_12 comment">
+                    Общая стоимость,<br>
+                    без учета доставки,<br />
+                    с учетом скидок
+                </div>
+            </div>
+            @if (Model.TotalWeight > 0)
+            {
+                <div class="grid_3 page_bottom_control">
+                    <div class="container_float">
+                        <div id="basket_widget-inBasket" class="basket_summ">@Model.TotalWeight.ToNiceDigit()&nbsp;кг</div>
+                    </div>
+                    <div class="text_12 comment">
+                        Общий вес
+                    </div>
+                </div>
+
+            }
+            @if (Model.TotalVolume > 0)
+            {
+                <div class="grid_3 page_bottom_control">
+                    <div class="container_float" style="margin-top: -9px;">
+                        <div id="basket_widget-inBasket" class="basket_summ">@((Model.TotalVolume * 1000).ToNiceDigit())&nbsp;cм<sup>3</sup></div>
+                    </div>
+                    <div class="text_12 comment">
+                        Общий объем
+                    </div>
+                </div>
+
+            }
+            <div class="grid_3 align_center">
+                @*<a rel="fast-order" class="el_form btn @(Model.TotalSum < Model.MinSum ? "disabled" : "") go_to_master btn_multi large  btn_orange" href="@(Model.TotalSum < Model.MinSum ? "#nogo" : os.NextStepUrl)" onclick="@(AccessHelper.IsAuth ? "":"return showAuthPopup();")" >Оформить заказ<span class="text_11">выбор адреса доставки</span>*@
+                <a rel="fast-order" style="height: 43px" class="el_form btn @(Model.TotalSum < Model.MinSum ? "disabled" : "") go_to_master btn_multi large  btn_orange" href="@(Model.TotalSum < Model.MinSum ? "#nogo" : os.NextStepUrl)" onclick="showOrderForm(this);return false;">
+                    Оформить заказ
+                </a>
+
+            </div>
+        </div>
+
+    }
+    @{
+        var allRels = Model.ShopCartItems.SelectMany(x => x.StoreProduct.StoreProductRelations).Where(x => x.BaseProductReverse != null && x.GroupName == "recomend" && Model.ActiveProducts.Select(z => z.ProductID).All(z => z != x.RelatedProductID)).Select(x => x.BaseProductReverse).Distinct().ToList();
+    }
+    @if (allRels.Any())
+    {
+        <div class="container_12">
+            <h2>Возможно вы забыли заказать</h2>
+        </div>
+        <div class="container_12 bottom_slider">
+            <div class="grid_12 slider">
+                <div class="slider_wrap">
+                    <div class="slider_content">
+
+                        @foreach (var item in allRels)
+                        {
+                            <div data-item_id="@item.ID" class="goods_view_small">
+                                <div class="goods_pic">
+                                    <div class=" icon_goods"></div>
+                                    <a href="@item.FullUrl">
+                                        <img src="@item.DefaultThumbURL">
+                                    </a>
+                                </div>
+
+                                <a title="@item.NameOrDef" class="goods_caption" href="@item.FullUrl">@item.NameOrDef</a>
+                                <div class="price color_black">@item.TradingPrice<span>&nbsp;руб.</span></div>
+                                <button arg="@item.ID" onclick="toCartRelative(this);" class="el_form small btn @(Model.ActiveProducts.Any(z => z.ProductID == item.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(Model.ActiveProducts.Any(z => z.ProductID == item.ID) ? "В корзине" : "Купить")</button>
+                                @*<button arg="@item.RelatedProductID" class="el_form small btn btn_green btn_toBasket" type="submit">Купить</button>*@
+
+                            </div>
+                        }
+                    </div>
+                </div>
+                <a class="icon_slide-green-left" href="#goprev" onclick="moveLeft();"></a><a class="icon_slide-green-right" href="#gonext" onclick="moveRight();"></a>
+            </div>
+
+        </div>
+    }
+</div>

@@ -1,0 +1,141 @@
+﻿@{
+    var cart = new ShopCart().InitCart();
+    var treeData = new UniversalTreeDataSource() { PageCheckFunction = input => input.ViewMenu && input.Visible && !input.Deleted &&input.TreeLevel<1, }.CreateModel(SerializationType.Pages);
+}
+<div id="header">
+    <h1>@(CatalogBrowser.Init().IsCategoryPage && CatalogBrowser.Init().CurrentCategory.ID > 1 ? CatalogBrowser.Init().CurrentCategory.PageHeader : (CatalogBrowser.Init().IsProductPage ? CatalogBrowser.Init().CurrentProduct.PageH1 : AccessHelper.CurrentPageInfo.FullPageName))</h1>
+    <a id="logo" href="/">
+        <img src="@(SiteSetting.Get<string>("HeadLogo"))" />
+    </a>
+    <div class="sfy">
+        @Html.Action("Search")
+    </div>
+
+    <ul id="user-menu" class="menu">
+        @if (!HttpContext.Current.User.Identity.IsAuthenticated)
+        {
+            <li>
+                <a href="#nogo" id="reg-link" onclick=" showRegPopup(); ">Регистрация</a>
+            </li>
+            <li>
+                <a class="go_enter_byerd" id="auth-link" onclick=" showAuthPopup(); " href="#nogo">Вход</a>
+            </li>
+        }
+        else
+        {
+            var profile = HttpContext.Current.GetCurrentUser();
+            <li style="text-align:right"><a href="@CabinetMenu.GetPageURL("profile")">@profile.UserName.Split('@')[0] <i class="icon_l_profile"></i></a><br/>
+                @*<a href="@CabinetMenu.GetPageURL("orders")">Заказы<i class="icon_l_orders"></i></a>*@
+            </li>
+            <li>
+                <a class="go_enter_byerd" href="@Url.Action("Exit","Account")">Выход<i class="icon_c_user"></i></a>
+            </li>
+        }
+    </ul>
+   
+    <div class="contacts block">
+        <img src="@(SiteSetting.Get<string>("HeadImg"))" style="margin-top: 3px"/>
+@*
+        <p class="contacts phone">
+            <span>@(SiteSetting.Get<string>("HeadPhoneCode"))</span>@(SiteSetting.Get<string>("HeadPhoneNumber"))
+        </p>
+        <div class="content">
+            <table border="0" cellspacing="0" cellpadding="0" style="width: 157px; border:1px solid #DFDFDF; border-radius: 0px; background: #FFF; font-size:12px;float:left;">
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong>График:</strong>
+                        </td>
+                        <td>
+                            @(SiteSetting.Get<string>("WorkWeek"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            @(SiteSetting.Get<string>("WorkWeekEnd"))
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <a href="mailto:@(SiteSetting.Get<string>("ContactMail"))" style="text-transform: initial;display: inline-block;">@(SiteSetting.Get<string>("ContactMail"))</a>
+*@
+    </div>
+    
+    <div class="block call">
+        <div class="phone-header">
+            <a href="#" class="tremmors" onclick="showBackCall(); return false;"></a>
+        </div>
+        <span class="call-title">Заказать <br/> звонок</span>
+    </div>
+    <div id="cart-block" class="block">
+        <div class="content">
+            <a class="cart-link" href="/order">
+                <span class="fixpanel_basket_count " total="@((int)cart.TotalSum)">@cart.TotalCount</span>
+                <img src="/content/theme_main/img/shopcart.png" style="height: 40px; width: 40px" />
+            </a>
+            <div class="text">
+                <a href="/order">
+                    В корзине
+                </a>
+                </div>
+            <div class="total">
+                @if (cart.TotalSum > 0)
+                {
+                    <b>@(((int) cart.TotalSum).ToString("### ### ###"))</b> <span>руб.</span>
+                    
+                }
+                else
+                {
+                    @Html.Raw("нет товаров")
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div id="navigation" style="display: block;">
+    <ul class="menu">
+        @*<li class="home-icon"><a href="/"></a></li>*@
+        @foreach (var item in treeData.children.Where(x => x.attr.id.StartsWith("c") || x.attr.id.StartsWith("x")))
+        {
+            <li class="mi">
+                <a href="@item.attr.url" class="@(item.attr.url == CatalogBrowser.BaseURL || item.attr.url == Request.Url.PathAndQuery ? "act" : "")">
+                    @item.data
+@*
+                    @if (item.attr.url == CatalogBrowser.BaseURL)
+                    {
+                        <span></span>
+                    }
+*@
+                </a>
+               @* @if (item.children != null && item.children.Any())
+                {
+                    <ul>
+                        @foreach (var clv2 in item.children.Where(x => x.attr.id.StartsWith("c") || x.attr.id.StartsWith("x")))
+                        {
+                            <li>
+                                <a href="@clv2.attr.url" id="@clv2.attr.id">@clv2.data</a>
+                                @if (clv2.children != null && clv2.children.Any())
+                                {
+                                    <ul>
+                                        @foreach (var clv3 in clv2.children.Where(x => x.attr.id.StartsWith("c") || x.attr.id.StartsWith("x")))
+                                        {
+                                            <li>
+                                                <a href="@clv3.attr.url">@clv3.data</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }*@
+            </li>
+        }
+    </ul>
+</div>

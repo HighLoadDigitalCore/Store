@@ -1,0 +1,66 @@
+﻿@model RadiatorFilter
+@{
+    var connect = Model.Get("Подключение");
+    var power = Model.Get("Мощность");
+    var type = Model.Get("Тип");
+    var height = Model.Get("Высота");
+    var width = Model.Get("Ширина");
+}
+
+<div id="module_content_action_top" class="container_12 module_content_action_top_filter">
+    <div class="grid_5">
+        <img src="/content/theme_main/img/filter-img.png" />
+    </div>
+    <div class="grid_7" style="margin-left: -20px">
+        <div class="rad-filter">
+            <p class="head">Подобрать радиатор</p>
+            <div class="filter-line-top">
+                <div class="filter-head hf">Подключение:</div>
+                <div class="filter-group" style="float: left">
+                    <label>
+                        <input type="radio" value="Нижнее" @(connect.FilteredValues.Any(z=> z == "Нижнее")?"checked":"") arg="@connect.CharacterID" name="Radio_@(connect.CharacterID)"  /><span>Нижнее</span></label>
+                    <label>
+                        <input type="radio" value="Боковое" @(connect.FilteredValues.Any(z=> z == "Боковое")?"checked":"") arg="@connect.CharacterID" name="Radio_@(connect.CharacterID)" /><span>Боковое</span></label>
+                </div>
+                <div class="filter-head hf" style="width: 85px;margin-left: 30px">Мощность:</div>
+                <div class="filter-group" style="float: left; width: 160px; margin-top: -10px;">
+                    <input additional="power" id="Slider_@(power.CharacterID)" arg="@power.CharacterID" from="@power.Values.ElementAt(0).Replace(",", ".")" to="@power.Values.ElementAt(1).Replace(",", ".")" value="@power.GetValue(0).Replace(",", ".");@power.GetValue(1).Replace(",", ".")" type="slider" name="area" />
+                </div>
+            </div>
+            <div class="clr" style="width: 395px"></div>
+            <div class="filter-line-top">
+                <div class="filter-cell">
+                    <div class="filter-head">Глубина (тип)</div>
+                    <select arg="@type.CharacterID">
+                        @foreach (var item in Model.Depth)
+                        {
+                            <option value="@item.Key" @(type.FilteredValues.Any(z=> item.Key == z)? "selected":"")>@item.Value</option>    
+                        }
+                    </select>
+                </div>
+                <div class="filter-cell">
+                    <div class="filter-head">Высота</div>
+                    <select arg="@height.CharacterID">
+                        @foreach (var item in Model.Height)
+                        {
+                            <option value="@item.Key" @(height.FilteredValues.Any(z=> item.Key == z)? "selected":"")>@item.Value</option>    
+                        }
+                    </select>
+                </div>
+                <div class="filter-cell">
+                    <div class="filter-head">Ширина</div>
+                    <select arg="@width.CharacterID">
+                        @foreach (var item in Model.Width)
+                        {
+                            <option value="@item.Key" @(width.FilteredValues.Any(z=> item.Key == z)? "selected":"")>@item.Value</option>    
+                        }
+                    </select>
+                </div>
+
+            </div>
+            <div class="clr"></div>
+            <input type="submit" value="Подобрать" onclick="showRadFilterResult();" class="el_form btn btn_green rad-choise" />
+            <div class="found" style="display: none">Найдено: <a href="#">0 товар(ов)</a></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,481 @@
+﻿@using NPOI.SS.Formula.Functions
+@model CatalogBrowser
+@{
+    var shopcart = new ShopCart().InitCart();
+}
+<style>
+    .st-descr2, .st-descr3, .st-descr4, .st-descr5, .lt-descr2, .lt-descr3, .lt-descr4, .lt-descr5 {
+        margin: 40px 0 40px 0;
+    }
+</style>
+@if (Model.IsFiltered)
+{
+    @Html.Partial("~/Views/CommonBlocks/Slider.cshtml", Model.GetSlider(Model.CurrentCategory.ID))
+    if (!Model.CurrentCategory.StaticDescription.IsNullOrEmpty())
+    {
+
+        <div class="@(Model.CurrentCategory.ShowDescrAnim1 ? "text-truncate" : "")">
+            @Html.Raw(Model.CurrentCategory.StaticDescription)
+        </div>
+        <br />
+    }
+    if (Model.CurrentCategory.ID > 1)
+    {
+        <input type="hidden" id="ReviewPath" value="c@(Model.CurrentCategory.ID)" />
+    }
+    @*@Html.Partial("CatalogFilterV2", Model.GetFilter(Model.CurrentCategory.ID, HttpContext.Current.Request))*@
+    @Html.Partial("CatalogSectionFiltered", Model.GetFilterResult(Model.CurrentCategory.ID, HttpContext.Current.Request))
+    <div class="clear"></div>
+    if (!Model.CurrentCategory.StaticDescriptionLower.IsNullOrEmpty())
+    {
+        <div class="@(Model.CurrentCategory.ShowDescrAnim2 ? "text-truncate" : "")">
+            @Html.Raw(Model.CurrentCategory.StaticDescriptionLower)
+        </div>
+    }
+    if (!Model.CurrentCategory.Description.IsNullOrEmpty())
+    {
+        <div>
+            @Html.Raw(Model.CurrentCategory.Description)
+        </div>
+    }
+
+}
+else if (Model.IsCategoryPage && !Model.IsProductPage)
+{
+
+    if (Model.CurrentCategory.ID > 1)
+    {
+        <input type="hidden" id="ReviewPath" value="c@(Model.CurrentCategory.ID)" />
+    }
+
+
+
+    @Html.Partial("~/Views/CommonBlocks/Slider.cshtml", Model.GetSlider(Model.CurrentCategory.ID))
+    @Html.Partial("~/Views/VideoPage/Index.cshtml", Model.GetVideo(Model.CurrentCategory.ID))
+    <br/>
+
+    if (!Model.CurrentCategory.StaticDescription.IsNullOrEmpty())
+    {
+
+        <div class="@(Model.CurrentCategory.ShowDescrAnim1 ? "text-truncate" : "")">
+            @Html.Raw(Model.CurrentCategory.StaticDescription)
+        </div>
+        <br />
+    }
+    if (Model.CurrentCategory.StoreProductsToCategories.Any(x => !x.StoreProduct.Deleted) /*&& Model.CurrentCategory.ID > 1*/)
+    {
+
+        @Html.Partial("CatalogSection", Model.CurrentCategory)
+
+
+    }
+    else
+    {
+        @Html.Partial("CatalogFilterV2", Model.GetFilter(Model.CurrentCategory.ID, HttpContext.Current.Request))
+        @Html.Partial("CatalogChildren", Model.CurrentCategory.Children)
+
+    }
+
+    @Html.Partial("~/Views/Files/Index.cshtml", Model.CurrentCategory.GetFileList())
+
+    <div class="clear"></div>
+    if (!Model.CurrentCategory.StaticDescriptionLower.IsNullOrEmpty())
+    {
+        <div class="lt-descr2 @(Model.CurrentCategory.ShowDescrAnim2 ? "text-truncate" : "")">
+            @Html.Raw(Model.CurrentCategory.StaticDescriptionLower)
+        </div>
+    }
+    if (!Model.CurrentCategory.StaticDescriptionA.IsNullOrEmpty())
+    {
+        <div class="lt-descr3 @(Model.CurrentCategory.ShowDescrAnim3 ? "text-truncate" : "")">
+            @Html.Raw(Model.CurrentCategory.StaticDescriptionA)
+        </div>
+    }
+    if (!Model.CurrentCategory.StaticDescriptionB.IsNullOrEmpty())
+    {
+        <div class="lt-descr4 @(Model.CurrentCategory.ShowDescrAnim4 ? "text-truncate" : "")">
+            @Html.Raw(Model.CurrentCategory.StaticDescriptionB)
+        </div>
+    }
+    if (!Model.CurrentCategory.StaticDescriptionC.IsNullOrEmpty())
+    {
+        <div class="lt-descr5 @(Model.CurrentCategory.ShowDescrAnim5 ? "text-truncate" : "")">
+            @Html.Raw(Model.CurrentCategory.StaticDescriptionC)
+        </div>
+    }
+    if (!Model.CurrentCategory.Description.IsNullOrEmpty())
+    {
+        <div>
+            @Html.Raw(Model.CurrentCategory.Description)
+        </div>
+    }
+
+
+    if (!Model.CurrentCategory.PageTextH3Upper.IsNullOrEmpty())
+    {
+        <div>
+            @Html.Raw(Model.CurrentCategory.PageTextH3Upper)
+        </div>
+    }
+
+    if (!Model.CurrentCategory.PageHeaderH3.IsNullOrEmpty())
+    {
+        @*<h3>@Model.CurrentCategory.PageHeaderH3</h3>*@
+    }
+
+    if (!Model.CurrentCategory.PageTextH3Lower.IsNullOrEmpty())
+    {
+        <div>
+            @Html.Raw(Model.CurrentCategory.PageTextH3Lower)
+        </div>
+    }
+
+    @Html.Action("CatalogRelatedProductsCategories", new { CategoryID = Model.CurrentCategory.ID })
+}
+else if (Model.IsProductPage)
+{
+
+    <script type="text/javascript" src="/content/theme_main/fancybox/lib/jquery.mousewheel.pack.js"></script>
+    <link rel="stylesheet" href="/content/theme_main/fancybox/source/jquery.fancybox.css?v=2.1.6"
+          type="text/css" media="screen" />
+    <script type="text/javascript" src="/content/theme_main/fancybox/source/jquery.fancybox.pack.js?v=2.1.6"></script>
+    <link rel="stylesheet" href="/content/theme_main/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7"
+          type="text/css" media="screen" />
+    <script type="text/javascript" src="/content/theme_main/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+
+    @*
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+    *@
+
+
+
+    <link rel="stylesheet" href="/content/theme_main/css/tabs.css" type="text/css" />
+
+
+    <script>
+        function loadfancy() {
+            $(".fancybox").fancybox({
+                prevEffect: 'none',
+                nextEffect: 'none',
+                
+                helpers: {
+                    title: {
+                        type: 'inside'
+                    },
+                    thumbs: {
+                        width: 60,
+                        height: 60
+                    }
+                }
+            });
+            
+            if (!$('.gal-image a').length) {
+                $(".fancybox-big").fancybox({
+                    prevEffect: 'none',
+                    nextEffect: 'none',
+                    
+                    helpers: {
+                        title: {
+                            type: 'inside'
+                        },
+                        thumbs: {
+                            width: 60,
+                            height: 60
+                        }
+                    }
+                });
+            }
+
+            $('.fancybox-big').click(function () {
+                //debugger;
+                var gal = $('.gal-image a[href="' + $(this).attr('href') + '"]');
+                if (gal.length) {
+                    gal.trigger('click');
+                    return false;
+                }
+                else {
+
+
+                }
+
+            });
+        }
+
+        $().ready(function () {
+            loadfancy();
+            $('#tabs-product').tabs();
+        });
+    </script>
+
+
+    @Model.IncreaseViewCount(Model.CurrentProduct.ID)
+    @Html.Partial("~/Views/CommonBlocks/Slider.cshtml", Model.GetSlider(Model.CurrentProduct.ID, true))
+    <input type="hidden" id="ReviewPath" value="p@(Model.CurrentProduct.ID)" />
+    <section data-item_id="@Model.CurrentProduct.ID" class="goods_view_item clearfix" itemscope itemtype="http://schema.org/Product">
+
+        <meta content="@Model.CurrentProduct.NameOrDef" itemprop="name" />
+        <meta content="@Model.CurrentProduct.FullUrl" itemprop="url" />
+
+        <div class="side_left" style="width: 450px">
+            <div style="text-align: center">
+                <a href="@((Model.CurrentProduct.StoreImages.OrderBy(x => x.OrderNum).FirstOrDefault(x => x.Enabled) ?? new StoreImage()) .Youtube.IsNullOrEmpty() ? Model.CurrentProduct.GetImgURL(Model.CurrentProduct.StoreImages.OrderBy(x => x.OrderNum).FirstOrDefault(x => x.Enabled), 900, 900) : Url.Action("FancyVideo", new{Model.CurrentProduct.StoreImages.OrderBy(x => x.OrderNum).First(x => x.Enabled).ID}))" data-fancybox-type="@Model.CurrentProduct.DefaultFancyType" class="fancybox-big">
+                    <img alt="@Model.CurrentProduct.DefaultAlt" src="@Model.CurrentProduct.GetThumbURL(450, 450)" style="max-height: 450px!important; max-width: 450px!important; height: 450px; padding-bottom: 20px;">
+                </a>
+            </div>
+
+            @if (Model.CurrentProduct.StoreImages.Count(x => x.Enabled) > 1)
+            {
+                <div class="image-gallery">
+                    @foreach (var img in Model.CurrentProduct.StoreImages.Where(x => x.Enabled).OrderBy(x => x.OrderNum))
+                    {
+                        <div class="gal-image">
+                            <a class="fancybox" data-fancybox-type="@(img.Youtube.IsNullOrEmpty() ? "image" : "iframe")" data-fancybox-group="thumb_@Model.CurrentProduct.ID" href="@(img.Youtube.IsNullOrEmpty() ? Model.CurrentProduct.GetImgURL(img, 900, 900) : /*img.Youtube.Replace("watch?v=", "v/")*/ Url.Action("FancyVideo", new { ID = img.ID }))" url="@Model.CurrentProduct.GetImgURL(img, 450, 450)" title="@img.Description">
+                            <img src="@Model.CurrentProduct.GetImgURL(img, 90, 90)" alt="@img.Alt" title="@img.Description" />
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+            @*
+                <div class="like_wrapper container_float">
+                    <div data-send="false" data-show-faces="false" data-layout="button_count" data-width="200" data-href="http://www.theme_mainonos.ru/item/1378975" class="fb-like fb_iframe_widget" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=139702316101809&amp;href=http%3A%2F%2Fwww.theme_mainonos.ru%2Fitem%2F1378975&amp;layout=button_count&amp;locale=ru_RU&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=200"><span style="vertical-align: bottom; width: 105px; height: 20px;">
+                        <iframe width="200px" height="1000px" frameborder="0" name="fbd9239b9f35ac" allowtransparency="true" scrolling="no" title="fb:like Facebook Social Plugin" style="border: medium none; visibility: visible; width: 105px; height: 20px;" src="http://www.facebook.com/plugins/like.php?app_id=139702316101809&amp;channel=http%3A%2F%2Fstatic.ak.facebook.com%2Fconnect%2Fxd_arbiter%2FV80PAcvrynR.js%3Fversion%3D41%23cb%3Df10c9be8a619dae%26domain%3Dwww.theme_mainonos.ru%26origin%3Dhttp%253A%252F%252Fwww.theme_mainonos.ru%252Ff318b72d5011f3e%26relation%3Dparent.parent&amp;href=http%3A%2F%2Fwww.theme_mainonos.ru%2Fitem%2F1378975&amp;layout=button_count&amp;locale=ru_RU&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=200" class=""></iframe>
+                    </span></div>
+                    <div data-vk_page_url="http://www.theme_mainonos.ru/item/1378975" data-vk_md5="adba079414532c04c32f697f85d0d999" class="vk_like" id="vk_like" style="height: 22px; width: 100px; background: none repeat scroll 0% 0% transparent; position: relative; clear: both;">
+                        <iframe width="100%" height="22" frameborder="0" name="fXD8e126" src="http://vk.com/widget_like.php?app=3907046&amp;width=100%&amp;_ver=1&amp;page=0&amp;url=http%3A%2F%2Fwww.theme_mainonos.ru%2Fitem%2F1378975&amp;type=mini&amp;verb=0&amp;color=&amp;title=%D0%9F%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82%20%D0%B9%D0%BE%D0%B3%D1%83%D1%80%D1%82%D0%BD%D1%8B%D0%B9%20Campina%20Fruttis%20%26quot%3B%D0%92%D0%BA%D1%83%D1%81%D0%BD%D1%8B%D0%B9%20%D0%BF%D0%B5%D1%80%D0%B5%D1%80%D1%8B%D0%B2%26quot%3B%20%D0%9A%D0%BB%D0%B0%D1%81%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%202%2C6%25%20...&amp;description=%D0%9E%D0%9E%D0%9E%20%22%D0%9A%D0%B0%D0%BC%D0%BF%D0%B8%D0%BD%D0%B0%22%2C%20%D0%9C%D0%BE%D1%81%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BE%D0%B1%D0%BB.%2C%20%D0%B3.%20%D0%A1%D1%82%D1%83%D0%BF%D0%B8%D0%BD%D0%BE%2C%20%D1%83%D0%BB.%20%D0%A1%D0%B8%D1%82%D0%B5%D0%BD%D0%BA%D0%B0%2C%20%D0%B2%D0%BB.10%2C%20%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D1%8F.%D0%9F%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82%20%D0%B9%D0%BE%D0%B3%D1%83%D1%80%D1%82%D0%BD%D1%8B%D0%B9%20Campina%20Fruttis%20%22%D0%92%D0%BA%D1%83%D1%81%D0%BD%D1%8B%D0%B9%20%D0%BF%D0%B5%D1%80%D0%B5%D1%80%D1%8B%D0%B2%22%20%D0%9A%D0%BB%D0%B0%D1%81%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%202%2C6%25%20%D1%81%26nbsp%3B%D1%82%D0%BE%D0%BF%D0%BF%D0%B5%D1%80%D0%BE%D0%BC%20%D1%85%D0%BB%D0%BE...&amp;image=http%3A%2F%2Fwww.theme_mainonos.ru%2Fimages%2Fphoto%2F3179%2F3179150B.jpg%3F1350568144&amp;text=&amp;h=22&amp;14674ff9974" scrolling="no" id="vkwidget1" style="overflow: hidden; height: 22px; width: 100px; z-index: 150;"></iframe>
+                    </div>
+                </div>
+            *@
+            @Html.Partial("~/Views/Files/Index.cshtml", Model.CurrentProduct.GetFileList())
+
+            @if (Model.CurrentProduct.DeliveryPack.IsFilled() || Model.CurrentProduct.StaticDescription.IsFilled())
+            {
+                <div id="tabs-product">
+                    <ul>
+                        @if (Model.CurrentProduct.StaticDescription.IsFilled())
+                        {
+                            <li><a href="#tabs-1">Описание</a></li>
+                        }
+                        @if (Model.CurrentProduct.DeliveryPack.IsFilled())
+                        {
+                            <li><a href="#tabs-2">Состав поставки</a></li>
+                        }
+                    </ul>
+                    @if (Model.CurrentProduct.StaticDescription.IsFilled())
+                    {
+                        <div id="tabs-1">
+                            @Html.Raw(Model.CurrentProduct.StaticDescription)
+                        </div>
+                    }
+                    @if (Model.CurrentProduct.DeliveryPack.IsFilled())
+                    {
+                        <div id="tabs-2">
+                            @Html.Raw(Model.CurrentProduct.DeliveryPack)
+                        </div>
+                    }
+                </div>
+            }
+            @if (Model.CurrentProduct.Description.IsFilled() || Model.CurrentProduct.DescrptionLower.IsFilled() || Model.CurrentProduct.StaticDescriptionA.IsFilled() || Model.CurrentProduct.StaticDescriptionB.IsFilled() || Model.CurrentProduct.StaticDescriptionC.IsFilled() || Model.CurrentProduct.StaticDescriptionD.IsFilled())
+            {
+                <div class="item_description">
+                    <div>
+
+                        @if (Model.CurrentProduct.StaticDescriptionA.IsFilled())
+                        {
+                            <div class="st-descr2 @(Model.CurrentProduct.ShowDescrAnim2? "text-truncate":"")">
+                                @Html.Raw(Model.CurrentProduct.StaticDescriptionA)
+                            </div>
+                            <br />
+                        }
+                        @if (Model.CurrentProduct.StaticDescriptionB.IsFilled())
+                        {
+                            <div class="st-descr3 @(Model.CurrentProduct.ShowDescrAnim3? "text-truncate":"")">
+                                @Html.Raw(Model.CurrentProduct.StaticDescriptionB)
+                            </div>
+                            <br />
+                        }
+                        @if (Model.CurrentProduct.StaticDescriptionC.IsFilled())
+                        {
+                            <div class="st-descr4 @(Model.CurrentProduct.ShowDescrAnim4? "text-truncate":"")">
+                                @Html.Raw(Model.CurrentProduct.StaticDescriptionC)
+                            </div>
+                            <br />
+                        }
+                        @if (Model.CurrentProduct.StaticDescriptionD.IsFilled())
+                        {
+                            <div class="st-descr5 @(Model.CurrentProduct.ShowDescrAnim5? "text-truncate":"")">
+                                @Html.Raw(Model.CurrentProduct.StaticDescriptionD)
+                            </div>
+                            <br />
+                        }
+
+                        @*
+                            @if (Model.CurrentProduct.StaticDescription.IsFilled())
+                            {
+                                <div class="@(Model.CurrentProduct.ShowDescrAnim? "text-truncate":"")">
+                                    @Html.Raw(Model.CurrentProduct.StaticDescription)
+                                </div>
+                                <br />
+                            }
+                        *@
+                        @if (Model.CurrentProduct.Description.IsFilled())
+                        {
+
+                            @Html.Raw(Model.CurrentProduct.Description)
+                            <br />
+                        }
+                        @if (Model.CurrentProduct.PageH3.IsFilled())
+                        {
+                            @* <h3>@Model.CurrentProduct.PageH3</h3>*@
+                        }
+                        @if (Model.CurrentProduct.DescrptionLower.IsFilled())
+                        {
+
+                            @Html.Raw(Model.CurrentProduct.DescrptionLower)
+                            <br />
+                        }
+
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="side_right">
+            <div class="goods_item_control clearfix" style="margin-bottom: 0; float: left">
+                <div class="price @(Model.CurrentProduct.PriceModule.SitePriceWithoutDiscount > Model.CurrentProduct.PriceModule.ShopCartPrice ? "color_action" : "color_black")">
+                    @if (Model.CurrentProduct.PriceModule.SitePriceWithoutDiscount > Model.CurrentProduct.PriceModule.ShopCartPrice)
+                    {
+                        <del>@Model.CurrentProduct.PriceModule.SitePriceWithoutDiscount.ToNiceDigit()<span>&nbsp;руб.</span></del>
+                        <div itemtype="http://schema.org/Offer" itemscope itemprop="offers">
+                            @Model.CurrentProduct.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp; руб.</span>
+                            <meta content="@Model.CurrentProduct.PriceModule.ShopCartPrice.ToNiceDigit().Replace(" ", "")" itemprop="price">
+                            <meta content="RUB" itemprop="priceCurrency">
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div itemtype="http://schema.org/Offer" itemscope itemprop="offers">
+                            @Model.CurrentProduct.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp; руб.</span>
+                            <meta content="@Model.CurrentProduct.PriceModule.ShopCartPrice.ToNiceDigit().Replace(" ", "")" itemprop="price">
+                            <meta content="RUB" itemprop="priceCurrency">
+
+                        </div>
+                    }
+                </div>
+
+
+
+                <div class="page_goods_item product_form product_form_item">
+                    <div class="el_form-quantity">
+                        <a class="el_form btn disabled bradius_c-r reduce"><i class="icon icon_minus-big"></i></a>
+                        <input type="text" class="el_form bradius_c-r bradius_c-l" min="1" name="count" value="1"><a class="el_form btn bradius_c-l increase"><i class="icon icon_plus-big"></i></a>
+                    </div>
+                    <button rel="to-cart" arg="@Model.CurrentProduct.ID" spec="0" type="submit" class="el_form btn @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.CurrentProduct.ID) ? "btn_orange" : "btn_green") btn_toBasket">
+                        <i class="icon icon_l_basket"></i>
+                        @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.CurrentProduct.ID) ? "В корзине" : "Купить")
+                    </button>
+                    @if (!Model.CurrentProduct.ShowCompare)
+                    {
+                        <div style="float: left">
+                            @Html.Partial("~/Views/ClientCatalog/Comparator.cshtml", new Comparator(Model.CurrentProduct.ID))
+                        </div>
+                    }
+                </div>
+
+
+            </div>
+            <div class="goods_item_data" style="clear: both">
+                <div style="height: 25px;">
+                    @*<span class="goods_property">
+                            $1$<div data-itemid="@Model.CurrentProduct.ID" class="rating_star">
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    <span data-ratingpos="@i" class="@(Math.Round(Model.CurrentProduct.VoteOverage, 0) >= i ? "selected" : "")"></span>
+                                }
+
+                            </div>#1#
+                        </span><span class="goods_property signature">@Model.CurrentProduct.VoteCount голос@(Model.CurrentProduct.VoteCount.GetStringPostfix(WordKind.Man))</span>*@
+                    @*
+                        @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                        {
+                            <span data-goodsid="@Model.CurrentProduct.ID" class="goods_property goods_item_favorite @(Model.CurrentProduct.IsUserFavorite == 1 ? "active" : "")">
+                                <i class="icon_c_heart"></i>
+                            </span>
+                        }
+                    *@
+                </div>
+                @if (Model.CurrentProduct.NeedShowArticle)
+                {
+                    <div class="signature">Артикул: @Model.CurrentProduct.Article</div>
+                }
+
+                @if (Model.CurrentProduct.Weight.HasValue && Model.CurrentProduct.Weight.Value > 20)
+                {
+                    <p><i class="icon_weight_thing"></i>@Model.CurrentProduct.Weight.Value.ToString("f2").Replace(".", ",") кг</p>
+                }
+            </div>
+
+            @if (Model.CurrentProduct.StoreCharacterToProducts.Any())
+            {
+
+                <h5>Характеристики</h5>
+
+
+                <div class="goods_item_properties">
+                    <div class="@(Model.CurrentProduct.ShowDescrAnim? "text-truncate":"")">
+                        @{
+                int num = 0;
+                        }
+                        @foreach (var ch in Model.CurrentProduct.StoreCharacterToProducts.Select(x => x.StoreCharacterValue))
+                        {
+
+                            <div class="char-@(num%2==0? "odd":"even")">
+                                <span>
+                                    <span style="float: left">
+                                        @ch.StoreCharacter.Name
+                                    </span>
+                                    @if (ch.StoreCharacter.Tooltip.IsFilled())
+                                    {
+                                        <i class="help-tip" content="@ch.StoreCharacter.Tooltip.ClearHTML()"></i>
+                                    }
+                                </span>
+                                <a href="#nogo" style="text-decoration: none; cursor: auto">@ch.Value</a>
+                            </div>
+                                    num++;
+                        }
+                    </div>
+                </div>
+
+            }
+            @if (Model.CurrentProduct.ShowCompare)
+            {
+                @Html.Partial("ComparatorWithWeights", new Comparator(Model.CurrentProduct.ID))
+            }
+        </div>
+    </section>
+    @Html.Action("CatalogRelatedProducts", new { ProductID = Model.CurrentProduct.ID })
+
+    <div class="clear"></div>
+    if (SiteSetting.Get<bool>("CatProductMarks"))
+    {
+        <h5>Оценка покупателей</h5>
+        @Html.Partial("ProductRating", Model.CurrentProduct)
+        {
+            ViewBag.ProductID = Model.CurrentProduct.ID;
+        }
+
+
+        @Html.Partial("~/Views/CommonBlocks/CommentsLenta.cshtml", Model.CurrentProduct.StoreProductComments.Select(x => x.Comment))
+
+
+        @*
+            @if (Model.CurrentProduct.StorePhoto3Ds.Any())
+            {
+            <div class="detailed">
+                <iframe width="120px" height="80px" frameborder="0" id="urlIframe" src="@("http://3dbin.com/Atilektprocess/" + Model.CurrentProduct.StorePhoto3Ds.First().URL + "/no")" ></iframe>
+            </div>
+            }
+        *@
+    }
+}

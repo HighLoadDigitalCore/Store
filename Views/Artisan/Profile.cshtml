@@ -1,0 +1,239 @@
+﻿@model UserProfile
+<link rel="stylesheet" type="text/css" href="/content/theme_main/css/artisan.css" />
+<style>
+    .main_content h1 {
+        display: none;
+    }
+
+    .profile h1 {
+        display: block;
+    }
+
+    .profile .profile-info {
+        clear: both;
+        overflow: hidden;
+    }
+
+        .profile .profile-info img {
+            float: left;
+            margin: 0 20px 20px 0;
+        }
+
+    .profile-info-main table td {
+        padding: 5px;
+    }
+
+        .profile-info-main table td b {
+            font-weight: bold;
+        }
+
+    .tabs {
+        clear: both;
+        overflow: hidden;
+    }
+
+    .tab {
+        border: 1px solid #444;
+        color: white;
+        background-color: #888;
+        padding: 5px 8px 7px 8px;
+        float: left;
+        margin-right: -1px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+        .tab:hover {
+            background-color: rgb(102, 102, 102);
+        }
+
+        .tab.active {
+            background-color: #444444;
+        }
+
+    .tab-cnt-cell {
+        border: 1px solid #444;
+    }
+
+    .tab-cnt {
+        padding: 15px;
+        display: none;
+    }
+
+        .tab-cnt.active {
+            display: block;
+        }
+
+    .user-gallery img {
+        height: 150px;
+        min-width: 150px;
+    }
+
+    .user-gallery {
+        clear: both;
+        overflow: hidden;
+    }
+
+    .gallery-item {
+        height: 150px;
+        width: 150px;
+        overflow: hidden;
+        border: 1px solid gray;
+        float: left;
+        margin: 0 15px 15px 0;
+    }
+
+        .gallery-item:hover img {
+            opacity: 0.6;
+        }
+
+    .LBD_CaptchaIconsDiv {
+        margin-top: 14px;
+        margin-left: 224px;
+    }
+
+    #CaptchaCode {
+        margin-top: 10px;
+        height: 24px;
+        width: 246px;
+        padding-left: 5px;
+    }
+
+    .user-form {
+        clear: both;
+        overflow: hidden;
+    }
+    .tab-cnt-cell {
+        margin-bottom: 30px;
+    }
+</style>
+<link rel="stylesheet" href="/content/theme_main/fancybox/source/jquery.fancybox.css?v=2.1.6"
+      type="text/css" media="screen" />
+<script type="text/javascript" src="/content/theme_main/fancybox/source/jquery.fancybox.pack.js?v=2.1.6"></script>
+<link rel="stylesheet" href="/content/theme_main/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7"
+      type="text/css" media="screen" />
+<script type="text/javascript" src="/content/theme_main/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+
+
+<script src="/content/theme_main/js/artisan.js"></script>
+<script>
+        $().ready(function () {
+            $.post('/Master/ru/Artisan/AddView', { userID: '@Model.UserID' });
+            $(".gallery-item a").fancybox({
+                prevEffect: 'none',
+                nextEffect: 'none',
+
+                helpers: {
+                    title: {
+                        type: 'inside'
+                    },
+                    thumbs: {
+                        width: 60,
+                        height: 60
+                    }
+                }
+            });
+        })
+    </script>
+@if (Model != null)
+{
+    <div class="profile">
+
+
+        <h1>@Model.FullName</h1>
+        <div class="profile-info">
+            <img src="@Model.GetAvatarLink(200)" />
+            <div class="profile-info-main">
+                <table>
+                    <tr>
+                        <td><b>Просмотров:</b></td>
+                        <td>@Model.ViewCount</td>
+                    </tr>
+                    <tr>
+                        <td><b>Был на сайте:</b></td>
+                        <td>@Model.MembershipUser.LastLoginDate.ToString("d MMMM yyyy")</td>
+                    </tr>
+                    <tr>
+                        <td><b>Рейтинг:</b></td>
+                        <td><span arg="@Model.UserID" class="rating-cell" rating="@Model.Rate"></span></td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <a class="el_form btn btn_green" href="/masterlist" style="margin-left: 0;">
+                                @*<i class="icon icon_l_basket"></i>*@
+                                Вернуться к поиску
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active">Контакная информация</div>
+            <div class="tab">Дополнительная информация</div>
+            <div class="tab">Фотогалерея</div>
+            <div class="tab">Отзывы</div>
+            <div class="tab">Задать вопрос</div>
+        </div>
+        <div class="tab-cnt-cell">
+            <div class="tab-cnt active">
+                <div class="profile-info-main">
+                    <table>
+                        <tr>
+                            <td><b>Электронная почта:</b></td>
+                            <td><a href="mailto:@Model.MembershipUser.Email">@Model.MembershipUser.Email</a></td>
+                        </tr>
+                        @if (Model.HomePhone.IsFilled())
+                        {
+                            <tr>
+                                <td><b>Телефон:</b></td>
+                                <td>@Model.HomePhone</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="tab-cnt">
+                <div class="profile-info-main">
+                    <table>
+                        <tr>
+                            <td><b>Города:</b></td>
+                            <td>@Model.Town</td>
+                        </tr>
+                        <tr>
+                            <td><b>Специализация:</b></td>
+                            <td>@((Model.Specs ?? "").Replace(";", ", "))</td>
+                        </tr>
+                        @if (Model.AboutMe.IsFilled())
+                        {
+                            <tr>
+                                <td><b>О себе:</b></td>
+                                <td>@Model.AboutMe</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-cnt">
+                <div class="user-gallery">
+                    @foreach (var img in Model.User.UserImages.OrderByDescending(x => x.CreateDate))
+                    {
+                        <div class="gallery-item">
+                            <a data-fancybox-group="gallery" title="@(img.Path.Split('/').LastOrDefault())" href="@img.Path"><img src="@img.Path" /></a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="tab-cnt">
+                <div class="user-form">
+                    @Html.Partial("Ask")
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+}

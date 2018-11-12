@@ -1,0 +1,25 @@
+﻿@model AnimeBlock
+@if (Model != null)
+{
+    <div style="margin: 10px; width: @(Model.Width)px; cursor: pointer; height: @(Model.Height)px; position: relative; z-index: 5; background-image: url(@(Model.Background)); background-repeat: no-repeat;" id="zone">
+        @foreach (var gear in Model.AnimeBlockItems)
+        {
+            <div class="gear" tip="@gear.Text" arg="@gear.ID" style="left: @(gear.XPos)px; top: @(gear.YPos)px">
+                @if (gear.Link.IsFilled())
+                {
+                    <a href="@gear.Link"><img src="@Model.Wheel" /></a>
+                }
+                else
+                {
+                <img src="@Model.Wheel" />    
+                }
+                
+            </div>
+        }
+        <div style="border: 1px solid rgba(80, 87, 89, 0.4); border-radius: 6px; display: none; box-shadow: 1px 1px 6px rgba(80, 87, 89, 0.298); position: absolute;z-index: 99; background-color: rgb(255, 255, 255);" id="AnimeBlockContainer">
+            <p style="font-size: 14px; color: rgb(0, 0, 0); font-family: Tahoma; font-weight: normal; padding: 18px 8px 8px; margin-top: 0px;" class="megaplashka" id="megaplashka"></p>
+            <img src="/content/theme_main/img/treug-right2.png" style="position: absolute; display: none; left: 100%; top: 20px; margin: 0px;" id="tr_right">
+            <img src="/content/theme_main/img/treug-left1.png" style="position: absolute; display: none; left: -15px; top: 20px; margin: 0px;" id="tr_left">
+        </div>
+    </div>
+}

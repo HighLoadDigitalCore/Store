@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Скачать каталог в XLS";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model ExportInfo
+@section Header
+{
+Скачать каталог
+}
+@section Description
+{
+@*На этой странице вы можете скачать каталог в виде XLS файла*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@Html.Partial("MessageBox")
+@using (Html.BeginForm("Index", "Export", new { }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+@*
+    <div class="control-group row-fluid">
+        <div class="span3">
+            <label class="control-label">Выгружать описания</label>
+        </div>
+        <div class="span9">
+            <div class="controls">
+                <label class="checkbox">
+                    @Html.CheckBox("NeedDescription", Model.NeedDescription)
+                </label>
+
+            </div>
+        </div>
+    </div>
+*@
+    <div class="control-group row-fluid">
+        <div class="span12">
+            <div class="controls">
+                <div class="backref">
+                    <input type="submit" value="Скачать каталог" name="products" style="width: 200px" class="btn" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

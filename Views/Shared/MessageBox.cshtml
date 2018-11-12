@@ -1,0 +1,16 @@
+﻿@if (ViewContext.ViewData.ModelState.Any(x => x.Value.Errors.Any(z=> z.ErrorMessage.IsFilled())))
+{
+    @*<div class="control-group row-fluid" style="padding: 0">*@
+        @*<div class="span12 span-inset" style="padding: 0">*@
+
+            <div class="alert alert-block">
+                @*<i class="icon-alert icon-alert-info"></i>*@
+                <button data-dismiss="alert" class="close" type="button">×</button>
+                <strong>
+                    @Html.Raw(ViewContext.ViewData.ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage).JoinToString("<br>"))
+                </strong>
+
+            </div>
+        @*</div>*@
+    @*</div>*@
+}

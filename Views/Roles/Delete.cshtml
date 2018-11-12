@@ -1,0 +1,51 @@
+﻿@model Role
+@{
+    ViewBag.Title = "Удаление группы пользователей";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+Удаление группы пользователей
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm())
+{
+    @Html.Partial("MessageBox")
+    <div class="form-legend">Вы уверены, что хотите удалить эту группу пользователей?</div>
+    <div class="control-group row-fluid">
+        <div class="span12">
+            <div class="controls">
+                <label class="checkbox">
+                    @Html.CheckBox("includeUsers", false)
+                    Удалить всех пользователей данной группы
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group row-fluid">
+        <div class="span12">
+            <div class="controls">
+                <span style="color: orangered;">Внимание! Удаление пользователей приведет также к удалению
+                    всех связанных с ними данных </span>
+                <br />
+                <br />
+                <input class="btn" type="submit" value="Удалить" />
+                <div class="backref">
+                    @Html.ActionLink("Назад к списку", "Index")
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

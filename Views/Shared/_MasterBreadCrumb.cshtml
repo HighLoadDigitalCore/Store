@@ -1,0 +1,32 @@
+﻿<div class="breadcrumb-container">
+    <ul class="xbreadcrumbs">
+        @if (AdminMenu.MainItem != null)
+        {
+            <li>
+                <a href="@AdminMenu.MainItem.URL">
+                    <i class="icon-photon @AdminMenu.MainItem.Icon"></i>
+                </a>
+            </li>
+        }
+        @if (AdminMenu.CurrentItem != null && AdminMenu.CurrentItem.ParentID > 0 && AdminMenu.CurrentItem.Parent != null)
+        {
+            <li>
+                <a href="@(AdminMenu.CurrentItem.Parent.Children.Any() ? "javascript:;": AdminMenu.CurrentItem.Parent.URL)" >@AdminMenu.CurrentItem.Parent.Name</a>
+                <ul class="breadcrumb-sub-nav">
+                    @foreach (var i in AdminMenu.CurrentItem.Parent.Children)
+                    {
+                        <li>
+                            <a title="@i.Name" href="@i.URL">@i.Name</a>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+        @if (AdminMenu.CurrentItem != null)
+        {
+            <li class="current">
+                <a href="javascript:;">@AdminMenu.CurrentItem.Name</a>
+            </li>
+        }
+    </ul>
+</div>

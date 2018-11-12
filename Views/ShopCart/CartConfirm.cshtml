@@ -1,0 +1,160 @@
+﻿@model ShopCart
+@{
+    var os = new OrderSteps(2);
+}
+@if (!AccessHelper.IsAuth)
+{
+    <script type="text/javascript">
+        document.location.href = '@(CMSPage.GetPageLinkByType("ShopCart"))';
+    </script>
+}
+else
+{
+    <div id="CartConfirm" style="width: 940px">
+        @if (Model.TotalSum < Model.MinSum)
+        {
+            <div class="container_12" style="margin-top: 20px">
+                <div class="messages_alert" style="display: block;">
+                    <div class="cart_exception_cost_min"><span>Минимальная сумма заказа должна быть @Model.MinSum.ToNiceDigit() руб. Положите в корзину товаров еще на сумму @((Model.MinSum - Model.TotalSum).ToNiceDigit()) руб. для успешного оформления заказа.</span></div>
+                </div>
+            </div>
+        }
+        <div class="grid_8 alpha">
+            <h2>Товары в заказе</h2>
+            <div class="basket_content goods_container">
+
+
+                <div class="basket_content goods_container">
+                    <div>
+                        @foreach (var item in Model.ActiveProducts)
+                        {
+                            <table data-count="@item.Count" data-item_id="@item.ProductID" class="clearfix goods_view_check preview_text ">
+                                <tbody>
+                                    <tr>
+                                        <td class="goods_data">@item.StoreProduct.NameOrDef</td>
+                                        <td class="count">
+                                            <div class="goods_form">
+                                                <div class="el_form-quantity">
+                                                    <a class="el_form small btn bradius_c-r reduce"><i class="icon icon_minus"></i></a>
+                                                    <input readonly="readonly" type="text" class="el_form small bradius_c-r bradius_c-l" min="1" name="count" value="@item.Count"><a class="el_form small btn bradius_c-l increase"><i class="icon icon_plus"></i></a>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                        <td class="price">
+                                            <h3 class="color_black">@item.StoreProduct.TradingPriceForCart&nbsp;руб.</h3>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            @*
+    <div class="color_gray text_12">
+        <p></p>
+        <div class="order_check_info_icon"><i class="icon_card_pay_info"></i></div>
+        <span class="order_check_info_text">Подтверждая заказ, вы принимаете порядок приема-передачи товаров.
+                       
+            <a id="page_offer" href="/info/delivery-and-payment">Подробнее</a></span><p></p>
+        <p>
+            Заказы доставляются нами в указанное Вами место и время
+            для того, чтобы Вы могли с ними ознакомиться и принять
+            решение о покупке. Вы не принимаете на себя никаких
+            обязательств по покупке товаров и можете в любой момент
+            отказаться от непонравившихся товаров.
+               
+        </p>
+        <p>
+            При этом, торговая сеть «Утконос» связана обязательствами
+            по доставке товаров, но не принимает на себя обязательств
+            по продаже товаров до момента Вашего ознакомления с товарами
+            и решения их купить.
+               
+        </p>
+    </div>
+*@
+        </div>
+        <div class="grid_4 omega">
+            <div class="bradius_5 clearfix order_check_info">
+                <h2>Информация</h2>
+                <div class="content">
+                    <div class="bg"></div>
+                    <div class="bg_bottom"></div>
+                    <div class="omega">
+                        <h3 class="color_gray">Ваш заказ</h3>
+                        @Model.TotalCount товар@(Model.TotalCount.GetStringPostfix(WordKind.Man))
+                        @if (Model.TotalWeight > 0)
+                        {
+                            <br>
+                            @Html.Raw(Model.TotalWeight.ToString("f2") + " кг")
+                        }
+                        <h3 class="price order_sum"><span class="basesum">@Model.TotalSum.ToNiceDigit() руб.</span>@*<span class="discounted">2 173,60 руб.</span>*@</h3>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="omega">
+                        <h3 class="color_gray">Доставка</h3>
+                        @Model.SelectedAddress
+                        @*                <h3 class="price delivery_sum" data-price_def="149"><span class="free">Бесплатно</span><span class="value">149,00 руб.</span></h3>*@
+                    </div>
+                    <div class="clear"></div>
+                    <div class="omega">
+                        <h3 class="color_gray">Итого к оплате<br />
+                            (с учетом скидок):</h3>
+                        <h3 class="price full_sum">@Model.TotalSumForOrder.ToNiceDigit() руб.</h3>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="omega phone_confirm confirmed">
+                        <h3 class="color_gray">E-mail: </h3>
+                        <h3 class="phone_number">
+                            <a href="@CMSPage.GetPageLinkByType("Cabinet")" title="Изменить E-mail">
+                                @HttpContext.Current.GetCurrentUser().MembershipData.Email
+                            </a>
+                        </h3>
+
+                    </div>
+                    <div class="clear"></div>
+                    <div class="omega phone_confirm confirmed">
+                        <h3 class="color_gray">Телефон: </h3>
+                        <h3 class="phone_number">
+                            <a href="@CMSPage.GetPageLinkByType("Cabinet")" title="Изменить номер">
+                                @HttpContext.Current.GetCurrentUser().Phone
+                            </a>
+
+                        </h3>
+                        @*<button class="phone_change_modal el_form btn" name="phone_change_show">Изменить номер</button>*@
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                @*
+        <div class="promocode_block">
+            <form action="/promocode/input" class="promocode_form container_float">
+                <div class="promocode_input_wrapper">
+                    <input type="text" value="" placeholder="Промо код" name="code" autocomplete="off" class="el_form small grid_2 promocode_input">
+                </div>
+                <input type="hidden" value="" class="hidden autocoupon" name="autocoupon"><i class="icon_g_promocod"></i>
+                <button type="submit" class="el_form small btn">Добавить</button><div class="tooltip error">
+                    <p>Только на заказы свыше <b style="white-space: nowrap;" class="promocode_min_cost">0&nbsp;руб.</b></p>
+                </div>
+            </form>
+        </div>
+*@
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div class="order_nav clearfix">
+            <div class="order_nav-prev_step">
+                <a href="@os.PrevStepUrl" class="el_form large btn btn_multi">Вернуться назад
+                                       
+                    <span class="text_11">выбор адреса доставки</span></a>
+            </div>
+            <div class="order_nav-next_step">
+                <a href="@(Model.TotalSum >= Model.MinSum ? os.NextStepUrl : "#nogo")" class="el_form large btn btn_multi btn_orange @(Model.TotalSum < Model.MinSum ? "disabled" : "btn_orange")">Следующий шаг
+                    <span class="text_11">выбор способа оплаты</span></a>
+            </div>
+        </div>
+    </div>
+}

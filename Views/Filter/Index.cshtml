@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Список фильтров";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+@section Header{
+    Фильтры
+}
+@section Description
+{
+    @*На этой странице отображаются все настраиваемы фильтры для каталога*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@model IList<Smoking.Models.Filter>
+<fieldset>
+    <table style="width: 100%" class="mygrid">
+        <tbody>
+            <tr>
+                <th>
+                    <div class="form-legend">
+                        Их месторасположение
+                    </div>
+                </th>
+                <th>
+                    <div class="form-legend">
+                        Характеристики
+                    </div>
+                </th>
+                <th class="last-td">
+                    <div class="form-legend">&nbsp;</div>
+                </th>
+            </tr>
+            @{
+                var counter = 0;
+            }
+            @foreach (var filter in Model)
+            {
+                <tr class="@(counter%2 == 0 ? "even":"odd") ">
+                    <td>
+                        <div class="cell-content">
+                            <a title="Задать месторасположение" href="/Master/ru/Filter/Edit/@filter.ID">@filter.SectionName</a>
+                        </div>
+                    </td>
+                    <td class="td-edit">
+                        <div class="cell-content cell-content-edit">
+                            <a title="Настройка фильтра" href="/Master/ru/Filter/Items?FilterID=@filter.ID">настройка</a>
+                        </div>
+                    </td>
+                    <td class="td-delete">
+                        <div class="cell-content cell-content-delete">
+                            <a title="Удалить фильтр" href="/Master/ru/Filter/Delete/@filter.ID">удалить</a>
+                        </div>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </tbody>
+    </table>
+    <br>
+    <input type="hidden" id="page" value="0">
+</fieldset>
+<div class="backref-tbl">
+    <a href="/Master/ru/Filter/Edit" class="btn">Добавить</a>
+</div>
+

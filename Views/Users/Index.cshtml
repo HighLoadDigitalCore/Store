@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Управление пользователями";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model PagedData<User>
+@section Header
+{
+    Список пользователей сайта
+}
+@section Description
+{
+    @*На этой странице отображаются все пользователи, зарегистрированные на сайте*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@Html.Partial("MessageBox")
+@using (Html.BeginForm())
+{
+    <div class="form-legend">Фильтр пользователей</div>
+    <div class="control-group row-fluid">
+        <div class="span3">
+            <label class="control-label">Выберите группу пользователей:</label>
+        </div>
+        <div class="span9">
+            <div class="controls">
+                @Html.DropDownList("role", ViewBag.Roles as SelectList)
+            </div>
+        </div>
+    </div>
+    <div class="control-group row-fluid">
+        <div class="span3">
+            <label class="control-label">EMail, Фамилия, Имя (или их часть):</label>
+        </div>
+        <div class="span9">
+            <div class="controls">
+                @Html.TextBox("query")
+                <input type="submit" class="btn" value="Найти" style="margin: 0 0 10px 0" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="control-group row-fluid">
+    <fieldset>
+        <table class="mygrid" style="width: 100%;">
+            <tr>
+                <th><div class="form-legend">ФИО</div></th>
+                <th><div class="form-legend">Логин</div></th>
+                <th><div class="form-legend">EMail</div></th>
+                <th class="last-td"><div class="form-legend">&nbsp;</div></th>
+            </tr>
+            @{
+                var counter = 0;
+            }
+            @foreach (var user in Model)
+            {
+
+                <tr class="@(counter%2 == 0 ? "even":"odd") @(counter == Model.Count() - 1 ? "last-grid-row":"")">
+                    <td><div class="cell-content">@Html.ActionLinkQuery(user.Profile.FullName, "Edit", "Users", new[] { "role", "page", "query" }, new { user = user.UserId })</div></td>
+                    <td><div class="cell-content">@user.UserName</div></td>
+                    <td><div class="cell-content">@user.Profile.Email</div></td>
+                    <td class="td-delete"><div class="cell-content cell-content-delete">@Html.ActionLinkQuery("удалить", "Delete", "Users", new[] { "role", "page", "query" }, new { user = user.UserId })</div></td>
+                </tr>
+                counter++;
+            }
+        </table>
+        <br />
+        @Html.Raw(Model.PagerMenu(Html))
+    </fieldset>
+</div>
+@Html.ActionLinkQuery("Создать пользователя", "Edit", "Users", new[] { "role", "page", "query" }, new { user = new Guid() }, new { @class = "btn" })
+

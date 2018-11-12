@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Список сообщений";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model ChatEditor
+@section Header
+{
+Список сообщений
+}
+@section Description
+{
+@*Выберите переписку, чтобы увидеть список сообщений и добавить ответ*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@Html.Partial("Editor", Model)

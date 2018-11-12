@@ -1,0 +1,17 @@
+﻿@model IEnumerable<CMSPageVideo>
+@foreach (var video in Model)
+{
+    <div class="video-block">
+        <input type="hidden" class="video-name" value="@video.Name"/>
+        <input type="hidden" class="video-description" value="@video.Description"/>
+        <input type="hidden" class="video-preview" value="@video.PreviewPath"/>
+        <object type="application/x-shockwave-flash" data="/content/Video/uppod.swf" width="@video.Width" height="@video.Height" id="playerCell" style="visibility: visible;">
+            <param name="bgcolor" value="#ffffff">
+            <param name="wmode" value="window">
+            <param name="allowFullScreen" value="true">
+            <param name="allowScriptAccess" value="always">
+            <param name="flashvars" value="file=@video.FilePath&amp;poster=@video.PreviewPath&amp;st=/content/Video/video84-2262.txt">
+        </object>
+        <br />
+    </div>
+}

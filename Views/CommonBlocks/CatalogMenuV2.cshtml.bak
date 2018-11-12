@@ -1,0 +1,129 @@
+﻿
+@{
+    var root = CatalogBrowser.Root;
+    var browser = CatalogBrowser.Init();
+}
+<div class="catalog-menu-2">
+
+    <div class="categ_menu menu_shadow" style="border-width: 1px medium 1px 1px; border-right: medium none;">
+        <div class="c_menu_wrapper">&nbsp;</div>
+        <div id="catlist" style="display: block;">
+            @{
+                var counter = 1;
+                var l0 = CatalogBrowser.CategoriesList.Where(x => x.Value.ShowInMenu && x.Value.ParentID == root.ID).Select(x=> x.Value).OrderBy(x=> x.OrderNum).ToList();
+            }
+            @foreach (var pg in l0)
+            {
+                <div id="leaf-@pg.ID" class="@(browser.ParentIds.Contains(pg.ID) ? "" : "")@(counter == l0.Count() ? "last-menu-item":"")">
+                    <a href="@pg.FullUrl">
+                        <img src="@pg.MenuImageUrl&width=40&height=40&backColor=#FFFFFF" width="35" height="35" />
+                        <span>@pg.Name</span>
+                    </a>
+                </div>
+                counter++;
+            }
+
+
+        </div>
+
+        <div id="leaflist">
+
+            @foreach (var pg in l0)
+            {
+                var l1 = CatalogBrowser.CategoriesList.Where(x => x.Value.ShowInMenu && x.Value.ParentID == pg.ID).Select(x=> x.Value).OrderBy(x=> x.OrderNum).ToList();
+                if (l1.Any())
+                {
+                    <div id="leaf-@pg.ID-child" class="items" style="display: none;">
+                        <div class="itemcol il-1">
+
+                            <ul>
+                                @foreach (var l2 in l1)
+                                {
+                                    <li arg="@l2.ID">
+                                        <div id="picbox" class="picbox">
+                                            <img src="@l2.MenuImageUrl&width=50&height=50&backColor=#F6F6F6" width="45" height="45" />
+                                        </div>
+                                        <a href="@l2.FullUrl" class="link2lev">@l2.Name</a>
+                                        @{ var l3 = CatalogBrowser.CategoriesList.Where(x => x.Value.ShowInMenu && x.Value.ParentID == l2.ID).Select(x=> x.Value).OrderBy(x=> x.OrderNum).ToList();}
+                                        @if (l3.Any())
+                                        {
+                                            
+                                            <div id="leaflist" parent="@l2.ID">
+                                            <div id="leaf-@pg.ID-child" class="items" style="display: none;">
+                                                <div class="itemcol">
+                                                    <ul class="ul3lev">
+                                                        @foreach (var l4 in l3)
+                                                        {
+                                                            <li class="leaf" arg="@l4.ID">
+                                                                <div id="picbox" class="picbox">
+                                                                    <img src="@l4.MenuImageUrl&width=50&height=50&backColor=#F6F6F6" width="45" height="45" />
+                                                                </div>
+
+                                                                <a href="@l4.FullUrl">@l4.Name</a>
+
+                                                                @{ var l5 = CatalogBrowser.CategoriesList.Where(x => x.Value.ShowInMenu && x.Value.ParentID == l4.ID).Select(x => x.Value).OrderBy(x=> x.OrderNum).ToList();}
+                                                                @if (l5.Any())
+                                                                {
+                                                                    <div id="leaflist" parent="@l4.ID">
+                                                                        <div id="leaf-@pg.ID-child" class="items" style="display: none;">
+                                                                            <div class="itemcol">
+                                                                                <ul class="ul4lev">
+                                                                                    @foreach (var l6 in l5)
+                                                                                    {
+                                                                                        <li class="leaf" arg="@l6.ID">
+                                                                                            <div id="picbox" class="picbox">
+                                                                                                <img src="@l6.MenuImageUrl&width=50&height=50&backColor=#F6F6F6" width="45" height="45" />
+                                                                                            </div>
+
+                                                                                            <a href="@l6.FullUrl">@l6.Name</a>
+                                                                                            @{ var l7 = CatalogBrowser.CategoriesList.Where(x => x.Value.ShowInMenu && x.Value.ParentID == l6.ID).Select(x => x.Value).OrderBy(x=> x.OrderNum).ToList();}
+                                                                                            @if (l7.Any())
+                                                                                            {
+                                                                                                <div id="leaflist" parent="@l6.ID">
+                                                                                                    <div id="leaf-@pg.ID-child" class="items" style="display: none;">
+                                                                                                        <div class="itemcol">
+                                                                                                            <ul class="ul5lev">
+                                                                                                                @foreach (var l8 in l7)
+                                                                                                                {
+                                                                                                                    <li class="leaf" arg="@l8.ID">
+                                                                                                                        <div id="picbox" class="picbox">
+                                                                                                                            <img src="@l8.MenuImageUrl&width=50&height=50&backColor=#F6F6F6" width="45" height="45" />
+                                                                                                                        </div>
+
+                                                                                                                        <a href="@l8.FullUrl">@l8.Name</a>
+
+                                                                                                                    </li>
+                                                                                                                }
+                                                                                                            </ul>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            }
+
+                                                                                        </li>
+                                                                                    }
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="clear"></div>
+    </div>
+
+</div>

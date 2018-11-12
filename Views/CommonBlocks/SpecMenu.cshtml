@@ -1,0 +1,16 @@
+﻿@model IEnumerable<CMSPageMenuCustom>
+@if (Model.Any())
+{
+    <div class="container_12" id="module_content_action_top">
+        @foreach (var spec in Model)
+        {
+            <div class="grid_4">
+                <a class="action_preview" href="@spec.URL">
+                    <img src="@UniversalEditorPagedData.GetImageWrapper("CMSPageMenuCustom", "ID", spec.ID.ToString(), "Image")"></a>    
+                <a class="action_title" href="@spec.URL">@spec.Name</a>@Html.Raw(spec.Description)
+            </div>
+            
+        }
+
+    </div>    
+}

@@ -1,0 +1,81 @@
+﻿@model StoreProduct
+@{
+    var shopcart = (ShopCart)ViewBag.ShopCart;
+    var isFavorite = ViewBag.IsFavorite is bool && (bool)ViewBag.IsFavorite;
+}
+@if (Model != null)
+{
+    <div itemscope itemtype="http://schema.org/Product" itemprop="itemListElement" data-item_id="@Model.ID" data-is_favorite="@Model.IsUserFavorite" class="goods-cell goods_view_line goods_view_row @(Model.Weight.HasValue && Model.Weight.Value > 0 ? "has_weight" : "") @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "selected" : "")">
+        @if (isFavorite)
+        {
+            <div class="in_product_control">
+                <label class="selector_container">
+                    <input type="checkbox" value="@Model.ID" name="cbx_@Model.ID" class="selector"><span>Выбрать</span>
+                </label><span arg="@Model.ID" class="deleter icon_list_delete" title="Удалить"></span>
+            </div>
+        }
+        @if (HttpContext.Current.User.Identity.IsAuthenticated)
+        {
+            <div data-goodsid="@Model.ID" class="goods_favorite @(Model.IsUserFavorite == 1 ? "active" : "")">
+                <div></div>
+                <i class="icon_g_favorite-empty"></i>
+            </div>
+        }
+        <div class="goods_pic">
+            <div class="icon_goods @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "goods_in_basket" : "")">@shopcart.ActiveProducts.Where(x => x.ProductID == Model.ID).Sum(x => x.Count)</div>
+            <a href="@Model.FullUrl">
+                <img src="@Model.GetThumbURL(50, 50, skiplogo: true)" alt="@Model.DefaultAlt">
+            </a>
+        </div>
+
+
+        <div class="goods_form">
+            <div class="price-wrap">
+
+                <div class="price color_black">
+                    <div itemtype="http://schema.org/Offer" itemscope itemprop="offers">
+                        @Model.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp; руб.</span>
+                        <meta content="@Model.PriceModule.ShopCartPrice.ToNiceDigit().Replace(" ", "")" itemprop="price">
+                        <meta content="RUB" itemprop="priceCurrency">
+
+                    </div>
+                </div>
+            </div>
+            <div class="el_form-quantity">
+                <a class="el_form small btn disabled bradius_c-r reduce"><i class="icon icon_minus"></i></a>
+                <input type="text" class="el_form small bradius_c-r bradius_c-l" min="1" name="count" value="1">
+                <a class="el_form small btn bradius_c-l increase"><i class="icon icon_plus"></i></a>
+            </div>
+            <button spec="0" arg="@Model.ID" rel="to-cart" class="el_form small btn @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "В корзине" : "Купить")</button>
+        </div>
+        <div class="goods_data">
+            <a itemprop="url" title="@Model.NameOrDef" class="goods_caption" href="@Model.FullUrl">@Model.NameOrDef</a>
+            <meta content="@Model.NameOrDef" itemprop="name" />
+
+            <div class="goods_view_line_sign">
+                @if (Model.NeedShowArticle)
+                {
+                    <div class="signature text_11">Артикул: @Model.Article</div>
+                }
+
+                @Html.Partial("~/Views/ClientCatalog/Comparator.cshtml", new Comparator(Model.ID))
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+}
+
+@*
+    @if (Model.CharactersForList.Any())
+    {
+        <div class="goods_addition goods_addition_chars">
+            @foreach (var c in Model.CharactersForList)
+            {
+                <div class="char">
+                    <div class="char-name">@c.StoreCharacter.Name:</div>
+                    <div class="char-value">@c.Value</div>
+                </div>
+            }
+        </div>
+    }
+*@

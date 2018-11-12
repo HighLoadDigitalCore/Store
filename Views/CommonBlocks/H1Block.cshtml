@@ -1,0 +1,6 @@
+﻿@{
+    var catalogBrowser = CatalogBrowser.Init();
+}
+<h1>
+    @(catalogBrowser.IsProductPage ? catalogBrowser.CurrentProduct.PageH1 : (catalogBrowser.IsCategoryPage && catalogBrowser.CurrentCategory.ID>1 ? catalogBrowser.CurrentCategory.PageHeader : AccessHelper.CurrentPageInfo.FullPageName))
+</h1>

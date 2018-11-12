@@ -1,0 +1,75 @@
+﻿@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "Курс валюты";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+    @ViewBag.Title
+}
+@section Description
+{
+    @*На этой странице можно задать различные настройки системы*@
+}
+@section Preview
+{
+    <a class="previewsite preview-link" target="_blank" href="@AccessHelper.SiteUrl"><img src="/content/admin/eye-pict.png">Посмотреть на сайте</a>
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $().ready(function () {
+            checkAutoRate($('#AutoCurrencyRate'));
+        })
+
+        function checkAutoRate(obj) {
+            if ($(obj).is(':checked')) {
+                $('#CurrencyRate').attr('disabled', 'disabled');
+            } else {
+                $('#CurrencyRate').removeAttr('disabled');
+            }
+        }
+
+        function checkCurrency() {
+            $('#CurrencyRate').val($('#CurrencyRate').val().replace(',', '.'));
+        }
+    </script>
+}
+<div class="filter-block">
+    @using (Html.BeginForm())
+    {
+        @Html.Partial("MessageBox")
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Курс валюты:</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBox("CurrencyRate", (decimal)ViewBag.CurrencyRate)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Использовать курс евро ЦБРФ:</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.CheckBox("AutoCurrencyRate", (bool)ViewBag.AutoCurrencyRate, new { onchange = "checkAutoRate(this)" })
+                </div>
+            </div>
+        </div>
+    <input type="submit" class="btn" value="Сохранить изменения" onclick="checkCurrency(); return true;" />
+    }
+</div>

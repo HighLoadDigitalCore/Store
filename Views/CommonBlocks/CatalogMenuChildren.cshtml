@@ -1,0 +1,63 @@
+﻿@model CatalogMenu
+<div class="megamenu_content">
+        @foreach (var pg in Model.FirstLevel)
+        {
+            var children = pg.GetChildren<SiteMapItem>();
+            if (children.Any())
+            {
+
+                <div data-catalogueparent="@pg.ID">
+                    @Html.Raw(pg.Description)
+                    @{var left = children.GetHalfOf<SiteMapItem>(true);}
+                    <div class="wrap_left">
+                        @foreach (var page in left)
+                        {
+                            <div>
+                                <a title="@page.Title" href="@page.Link">@page.Name</a>
+                                @{ var thl = page.GetChildren<SiteMapItem>().Take(3).ToList();
+                                }
+                                @if (thl.Any())
+                                {
+                                    <div class="catalogue_level3">
+                                        @foreach (var thlc in thl)
+                                        {
+                                            <a title="@thlc.Title" href="@thlc.Link">@thlc.Name</a>
+                                            @Html.Raw("&nbsp;")
+
+                                        }
+                                        <a href="@page.Link">...</a>
+                                    </div>    
+                                }
+
+                            </div>
+                        }
+                    </div>
+                    @{var right = children.GetHalfOf<SiteMapItem>(false);}
+                    <div class="wrap_right">
+                        @foreach (var page in right)
+                        {
+                            <div>
+                                <a title="@page.Title" href="@page.Link">@page.Name</a>
+                                @{ var thl = page.GetChildren<SiteMapItem>().Take(3).ToList();
+                                }
+                                @if (thl.Any())
+                                {
+                                    <div class="catalogue_level3">
+                                        @foreach (var thlc in thl)
+                                        {
+                                            <a title="@thlc.Title" href="@thlc.Link">@thlc.Name</a>
+                                            @Html.Raw("&nbsp;")
+
+                                        }
+                                        <a href="@page.Link">...</a>
+                                    </div>    
+                                }
+
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            }
+        }
+    </div>

@@ -1,0 +1,223 @@
+﻿@{
+    ViewBag.Title = "Настройка фильтра";
+    Layout = "~/Views/Shared/_Master.cshtml";
+    var animeBlock = (AnimeBlock)ViewBag.Anime;
+}
+
+@section Header{
+    Настройка анимационного блока
+}
+@section Description
+{
+    На этой странице можно задать расположение подсказок и их тексты
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@model IList<AnimeBlockItem>
+<fieldset>
+    <table style="width: 100%" class="">
+        <tbody>
+            <tr>
+                <td>
+                    <div class="origin-gear" style="position: relative">
+                        <span>Перетащите шестеренку на изображение:</span>
+                        <div id="dragItem" arg="0">
+                            <img src="@animeBlock.Wheel" />
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="Wheel" value="@animeBlock.Wheel" />
+                    <input type="hidden" id="ID" value="@animeBlock.ID" />
+                    <input type="hidden" id="Width" value="@animeBlock.Width" />
+                    <input type="hidden" id="Height" value="@animeBlock.Height" />
+                    <div style="position: relative; width: @(animeBlock.Width + 20)px; height: @(animeBlock.Height + 20)px;">
+                        <div class="drop-area" id="dropArea" style="width: @(animeBlock.Width)px; height: @(animeBlock.Height)px; background-image: url('@(animeBlock.Background)');position: absolute; margin-top: ">
+
+                            @foreach (var gear in Model)
+                            {
+                                <div class="gear" tip="@gear.Text" arg="@gear.ID" style="left: @(gear.XPos)px; top: @(gear.YPos+40)px">
+                                    <img src="@animeBlock.Wheel" />
+                                </div>
+                            }
+
+                            <div style="border: 1px solid rgba(80, 87, 89, 0.4); border-radius: 6px; display: none; width: 300px; opacity: 1; box-shadow: 1px 1px 6px rgba(80, 87, 89, 0.298); position: absolute; left: 18%; top: 24%; z-index: 99; background-color: rgb(255, 255, 255);" id="PointEditor">
+                                <p style="font-size: 14px; color: rgb(0, 0, 0); font-family: Tahoma; font-weight: normal; padding: 18px 8px 8px; margin-top: 0px;" class="megaplashka" id="megaplashka">
+                                    <a href="#" style="float: right" onclick="deletePoint(); return false;">Удалить</a>
+                                    <input type="text" id="PointLink" placeholder="Ссылка на страницу" />
+                                    <textarea id="PointContent" placeholder="Описание"></textarea>
+                                    <button onclick="savePoint(); return false;">Сохранить</button>
+
+                                </p>
+                                <img src="/content/theme_main/img/treug-right2.png" style="position: absolute; display: none; left: 100%; top: 24%; margin: 0px;" id="tr_right">
+                                <img src="/content/theme_main/img/treug-left1.png" style="position: absolute; display: block; left: -5%; top: 30px; margin: 0px;" id="tr_left">
+                            </div>
+
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</fieldset>
+
+<div class="backref" style="padding-left: 10px">
+    @Html.ActionLink("Назад к списку блоков", "Index", "Anime")
+</div>
+<style>
+    .drop-area {
+        margin: 10px;
+        border: 3px solid darkgray;
+    }
+
+    .gear {
+        position: absolute;
+    }
+
+    .origin-gear {
+        width: 100%;
+        margin: 10px 10px;
+        z-index: 10000;
+        height: 40px;
+    }
+
+        .origin-gear span {
+            float: left;
+            display: block;
+            margin-top: 7px;
+            font-weight: bold;
+        }
+
+        .origin-gear div {
+            float: left;
+        }
+
+    .megaplashka {
+        position: relative;
+        z-index: 99;
+    }
+</style>
+<script type="text/javascript">
+
+    function deletePoint() {
+
+        $.post('/Master/ru/Anime/DeletePoint', { id: $('#PointEditor').attr('arg') }, function (d) {
+            if (d == '1') {
+                $('#PointEditor').hide();
+                $('.gear[arg="' + $('#PointEditor').attr('arg') + '"]').remove();
+            }
+        });
+    }
+
+    function savePoint() {
+        $.post('/Master/ru/Anime/SavePoint', { id: $('#PointEditor').attr('arg'), Link: $('#PointEditor').find('input[type="text"]').val(), Text: $('#PointEditor').find('textarea').val() }, function (d) {
+            if (d == '1') {
+                $('#PointEditor').hide();
+            }
+        });
+    }
+
+    $().ready(function () {
+        $('.gear').each(function () {
+            $(this).draggable({ revert: 'invalid' }).click(function () {
+                showEdit($(this));
+            });
+
+        });
+
+        $('#dragItem').draggable({ revert: false });
+        $('#PointEditor').click(function (e) {
+            e.stopPropagation();
+        });
+        $('#dropArea').click(function () {
+            $('#PointEditor').hide();
+        }).droppable({
+            tolerance: 'fit',
+            drop: function (event, ui) {
+
+                /*
+                                var offset = $(this).offset(),
+                                    x = event.pageX - offset.left,
+                                    y = event.pageY - offset.top /* + $('.origin-gear').outerHeight() + 10#1#;
+                                console.log(y);
+                */
+
+
+
+                var x = parseInt($(ui.draggable).css('left').replace('px', ''));
+                var y = parseInt($(ui.draggable).css('top').replace('px', ''));
+
+                if ($(ui.draggable).attr('arg') == '0') {
+                    var offset = $(this).offset();
+                    x = event.pageX - offset.left - 10;
+                    y = event.pageY - offset.top - 10;
+                }
+
+                y -= $('.origin-gear').outerHeight();
+
+                if (x < 0)
+                    x = 0;
+                if (y < 0)
+                    y = 0;
+
+                var mh = parseInt($('#Height').val());
+                var mw = parseInt($('#Width').val());
+
+                /*
+                                if (y > mh) {
+                                    y = mh;
+                                }
+
+                                if (x > mw) {
+                                    x = mw;
+                                }
+                */
+
+                var id = parseInt($(ui.draggable).attr('arg'));
+
+                $.post('/Master/ru/Anime/SavePos', { id: id, x: x, y: y, aid: $('#ID').val() }, function (data) {
+                    if (id == 0) {
+                        var html = $('<div class="gear" tip=""><img/></div>');
+                        $(html).find('img').attr('src', $('#Wheel').val());
+                        $(html).css('left', x + 'px');
+                        $(html).css('top', (y + $('.origin-gear').outerHeight()) + 'px');
+                        $(html).attr('arg', data);
+                        $('#dropArea').append(html);
+                        $(ui.draggable).css('top', 0).css('left', 0);
+
+                        createEditable(html);
+                    } else {
+                        $('.gear[arg="' + id + '"]').css('left', x + 'px').css('top', (y + $('.origin-gear').outerHeight()) + 'px');
+                    }
+                });
+
+            }
+        });
+    });
+
+    function createEditable(obj) {
+        $(obj).draggable({ revert: 'invalid' }).click(function () {
+            showEdit($(this));
+        });;
+    }
+
+    function showEdit(obj) {
+        $.post('/Master/ru/Anime/ReadPoint', { id: obj.attr('arg') }, function (d) {
+            $('#PointEditor').css('left', (obj.css('left').replace('px', '') * 1 + 40) + 'px').css('top', (obj.css('top').replace('px', '') * 1 - 35));
+            $('#PointEditor').attr('arg', obj.attr('arg'));
+            $('#PointEditor').find('textarea').val(d.Text);
+            $('#PointEditor').find('input[type="text"]').val(d.Link);
+            $('#PointEditor').show();
+        });
+    }
+</script>

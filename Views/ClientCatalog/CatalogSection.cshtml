@@ -1,0 +1,69 @@
+﻿@model StoreCategory
+@{
+    var shopcart = new ShopCart().InitCart();
+    ViewBag.ShopCart = shopcart;
+    var list = Model.ProductList;
+    /*var searcher = new CommonSearch("search_field_text form-search_inner_wide");*/
+    var parents = new List<StoreCategory>();
+    var browser = CatalogBrowser.Init();
+    if (Model.Parent != null)
+    {
+        parents = Model.Children.Any() ? Model.Children.ToList() : Model.Parent.Children.OrderBy(x => x.Name).ToList();
+    }
+}
+@if (parents.Any())
+{
+    @Html.Partial("CatalogChildren", parents)
+    @Html.Partial("CatalogFilterV2", browser.GetFilter(browser.CurrentCategory.ID, HttpContext.Current.Request))
+}
+
+@if (list.Any())
+{
+    var order = Request.Cookies["ProductOrder"];
+    var orderVal = order != null ? order.Value : "Cheap";
+    <div class="goods_sort">
+        <div class="sort-block">Сортировать по: </div> <div class="sort-block">
+            <a class="sorter" href="#" arg="@(orderVal == "Cheap" ? "CheapDesc":"Cheap")"><span class="order-text">цене</span>@(Html.Raw(orderVal == "Cheap" ? "<span class='order-darr'></span>" : (orderVal == "CheapDesc" ? "<span class='order-uarr'></span>" : "")))</a>
+        </div>
+        <div class="sort-block">|</div>
+        <div class="sort-block">
+            <a class="sorter" href="#" arg="@(orderVal == "AlphaBet" ? "AlphaBetDesc" : "AlphaBet")"><span class="order-text">популярности</span>@(Html.Raw(orderVal == "AlphaBet" ? "<span class='order-darr'></span>" : (orderVal == "AlphaBetDesc" ? "<span class='order-uarr'></span>" : "")))</a>
+        </div>
+        <label class="el_switcher el_form small view-switches">
+            @for (int i = 2; i >= 0; i--)
+            {
+                <a arg="@i" class="view-switch v@(i) @(Model.CatalogFilter.ProductList == i ? "active":"")" title="@(i==0 ? "Отображать таблицей":(i==1?"Отображать плитками":"Отображать списком"))"></a>
+            }
+            @*
+            @if (Model.CatalogFilter.ProductList == 1)
+            {
+                <input type="checkbox" checked="checked" name="ProductList" id="ProductList">
+                <span class="el_form small btn btn_green"><i class="icon_l_list"></i></span>
+                <div class="icon_block"></div>
+            }
+            else
+            {
+                <input type="checkbox" name="ProductList" id="ProductList">
+                <span class="el_form small btn btn_green"><i class="icon_l_block"></i></span>
+                <div class="icon_list"></div>
+            }
+            *@
+        </label>
+
+    </div>
+
+    @*@Html.Partial("~/Views/CommonBlocks/Search.cshtml", searcher)*@
+
+    <div class="goods_container">
+
+        @foreach (var product in list)
+        {
+            @Html.Partial(Model.CatalogFilter.ProductView, product)
+        }
+    </div>
+    @list.PagerMenu(Html)
+}
+else
+{
+    <h3>В этом разделе пока нет товаров.</h3>
+}

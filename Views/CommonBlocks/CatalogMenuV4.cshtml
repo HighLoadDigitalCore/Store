@@ -1,0 +1,52 @@
+﻿@model CatalogMenu
+@{
+    var browser = CatalogBrowser.Init();
+}
+
+<ul id="nav">
+    @foreach (var pg in Model.FirstLevel)
+    {
+        <li class="menu-item">
+            <div class="itemMenuClass">
+                <img class="menu-img" src="@pg.Image" />
+                <span class="itemMenuText">@pg.Name</span>
+            </div><span class="shHide"></span>
+            @{ var l2 = pg.GetChildren<SiteMapItem>();}
+            @if (l2.Any())
+            {
+                <div class="dspl_o submenu nowrap smenu-col-block" style="display: none">
+                    <a class="fst-b fs-13 dspl_b mt-5 mb-5" href="@pg.Link">@pg.Name</a>
+                    <ul class="nowrap">
+                        @for (int i = 0; i < 3; i++)
+                        {
+                            <li class="dspl_ib valign-t wrap-norm smenu-col">
+                                <ul class="subcats">
+                                    @foreach (var l2i in l2.GetThirdOf<SiteMapItem>(i))
+                                    {
+                                        var l3 = l2i.GetChildren<SiteMapItem>();
+                                        <li>
+                                            <div class="@(l3.Any() ? "showSubCat" : "emptySubCat")" onclick="@(l3.Any() ? "toggleCat(this);" : "")">
+                                            </div>
+                                            <a href="@l2i.Link">@l2i.Name</a> (@browser.GetCount(@l2i.ID))
+                                            @if (l3.Any())
+                                            {
+                                                <ul class="childs">
+                                                    @foreach (var l3i in l3)
+                                                    {
+                                                        <li>
+                                                            <a href="@l3i.Link">@l3i.Name</a> (@browser.GetCount(@l3i.ID))
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul><br class="a-clear-b">
+                </div>
+            }
+        </li>
+    }
+</ul>

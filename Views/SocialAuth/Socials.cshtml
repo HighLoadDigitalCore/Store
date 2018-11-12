@@ -1,0 +1,13 @@
+﻿@model SocialAuthResult
+@if (!AccessHelper.IsAuth)
+{
+    if (!Model.NeedHide)
+    {
+        <script src="//ulogin.ru/js/ulogin.js"></script>
+        <div id="uLogin" data-ulogin="display=panel;fields=first_name,last_name,email,nickname,photo,photo_big;providers=vkontakte,facebook,odnoklassniki,mailru,twitter;hidden=;redirect_uri=http%3A%2F%2F@(Request.Url.Host)@(AccessHelper.CurrentPageInfo.CurrentPage.FullUrl.Replace("/", "%2F"))%3Ffrom%3D@(AccessHelper.CurrentPageInfo.CurrentPage.URL)"></div>
+    }
+    if (Model.HasResult)
+    {
+        <input type="hidden" value="@Model.Message" arg="@Model.Popup" redirect="@Model.PageURL" class="auth-result-hidden"/>
+    }
+}

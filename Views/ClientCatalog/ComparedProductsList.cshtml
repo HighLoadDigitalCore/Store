@@ -1,0 +1,21 @@
+﻿@model IList<StoreProduct>
+<div id="ComparedList">
+    @if (Model != null && Model.Any())
+    {
+        <div class="compared-wrap">
+            <div class="compare-head">Для сравнения</div>
+            <div class="compared-list">
+                @foreach (var item in Model)
+                {
+                    <a href="@item.FullUrl"><img style="max-width: 40px; max-height: 40px" src="@item.GetThumbURL(40, 40, skiplogo:true)"/><span>@item.NameOrDef</span></a>
+                }
+            </div>
+            @if (AccessHelper.CurrentPageInfo.CurrentPageType != "Compare")
+            {
+                <div class="compare-go">
+                    <a href="@CMSPage.GetPageLinkByType("Compare")">Перейти к сравнению</a>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,75 @@
+﻿@model BreadCrumbModel
+@{
+    var hasRight = AccessHelper.CurrentPageInfo.HasModulsForCell("RightColumn");
+    var browser = CatalogBrowser.Init();
+    var hide = browser.IsCategoryPage && browser.CurrentCategory.ID == CatalogBrowser.Root.ID;
+}
+@if (!hide || !browser.IsCategoryPage)
+{
+    <script type="text/javascript" src="/content/theme_main/js/breadcrumb.js"></script>
+    <link rel="stylesheet" type="text/css" href="/content/theme_main/css/breadcrumb.css" />
+    <div>
+        <div id="b-breadcrumb" class="b-breadcrumb qa-bread-crumbs-block" style="@(hasRight ? "" : "margin-left:20px")">
+            <div class="page-path b-breadcrumb__bar">
+                @if (Model.ShowMain)
+                {
+                    <div class="b-breadcrumb__item b-breadcrumb__item_state_visible bs-static bs-item" typeof="v:Breadcrumb">
+                        <a property="v:title" rel="v:url" class="b-breadcrumb__link b-breadcrumb__link_type_home qa-bread-crumbs-link" href="/">
+                            <span class="icon-mini_home b-breadcrumb__link-home-icon"></span>
+
+                          
+                        </a>
+                    
+                    </div>
+                }
+                @foreach (var item in Model.Items)
+                {
+                    <div class="b-breadcrumb__item bs-item" typeof="v:Breadcrumb">
+                        <a property="v:title" rel="v:url" class="b-breadcrumb__link qa-bread-crumbs-link" href="@item.Url">
+                            @item.Name
+                        </a>
+                        @if (item.Children != null && item.Children.Any())
+                        {
+                            <i class="b-breadcrumb__dropdown-arrow icon-breadcrumb_arrow"></i>
+                            <ul class="b-breadcrumb__sublist">
+                                @foreach (var child in item.Children)
+                                {
+                                    <li class="b-breadcrumb__sublist-item">
+                                        <a class="b-breadcrumb__sublist-link" href="@child.Url">@child.Name</a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        @if (Model.Items.IndexOf(item) != Model.Items.Count - 1)
+                        {
+                            <span class="b-breadcrumb__item-hr">/</span>
+                        }
+                    </div>
+                }
+         
+            </div>
+        </div>
+    </div>
+}
+@*
+    <div class="container_12">
+        <div class="bread_crumbs color_dark">
+            @if (Model.ShowMain)
+            {
+                <a href="/"><i class="icon_home"></i></a>
+            }
+            @Html.Raw(Model.Html)
+        </div>
+        <div id="bread_with_catalogue">
+            <div class="fade_wrap">
+                <div class="fade_area">&nbsp;</div>
+            </div>
+            <nav data-megamenu="1" class="navigate_left clearfix">
+                <div class="megamenu_content"></div>
+                <div class="catalogue_menu_wrapper">
+                </div>
+                <section class="menu-back"></section>
+            </nav>
+        </div>
+    </div>
+*@

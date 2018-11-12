@@ -1,0 +1,18 @@
+﻿@model List<StoreFile>
+           @{
+               var browser = CatalogBrowser.Init();
+           }
+@if (Model.Any())
+{
+    <div class="prod-file-list @(browser.IsCategoryPage? "prod-file-list-cat":"")">
+        @foreach (var item in Model)
+        {
+            <div class="prod-file">
+                <a target="_blank" href="@(item.Download?("/Master/ru/Files/DownloadClient/"+item.ID):item.Link)">
+                    <img style="width: 40px; height: 47px" src="/content/admin/files/@(Path.GetExtension(item.Link??"").Contains(".doc") ? "off_word.png" : "icon-pdf.png")" /><span>@(item.Name.IsNullOrEmpty() ? Path.GetFileNameWithoutExtension(item.Link) : item.Name)</span>
+                </a>
+            </div>
+        }
+    </div>
+
+}

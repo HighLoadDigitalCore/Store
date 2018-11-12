@@ -1,0 +1,11 @@
+﻿@model IEnumerable<StoreProductBlock>
+@if (Model.Any())
+{
+    <h2 class="page_widget_fire"><i style="background-image: url('/content/theme_main/img/fire.png')" class="icon_b_fire reset_i"></i>Горячие скидки</h2>
+    <div class="goods_container page_widget_special container_float">
+        @foreach (var item in Model)
+        {
+            @Html.Partial("CatalogListProdictTile", item.StoreProduct)
+        }
+    </div>
+}

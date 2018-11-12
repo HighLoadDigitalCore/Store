@@ -1,0 +1,130 @@
+﻿@using System.Configuration
+@model ShopCart
+@{
+    var os = new OrderSteps(1);
+}
+@if (!AccessHelper.IsAuth)
+{
+    <script type="text/javascript">
+        document.location.href = '@(CMSPage.GetPageLinkByType("ShopCart"))';
+    </script>
+}
+else
+{
+    @Html.Hidden("GoogleAPI", ConfigurationManager.AppSettings["GoogleApiKey"])
+    if (Request.RawUrl.Contains("&edit=1"))
+    {
+    <h2 class="private_office_title">Добавление нового адреса</h2>
+    <div class="text_12">
+        <p>
+            Введите адрес или укажите его на карте. Начинайте ввод с указания населенного пункта &mdash; это облегчит поиск.
+             При необходимости сместите указатель на нужный дом.
+       
+        </p>
+        <div id="ymaps_search_address">
+            <label for="search_address_query">
+                Укажите ваш <b>полный</b> адрес
+           
+            </label>
+            <div class="search_address_input_btn">
+                <div class="el_form-search">
+                    <input type="text" class="el_form bradius_c-r text" value="" id="search_address_query" name="search_address_query">
+                    <button class="el_form btn bradius_c-l"><i class="icon icon_search"></i></button>
+                </div>
+            </div>
+        </div>
+        <div id="address_form">
+            <input type="hidden" name="Lat" />
+            <input type="hidden" name="Lng" />
+            <input type="hidden" name="Zoom" />
+            <div>
+                <div style="height: 320px; width: 940px; border: #ccc 1px solid;" id="ymaps_container">
+                </div>
+            </div>
+            <div class="addr_group_filed">
+                <div>
+                    <label for="address_town_title">Город</label><input type="text" value="" name="Town" id="address_town_title" class="el_form">
+                </div>
+                <div>
+                    <label for="address_street_title">Улица</label><input type="text" value="" name="Street" id="address_street_title" class="el_form">
+                </div>
+            </div>
+            <div class="addr_group_filed">
+                <div>
+                    <label for="address_house_number">Дом</label><input type="text" value="" name="House" id="address_house_number" class="el_form">
+                </div>
+                <div>
+                    <label for="address_house_frame">Корпус</label><input type="text" value="" name="Building" id="address_house_frame" class="el_form">
+                </div>
+                <div>
+                    <label for="address_house_building">Строение</label><input type="text" value="" name="BuildingPart" id="address_house_building" class="el_form">
+                </div>
+            </div>
+            <div class="addr_group_filed">
+                <div>
+                    <label for="address_entrance_number">Подъезд</label><input type="text" value="" name="Doorway" id="address_entrance_number" class="el_form">
+                </div>
+                <div>
+                    <label for="address_flat_floor">Этаж</label><input type="text" value="" name="Floor" id="address_flat_floor" class="el_form">
+                </div>
+                <div>
+                    <label for="address_flat_number">Квартира</label><input type="text" value="" name="Flat" id="address_flat_number" class="el_form">
+                </div>
+            </div>
+            <div class="addr_group_filed">
+                <label for="address_information">Примечание для курьера</label><textarea name="information" id="address_information" class="el_form"></textarea><div class="hint"><b>Совет:</b> Дополнительные пояснения, которые позволяют своевременно и точно осуществить доставку. Например, кодовые замки в подъезд, домофоны, охрана, парковка и т.д.</div>
+            </div>
+            <div class="confirm_address hidden">
+                <label>
+                    <input type="checkbox" class="el_form" id="checkbox-enable-button" name="checkbox-enable-button">Подтверждаю правильность указания адреса</label>
+            </div>
+            <div class="submit_container">
+                <button id="address_submit" class="el_form btn btn_green" disabled="">Добавить адрес</button>
+            </div>
+            <div id="address_error">Пожалуйста, укажите положение адреса на карте</div>
+        </div>
+        <div class="clear"></div>
+    </div>
+    }
+    else
+    {
+@*<input type="hidden" id="SelectedAdressID" value="@(Model.LastAddressID > 0 ? Model.LastAddressID : (Model.Adresses.Count() == 1 ? Model.Adresses.First().ID : 0))"/>*@
+    <div class="grid_6 delivery" style="margin-top: 20px">
+        <div class="delivery-adress_list">
+            <div class="address_list">
+                <label class="point_adress">
+                    <div class="el_form-pointer">
+                        <input type="radio" value="0" @(Html.Raw(0 == Model.LastAddressID ? "checked=''" : "")) name="serial_number" class="el_form"><i class="el_form point_radio"></i>
+                    </div>
+                    Самовывоз</label>
+
+                @foreach (var addr in Model.Adresses)
+                {
+                    <label class="point_adress">
+                        <div class="el_form-pointer">
+                            <input type="radio" value="@addr.ID" @(Html.Raw(addr.ID == Model.LastAddressID ? "checked=''" : "")) name="serial_number" class="el_form" data-coordinate="@addr.Lat.ToString().Replace(",", "."):@addr.Lng.ToString().Replace(",", "."):@addr.Zoom" text="@addr.ToString()"><i class="el_form point_radio"></i>
+                        </div>
+                        @addr.ToString()</label>
+
+                }
+            </div>
+            <div class="grid_5 alpha omega shadow_line" style="margin: 5px 0;"></div>
+
+            <div class="grid_5 add_address"><a href="@os.CurrentStepUrl&edit=1" name="green_button_text" class="el_form btn small">Добавить новый адрес</a></div>
+        </div>
+    </div>
+    <div id="YMap_Container" style="width: 940px" class="grid_12 alpha omega"></div>
+    <div class="clear"></div>
+    <div class="order_nav clearfix">
+        <div class="order_nav-prev_step">
+            <a class="el_form large btn btn_multi" href="@os.PrevStepUrl">Вернуться назад
+                 <span class="text_11">редактирование корзины</span></a>
+        </div>
+        <div class="order_nav-next_step">
+            @*@(Model.LastAddressID > 0 || Model.Adresses.Count() == 1 ? "" : "disabled")*@
+            <a rel="saveaddr" class="el_form large btn btn_multi btn_orange" href="@(os.NextStepUrl)">Следующий шаг
+                 <span class="text_11">подтверждение заказа</span></a>
+        </div>
+    </div>
+    }
+}

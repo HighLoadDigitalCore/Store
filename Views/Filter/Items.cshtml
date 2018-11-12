@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Настройка фильтра";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+@section Header{
+    Список полей для фильтра
+}
+@section Description
+{
+    На этой странице отображаются все поля выбраного фильра
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@model IList<Smoking.Models.FilterItem>
+<fieldset>
+    <table style="width: 100%" class="mygrid">
+        <tbody>
+            <tr>
+                <th>
+                    <div class="form-legend">
+                        Название
+                    </div>
+                </th>
+                <th>
+                    <div class="form-legend">
+                        Описание
+                    </div>
+                </th>
+                <th class="last-td">
+                    <div class="form-legend">&nbsp;</div>
+                </th>
+            </tr>
+            @{
+                var counter = 0;
+            }
+            @foreach (var filter in Model)
+            {
+                <tr class="@(counter%2 == 0 ? "even":"odd") @(counter == Model.Count() - 1 ? "last-grid-row":"")">
+                    <td>
+                        <div class="cell-content">
+                            <a title="Редактировать фильтр" href="/Master/ru/Filter/ItemEdit/@filter.ID?FilterID=@ViewBag.FilterID">@filter.Name</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell-content">
+                            @filter.Help
+                        </div>
+                    </td>
+                    <td class="td-delete">
+                        <div class="cell-content cell-content-delete">
+                            <a title="Удалить фильтр" href="/Master/ru/Filter/ItemDelete/@filter.ID?FilterID=@ViewBag.FilterID">удалить</a>
+                        </div>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </tbody>
+    </table>
+
+</fieldset>
+<div class="backref-tbl">
+    <a href="/Master/ru/Filter/ItemEdit?FilterID=@ViewBag.FilterID" class="btn">Добавить</a>
+</div>
+
+<div class="backref">
+    @Html.ActionLink("Назад к списку фильтров", "Index", "Filter")
+</div>

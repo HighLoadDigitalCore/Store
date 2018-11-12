@@ -1,0 +1,45 @@
+﻿@{
+    var cart = new ShopCart().InitCart();
+}
+<section class="" id="basket_fixpanel" style="display: none">
+    <div class="container_12">
+        @*
+        <a class="grid_2 fixpanel_logo" href="/">
+            <img src="@(SiteSetting.Get<string>("Logo"))"></a>
+*@
+        <div class="grid_2" style="width: 175px; padding-top: 21px;">
+            <a style='background: url(@(SiteSetting.Get<string>("HeadPhoneIcon"))) 0 50% no-repeat; padding-left: 30px; text-decoration:none; font-size:17px;' href="tel:@(SiteSetting.Get<string>("HeadPhone"))">@(SiteSetting.Get<string>("HeadPhone"))</a>
+    @*<a class="fixpanel_cat_link" href="@CatalogBrowser.BaseURL">Каталог</a>*@</div>
+        <div class="grid_3" style="margin-top: 17px;  width: 140px;">
+            <a href="mailto:@(SiteSetting.Get<string>("HeadEmail"))" style='background: url(@(SiteSetting.Get<string>("HeadEmailIcon"))) 0 50% no-repeat; padding-left: 35px; padding-top: 3px; text-decoration:none; font-size:15px;white-space: nowrap'>@(SiteSetting.Get<string>("HeadEmail"))<i class="icon_l_profile"></i></a></div>
+        <div class="grid_5">
+            @Html.Action("Search", "CommonBlocks")
+        </div>
+        @Html.Action("HeadCount", "Cabinet")
+        <div style="margin-top: 22px; width: 110px" class="grid_2 icon-pack">
+            
+            @if (AccessHelper.IsAuth)
+            {
+                var profile = HttpContext.Current.GetCurrentUser();
+                <a href="@CabinetMenu.GetPageURL("profile")" style="margin-right: 10px; text-decoration:none;">@profile.UserName.Split('@')[0]</a>
+                <a class="go_enter_byerd" href="@Url.Action("Exit","Account")" style="text-decoration:none;">Выход</a>
+            }
+            else
+            {
+                @*<a href="#" onclick="showRegPopup(); return false;">Регистрация</a>*@
+                <a class="go_enter_byerd" href="#" onclick="showAuthPopup();return false;" style="margin-left: 15px; text-decoration:none;">Вход</a>
+            }
+        </div>
+        <div class="back-call">
+            <div class="back-call-cell">
+                
+            </div>
+        </div>
+        <a onclick="showBackCall(); return false;" class="phone-ring" href="#">
+            <div class="wibro"></div>
+            @*<img src="/content/theme_main/img/back.jpg" class="wibro">*@
+        </a>
+        
+        @*<a class="fixpanel_upper" href="#top"></a>*@
+    </div>
+</section>

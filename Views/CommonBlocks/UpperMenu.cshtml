@@ -1,0 +1,11 @@
+﻿@model IEnumerable<CMSPageMenuCustom>
+@foreach (var item in Model)
+{
+    <div class="block">
+        <a href="@item.URL">@item.Name</a>
+        @if (item.Description.IsFilled())
+        {
+            <div class="text_11">@item.Description</div>
+        }
+    </div>
+}

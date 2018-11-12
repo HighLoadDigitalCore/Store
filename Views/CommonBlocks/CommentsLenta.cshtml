@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Comment>
+<div id="CommentBlock">
+    <div class="comments_wrapper">
+        <div class="page_item_comment" id="page_item_comment">
+            @foreach (var comment in Model)
+            {
+
+                <div id="comment_@(comment.ID)" class="comment">
+                    <img class="user_pic" src="@comment.User.Profile.GetAvatarLink(40)"><div class="comment_wrapper">
+                        <div class="data">
+                            <div class="buyer">@comment.User.Profile.FullName</div>
+
+                            <div data-commentid="@comment.ID" class="rate_wrapper">@comment.Date.ToString("d MMMM yyyy") г.
+                                @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                                {
+                                    @Html.Raw("· Отзыв полезен?")
+                                     <a class="comment_rate rate_up" href="#nogo"><i class="icon_c_like"></i><b>Да</b> (<span>@comment.CommentsRatings.Count(x => x.Useful)</span>)</a><a class="comment_rate rate_down" href="#nogo"><i class="icon_c_dislike"></i><b>Нет</b> (<span>@comment.CommentsRatings.Count(x => !x.Useful)</span>)</a>
+                                }
+                                </div>
+                        </div>
+                        <div id="comment_wrapper_@(comment.ID)" class="text">
+                            <div id="comment_text_@(comment.ID)">@Html.Raw(comment.CommentText)</div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+        @if (HttpContext.Current.User.Identity.IsAuthenticated)
+        {
+            <a style="display: inline-block; height: 1px;" name="comment">&nbsp;</a>
+            <div class="form_wrapper">
+                <img class="user_pic" src="@HttpContext.Current.GetCurrentUser().Profile.GetAvatarLink(40)">
+                @using (Ajax.BeginForm("CommentsLenta", "CommonBlocks", null, new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "CommentBlock", OnComplete = "loadStarAndComment()" }, new { @class = "add_comment_form" }))
+                {
+                    <input type="hidden" name="ProductID" value="@ViewBag.ProductID"/>
+                    <textarea placeholder="Написать отзыв" class="el_form" name="Message"></textarea>
+                    <button class="el_form btn">Отправить</button>
+                }
+                @Html.ValidationSummary(true)
+            </div>
+            
+        }
+        else
+        {
+            <div class="form_wrapper">Только <span class="go_enter_byerd js_link" onclick="return showAuthPopup();">зарегистрированные</span> пользователи могут оставлять отзывы.</div>
+        }
+    </div>
+
+
+</div>

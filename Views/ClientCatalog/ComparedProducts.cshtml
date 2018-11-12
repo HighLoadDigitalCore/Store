@@ -1,0 +1,83 @@
+﻿@model IList<StoreProduct>
+@if (Model != null && Model.Any())
+{
+    var charList = Model.SelectMany(x => x.StoreCharacterToProducts.Select(z => z.StoreCharacterValue.StoreCharacter)).Distinct().OrderBy(x => (CatalogBrowser.CharsIdsForList.Any(z => z.Key == x.ID) ? CatalogBrowser.CharsIdsForList.First(z => z.Key == x.ID).Value : 1000000)).ToList();
+    var shopCart = new ShopCart().InitCart();
+    <div class="compare-types">
+        <a href="#" arg="0">Показать все параметры</a>
+        <a href="#" arg="1">Показать отличающиеся параметры</a>
+    </div>
+    <div class="compare-table-wrapper">
+        <table class="compare-tbl">
+            <tr>
+                <td class="header">Название
+                </td>
+                @foreach (var item in Model)
+                {
+                    <td>
+                        <a href="@item.FullUrl">@item.NameOrDef</a>
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="header">Изображение
+                </td>
+                @foreach (var item in Model)
+                {
+                    <td>
+                        <img src="@item.GetThumbURL(50, 50, skiplogo: true)"/>
+                    </td>
+                }
+
+            </tr>
+            <tr>
+                <td class="header char-header">Цена
+                </td>
+                @foreach (var item in Model)
+                {
+                    <td class="char-header">
+                        @item.TradingPrice руб.
+                    </td>
+                }
+            </tr>
+            @foreach (var ch in charList)
+            {
+                <tr class="char-line">
+                    <td class="header char-header">@ch.Name
+                    </td>
+                    @foreach (var item in Model)
+                    {
+                        var itemChar = item.StoreCharacterToProducts.FirstOrDefault(x => x.StoreCharacterValue.CharacterID == ch.ID);
+                        <td class="char-cell">
+                            @(itemChar != null ? Html.Raw(itemChar.StoreCharacterValue.Value) : Html.Raw("&mdash;"))
+                        </td>
+                    }
+                </tr>
+            }
+            <tr class="command-row">
+                <td class="header command-cell ">
+                    <a href="#" id="remove-selected">Убрать</a>
+                </td>
+                @foreach (var item in Model)
+                {
+                    <td style="vertical-align: middle">
+                        <input type="checkbox" value="@item.ID"/>
+                    </td>
+                }
+
+            </tr>
+            <tr class="command-row">
+                <td class="header command-cell last-command char-header">
+                    <a href="@CMSPage.GetPageLinkByType("ShopCart")">Купить</a>
+                </td>
+                @foreach (var item in Model)
+                {
+                    <td style="vertical-align: middle">
+                        <a class="to-cart-compare @(shopCart.ShopCartItems.Any(x=> x.ProductID == item.ID)?"active":"")" href="#" arg="@item.ID" title="Добавить в корзину @item.NameOrDef"><img src="/content/theme_main/img/shopcart_32x32.png"/></a>
+                    </td>
+                }
+
+            </tr>
+        </table>
+    </div>
+}

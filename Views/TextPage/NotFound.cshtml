@@ -1,0 +1,17 @@
+﻿
+<div class="err404">
+    <h2>@Html.LangLabel("Ошибка 404 - Страница не найдена")</h2>
+    <img src="/Content/error404.png" />
+    <div class="descr404">
+        @Html.LangLabel("Страница с таким адресом не найдена.")<br />
+        @Html.LangLabel("Воспользуйтесь меню для навигации по сайту.")
+    </div>
+</div>
+<script type="text/javascript">
+    $().ready(function() {
+        setTimeout(function() {
+            document.location.href = "/";
+        }, 3000);
+    })
+</script>
+

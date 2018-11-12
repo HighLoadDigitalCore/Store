@@ -1,0 +1,101 @@
+﻿@model CategoryFilter
+@if (Model != null && Model.Filters != null && Model.Filters.Any())
+{
+    <link rel="stylesheet" type="text/css" href="/content/theme_main/css/filter.css" />
+
+    <link rel="stylesheet" type="text/css" href="/content/theme_main/ion.rangeSlider-2.2.0/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/content/theme_main/ion.rangeSlider-2.2.0/css/ion.rangeSlider.css" />
+    <link rel="stylesheet" type="text/css" href="/content/theme_main/ion.rangeSlider-2.2.0/css/ion.rangeSlider.skinNice.css" />
+
+    <script type="text/javascript" src="/content/theme_main/ion.rangeSlider-2.2.0/js/ion-rangeSlider/ion.rangeSlider.min.js"></script>
+    
+    <script type="text/javascript" src="/content/theme_main/js/filter.js"></script>
+
+    <div class="category-filter">
+        <input type="hidden" id="CategoryID" name="CategoryID" value="@Model.CategoryID" />
+        <input type="hidden" id="Query" name="Query" value="@Model.Query" />
+        <div class="category-filter-header">Подобрать товары по параметрам <span class="category-filter-header-toggler"><span class="toggler-text">Показать/скрыть</span> <span class="order-uarr"></span></span></div>
+        <div class="category-filter-body">
+            @foreach (var column in Model.Filters.Select((x, index) => new { col = index % 3, filter = x }).GroupBy(x => x.col))
+            {
+                <div class="category-filter-col">
+                    @foreach (var f in column)
+                    {
+                        var filter = f.filter;
+                        <div class="category-filter-group">
+                            <div class="title">
+                                @if (filter.Item.Img != null && filter.Item.Img.Length > 0)
+                                {
+                                    <img class="category-filter-group-img noselect" src='/Master/ru/UniversalEditor/Image?tableName=FilterItems&fieldName=Img&uidName=ID&width=50&height=50&uidValue=@filter.Item.ID&rnd=@(new Random(DateTime.Now.Millisecond).Next(1000, 9999))' />
+                                }
+
+
+                                <span class="noselect">@filter.Item.Name</span>
+                                @if (filter.Item.Help.IsFilled())
+                                {
+                                    <i class="help-tip" content="@filter.Item.Help.ClearHTML()"></i>
+                                }
+                                <i title="Показать/скрыть" class="noselect group-arrow @((filter.Item.Visible ?? false) ? "g-arrs" : "g-darrs")"></i>
+                            </div>
+                            <div class="filter-group-body @(filter.Item.Img != null && filter.Item.Img.Length > 0 ? "filter-group-body-pad":"") @(filter.Item.IsPrice ? "filter-group-body-price":"") @((filter.Item.Visible??false)? "":"filter-group-collapsed") @(filter.Item.Type == 1 ? "filter-group-body-range" : (filter.Item.IsPrice ? "" : "filter-group-body-cbx"))">
+                                @if (filter.Item.IsPrice)
+                                {
+                                    <div class="price-line">
+                                        <div class="from-price"><span>от</span><input type="text" arg="@filter.Item.ID" id="FromPrice_@filter.Item.ID" /></div>
+                                        <div class="to-price"><span>до</span><input type="text" arg="@filter.Item.ID" id="ToPrice_@filter.Item.ID" /></div>
+                                    </div>
+                                    <input filter-type="price" arg="@filter.Item.ID" id="Filter_@filter.Item.ID" min="@filter.MinPrice" max="@filter.MaxPrice" />
+                                }
+                                else
+                                {
+                                    if (filter.Item.Type == 1)
+                                    {
+                                        /*Слайдер*/
+                                        if (filter.IsAllDecimal)
+                                        {
+                                            <input filter-type="range" arg="@filter.Item.CharID" id="Filter_@filter.Item.ID" min="@filter.PossibleValues.First()" max="@filter.PossibleValues.Last()" values="@filter.PossibleValues.JoinToString(";")" />
+                                        }
+                                        else
+                                        {
+                                            <input filter-type="value" arg="@filter.Item.CharID" id="Filter_@filter.Item.ID" values="@filter.PossibleValues.JoinToString(";")" />
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <div class="filter-cbx-group" arg="@filter.Item.CharID">
+                                            @foreach (var value in filter.PossibleItems)
+                                            {
+                                                <div class="filter-cbx">
+                                                    <label class="cb-checkbox cb-sm">
+                                                        <input type="checkbox" value="@value.ID" />
+                                                        @value.Value
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+            }
+            <div class="category-filter-apply">
+
+                <div class="ye_result" id="modef" style="display: block;">
+                    <a href="javascript:void(0);" class="showchild">
+                        Выбрано: <span id="result_num">0</span>
+                        <b>ПОКАЗАТЬ</b>
+                    </a>
+                </div>
+                <a href="@Model.BaseURL" class="disabled" id="del_filter">Сбросить</a>
+            </div>
+
+        </div>
+
+
+    </div>
+}

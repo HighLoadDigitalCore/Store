@@ -1,0 +1,62 @@
+﻿@model Role
+@{
+    ViewBag.Title = "Редактирование групп пользователей";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+    @(Model.IsCreating ? "Создание новой группы пользователей" : "Редактирование группы пользователей")
+}
+@section Description
+{
+На этой странице производится редактирование групп пользователей
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm())
+{
+    @Html.Partial("MessageBox")    
+    <div class="form-legend">Информация о группе пользователей:</div>
+    <div class="control-group row-fluid">
+        <div class="span3">
+            @Html.LabelFor(model => model.RoleName, new { @class = "control-label" })
+        </div>
+        <div class="span9">
+            <div class="controls">
+                @Html.TextBoxFor(model => model.RoleName, (Model.CanEditUID ? new { } : (object)new { disabled = "disabled", @readonly = "readonly" }))
+                @Html.ValidationMessageFor(model => model.RoleName)
+            </div>
+        </div>
+    </div>
+    <div class="control-group row-fluid">
+        <div class="span3">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+        </div>
+        <div class="span9">
+            <div class="controls">
+                @Html.EditorFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+    </div>
+      <div class="control-group row-fluid">
+        <div class="controls">
+            <div class="span12">
+                <input type="submit" value="Сохранить изменения" class="btn" />
+                <div class="backref">
+                    @Html.ActionLinkQuery("Назад к списку", "Index", "Roles", new[] { "" /*"RoleID"*/ })
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

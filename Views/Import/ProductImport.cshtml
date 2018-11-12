@@ -1,0 +1,494 @@
+﻿@{
+    ViewBag.Title = "Импорт прайс-листа ";
+    Layout = "~/Views/Shared/_MasterLoader.cshtml";
+    var products = (PagedData<StoreProduct>)ViewBag.Products;
+    var counter = 0;
+}
+@model ImportInfo
+
+@Html.Partial("MessageBox")
+
+
+<div class="control-group row-fluid">
+    <div class="span6">
+        <label class="control-label" style="border: none">
+            <a href="/content/Example.xls" style="color: red"><b>пример для загрузки характеристик</b></a>
+            <br />
+            <a href="/content/ExamplePrice.xls" style="color: red"><b>пример для загрузки цен</b></a>
+            <br />
+            <a href="/content/ExampleRels.xls" style="color: red"><b>пример для загрузки похожих товаров</b></a>
+
+        </label>
+    </div>
+</div>
+<br/>
+
+<div class="control-group row-fluid">
+    <div class="span3 text-span">
+        <h4 style="font-size: 13px; margin: 0; float: left; padding: 0 5px 0 0; border-bottom: 1px dotted lightgray">Товары</h4><label style="float: left; margin-top: 6px; padding-bottom: 4px; min-width: 100px" class="control-label">прайс-лист (xls)</label>
+    </div>
+    <div class="span4 input-span">
+        <div class="controls">
+            @using (Html.BeginForm("ProductImport", "Import", new { pid = (string)ViewBag.SelectedPartner, Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data", fname = "imp-prods" }))
+            {
+                @Html.Hidden("CategoryID", Model.CategoryID)
+                <div style="display: none">
+                    @Html.CheckBox("DeleteExpired", Model.DeleteExpired, new { style = "display: none" })
+                </div>
+                <label class="checkbox">
+                    <input type="file" id="file" name="file" size="23" style="margin-top: 5px;" />
+                </label>
+            }
+        </div>
+    </div>
+    <div class="span3">
+        <div class="controls">
+            <input type="submit" onclick='$("[fname]").submit();' class="green-btn" value="Загрузить" style="width: 80px; margin-right: 15px; float: left" name="all" />
+            @using (Html.BeginForm("ProductExport", "Export", new { Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.Hidden("CategoryID", Request.QueryString["Category"])
+                <input type="submit" class="green-btn" value="Выгрузить" style="width: 80px; margin-left: 0" name="all" />
+            }
+        </div>
+    </div>
+
+</div>
+<br />
+
+
+
+<div class="control-group row-fluid">
+    <div class="span3 text-span">
+        <h4 style="font-size: 13px; margin: 0; float: left; padding: 0 5px 0 0; border-bottom: 1px dotted lightgray">Картинки</h4><label class="control-label" style="float: left; margin-top: 6px; padding-bottom: 4px; min-width: 100px">(zip, rar)</label>
+    </div>
+    <div class="span4 input-span">
+        <div class="controls">
+            @using (Html.BeginForm("ProductImport", "Import", new { pid = (string)ViewBag.SelectedPartner, Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data", fname1 = "imp-prods" }))
+            {
+                @Html.Hidden("CategoryID", Model.CategoryID)
+                @Html.Hidden("pict", "1")
+
+                <label class="checkbox">
+                    <input type="file" id="picts" name="picts" size="23" style="margin-top: 5px;" />
+                </label>
+            }
+        </div>
+    </div>
+    <div class="span3">
+        <div class="controls">
+            <input type="submit" onclick='$("[fname1]").submit();' class="green-btn" value="Загрузить" style="width: 80px; margin-right: 15px; float: left" name="pict" />
+            @using (Html.BeginForm("ProductExport", "Export", new { Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.Hidden("CategoryID", Request.QueryString["Category"])
+                <input type="submit" class="green-btn" value="Выгрузить" style="width: 80px; margin-left: 0" name="picts" />
+            }
+        </div>
+    </div>
+</div>
+
+<br/>
+<div class="control-group row-fluid">
+    <div class="span3 text-span">
+        <h4 style="font-size: 13px; margin: 0; float: left; padding: 0 5px 0 0; border-bottom: 1px dotted lightgray">Цены</h4><label class="control-label" style="float: left; margin-top: 6px; padding-bottom: 4px; min-width: 100px">(xls)</label>
+    </div>
+    <div class="span4 input-span">
+        <div class="controls">
+            @using (Html.BeginForm("ProductImportPrice", "Import", new { pid = (string)ViewBag.SelectedPartner, Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data", fname2 = "imp-prods-price" }))
+            {
+                @Html.Hidden("CategoryID", Model.CategoryID)
+                
+
+                <label class="checkbox">
+                    <input type="file" id="prices" name="prices" size="23" style="margin-top: 5px;" />
+                </label>
+            }
+        </div>
+    </div>
+    <div class="span3">
+        <div class="controls">
+            <input type="submit" onclick='$("[fname2]").submit();' class="green-btn" value="Загрузить" style="width: 80px; margin-right: 15px; float: left" name="pict" />
+            @using (Html.BeginForm("ProductExportPrice", "Export", new { Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.Hidden("CategoryID", Request.QueryString["Category"])
+                <input type="submit" class="green-btn" value="Выгрузить" style="width: 80px; margin-left: 0" name="picts" />
+            }
+        </div>
+    </div>
+</div>
+<br/>
+<div class="control-group row-fluid">
+    <div class="span3 text-span">
+        <h4 style="font-size: 13px; margin: 0; float: left; padding: 0 5px 0 0; border-bottom: 1px dotted lightgray">Похожие товары</h4><label class="control-label" style="float: left; margin-top: 6px; padding-bottom: 4px; min-width: 100px">(xls)</label>
+    </div>
+    <div class="span4 input-span">
+        <div class="controls">
+            @using (Html.BeginForm("ProductImportRels", "Import", new { pid = (string)ViewBag.SelectedPartner, Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data", fname3 = "imp-prods-rels" }))
+            {
+                @Html.Hidden("CategoryID", Model.CategoryID)
+                
+
+                <label class="checkbox">
+                    <input type="file" id="rels" name="rels" size="23" style="margin-top: 5px;" />
+                </label>
+            }
+        </div>
+    </div>
+    <div class="span3">
+        <div class="controls">
+            <input type="submit" onclick='$("[fname3]").submit();' class="green-btn" value="Загрузить" style="width: 80px; margin-right: 15px; float: left" name="pict" />
+            @using (Html.BeginForm("ProductExportRels", "Export", new { Category = Request.QueryString["Category"] }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.Hidden("CategoryID", Request.QueryString["Category"])
+                <input type="submit" class="green-btn" value="Выгрузить" style="width: 80px; margin-left: 0" name="picts" />
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="control-group row-fluid">
+    <div class="controls">
+        <div class="span12">
+            <div class="backref">
+                <div style="display: none; padding-left: 10px" class="message-cell">
+                    <div class="created">
+                        Создано&nbsp;<b></b>&nbsp;записей
+                    </div>
+                    <div class="updated">
+                        Обновлено&nbsp;<b></b>&nbsp;записей
+                    </div>
+                    <div class="errors" style="display: none">
+                        Помечено неактивными&nbsp;<b></b>&nbsp;записей
+                    </div>
+                    <br />
+                    <div class="message-box" style="margin-bottom: 20px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="control-group row-fluid">
+    <div class="controls">
+        <div class="span12">
+
+
+            <div style="width: 100%; overflow-x: scroll">
+                <table class="mygrid" style="width: 97%; border-bottom: 1px solid #D1D7DF">
+                    <tbody>
+                        <tr>
+
+                            <th style="min-width: 200px">
+                                <div class="form-legend">
+                                    Название товара
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Базовая евро
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Базовая руб.
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Коэфф. закупки
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Закупка руб.
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Коэфф. наценки
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Коэфф. скидки
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Цена сайта
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Фикс. цена
+                                </div>
+                            </th>
+                            <th style="width: 100px">
+                                <div class="form-legend">
+                                    Ожид-ая прибыль
+                                </div>
+                            </th>
+
+                            @*    <th style="width: 100px">
+                                    <div class="form-legend">
+                                        Цена
+                                    </div>
+                                </th>*@
+                            <th>
+                                <div class="form-legend">
+                                    Артикул
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    Фото
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    &nbsp;
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    &nbsp;
+                                </div>
+                            </th>
+                            <th class="last-td" style="width: 50px">
+                                <div class="form-legend">&nbsp;</div>
+                            </th>
+                        </tr>
+                        @foreach (var product in products)
+                        {
+                            counter++;
+                            <tr class="@(counter%2 == 1 ? "even":"odd")" arg="@product.ID">
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="/Master/ru/TableEditors/Products?ParentID=@(product.StoreProductsToCategories.Any() ? product.StoreProductsToCategories.First().CategoryID: 1)&amp;Type=Edit&amp;UID=@(product.ID)&amp;Page=0" onclick=" parent.loadByLink(this); return false; ">@product.ShortName</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content cell-content-price">
+                                        @Html.TextBox("PriceBaseEUR_" + product.ID, (product.PriceBaseEUR.HasValue ? product.PriceBaseEUR.Value.ToString("f2") : ""), new { style = "margin-bottom: 0", onkeyup = "saveCol(this);", arg = product.ID })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content cell-content-price">
+                                        @Html.TextBox("PriceBaseRUR_" + product.ID, (product.PriceBaseRUR.HasValue ? (Math.Round(product.PriceBaseRUR.Value)).ToString() : ""), new { style = "margin-bottom: 0", onkeyup = "saveCol(this);", arg = product.ID })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content cell-content-price cell-content-price-shot">
+                                        @Html.TextBox("BuyingRate_" + product.ID, product.PriceModule.BuyingRate, new { style = "margin-bottom: 0", onkeyup = "saveCol(this);", arg = product.ID })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content cell-content-price">
+                                        @Html.TextBox("BuyingPrice_" + product.ID, (product.PriceModule.BuyingPrice.HasValue ? (Math.Round(product.PriceModule.BuyingPrice.Value)).ToString() : ""), new { style = "margin-bottom: 0", /*onkeyup = "saveCol(this);",*/ arg = product.ID, @readonly = "readonly" })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content cell-content-price cell-content-price-shot">
+                                        @Html.TextBox("ProfitRate_" + product.ID, product.PriceModule.ProfitRate, new { style = "margin-bottom: 0", onkeyup = "saveCol(this);", arg = product.ID })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content cell-content-price cell-content-price-shot">
+                                        @Html.TextBox("DiscountRate_" + product.ID, product.PriceModule.DiscountRate, new { style = "margin-bottom: 0", onkeyup = "saveCol(this);", arg = product.ID })
+                                    </div>
+                                </td>
+
+
+                                <td>
+                                    <div class="cell-content cell-content-price">
+                                        @Html.TextBox("SitePrice_" + product.ID, Math.Round(product.PriceModule.SitePrice).ToString(), new { style = "margin-bottom: 0", /*onkeyup = "saveCol(this);",*/ arg = product.ID, @readonly = "readonly" })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content cell-content-price">
+                                        @Html.TextBox("Price_" + product.ID, Math.Round(product.Price), new { style = "margin-bottom: 0", onkeyup = "saveCol(this);", arg = product.ID })
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="cell-content cell-content-price">
+                                        @Html.TextBox("ProfitSum_" + product.ID, Math.Round(product.PriceModule.ProfitSum), new { style = "margin-bottom: 0", /*onkeyup = "savePrice(this);",*/ arg = product.ID, @readonly = "readonly" })
+                                    </div>
+                                </td>
+
+
+                                <td>
+                                    <div class="cell-content" style="white-space: nowrap">
+                                        @product.Article
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="/Master/ru/Image?ProductID=@product.ID" target="_parent" class="editpage" style="height: 16px!important; margin-bottom: 2px!important; float: left; margin-left: 7px!important;"></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="#" onclick="changeOrder(this, 'up', @product.ID, @Model.CategoryID); return false;" class="image-up" style="margin-left: 7px !important"></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="#" onclick="changeOrder(this, 'down', @product.ID, @Model.CategoryID); return false;" class="image-down" style="margin-left: 7px !important"></a>
+                                    </div>
+                                </td>
+                                <td class="td-delete">
+                                    <div class="cell-content cell-content-delete">
+                                        <a href="#" onclick="if(confirm('Переместить в корзину?')) deleteProduct(this, @(product.ID))" style="margin-left: 7px!important">удалить</a>
+                                        @*<a href="/Master/ru/TableEditors/Products?ParentID=@(product.StoreProductsToCategories.Any() ? product.StoreProductsToCategories.First().CategoryID: 1)&amp;Type=Delete&amp;UID=@(product.ID)&amp;Page=0" onclick=" parent.loadByLink(this); return false; " style="margin-left: 7px!important">удалить</a>*@
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+
+
+
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            @products.PagerMenu(Html, new RouteValueDictionary() { { "Category", Model.CategoryID.ToString() } })
+
+            <div class="image-add-cell">
+                <input type="submit" class="image-add" name="Image_New_Icon" value="1">
+                <input type="submit" onclick="parent.loadByLink(this)" href="/Master/ru/TableEditors/Products?Type=Edit&ParentID=@Model.CategoryID" class="image-add-text" value="Добавить товар">
+            </div>
+
+        </div>
+    </div>
+</div>
+<style>
+    .form-legend {
+        line-height: 10px;
+    }
+
+    .mygrid input[type=text] {
+        width: 70px;
+    }
+
+    .cell-content-price {
+        margin-left: 3px !important;
+        margin-right: 3px !important;
+    }
+
+        .cell-content-price input {
+            padding-left: 6px !important;
+            padding-right: 6px !important;
+            text-align: right;
+        }
+
+            .cell-content-price input[readonly=readonly] {
+                cursor: default !important;
+                background-color: white !important;
+            }
+</style>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    var refreshURL = '@Url.Action("loadInfo", "Import")';
+    var started = false;
+
+    $().ready(function () {
+        loadInfo();
+        resize();
+    });
+
+    $(document).resize(function () {
+        resize();
+    });
+
+
+    function deleteProduct(obj, id) {
+        $.post('/Master/ru/Import/DeleteProduct', { ProductID: id }, function() {
+            document.location.reload(true);
+        });
+    }
+
+    function saveCol(obj) {
+        var name = $(obj).attr('name').split('_')[0];
+        $.post('/Master/ru/Import/SavePriceLine', { ProductID: $(obj).attr('arg'), Name: name, Value: $(obj).val() }, function(data) {
+            for (var inp in data) {
+                var sel = data[inp].name + "_" + $(obj).attr('arg');
+                var d = data[inp].data;
+                try {
+                    if (data[inp].needround) {
+
+                        d = Math.round(data[inp].data);
+
+                    } else if (data[inp].iseuro) {
+                        d = data[inp].data.toFixed(2);
+                    }
+                } catch (e) {
+                    d = "";
+                }
+                d = d.toString().replace('.', ',');
+                if (sel != $(obj).attr('id'))
+                    $('#' + sel).val(d);
+            }
+
+        });
+    }
+
+    function resize() {
+        var tss = 0;
+        $('.text-span').each(function () {
+            if ($(this).find('h4').width() + $(this).find('label').width() > tss)
+                tss = $(this).find('h4').width() + $(this).find('label').width();
+        });
+        tss += 10;
+        $('.text-span').css('width', tss + 'px');
+
+        tss = 0;
+        $('.input-span').each(function () {
+            if ($(this).find('input').width() > tss)
+                tss = $(this).find('input').width();
+        });
+        tss += 10;
+        $('.input-span').css('width', tss + 'px');
+
+    }
+
+    function changeOrder(obj, type, prod, cat) {
+        $.post('/Master/ru/Import/ChangeOrder', { Type: type, ProductID: prod, CategoryID: cat }, function () {
+            document.location.reload(true);
+        });
+    }
+
+    function savePrice(obj) {
+        $.post('/Master/ru/Import/SavePrice', { ID: $(obj).attr('arg'), Price: $(obj).val() }, function () {
+
+        });
+    }
+
+    function loadInfo() {
+
+        $.get(refreshURL, { name: "" }, function (data) {
+            if (!data.StartDate)
+                return;
+            $('.message-cell').show();
+            $('.message-box').html(data.MessageList);
+            $('.dirs b').html(data.Dirs);
+            $('.created b').html(data.Created);
+            $('.updated b').html(data.Updated);
+            $('.errors b').html(data.Deleted);
+
+
+            if (!data.EndDate) {
+                setTimeout('loadInfo();', 2000);
+            }
+            else if (document.location.href.indexOf('started') >= 0) {
+                /*parent.*/document.location.href = document.location.href.replace('&started=true', '');
+                //parent.document.location.reload();
+            }
+
+        });
+
+    }
+</script>

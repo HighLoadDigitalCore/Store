@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Редактирование блока";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model Smoking.Models.AnimeBlock
+
+@section Header{
+Настройка блоков
+}
+@section Description
+{
+Выберите раздел сайта, затем заполните необходимую информацию
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+<div id="Filter">
+    <div id="message" style="color: red; margin: 15px 0 0 10px">@ViewBag.Message</div>
+    @using (Html.BeginForm("Edit", "Anime", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="hidden" value="@Model.ID" name="ID"/>
+        <input type="hidden" name="SelectedSection" id="SelectedSection" value="@Model.SelectedSection"/>
+        <div class="base-product">
+            <h5 id="sel" style="white-space: normal !important; width: 400px; font-size: 12px; margin-bottom: 0px; margin-top: 0"></h5>
+            <h4 style="margin-top: 0">
+                <small style="font-size: 13px; margin-top: 0">Выберите раздел:</small>
+            </h4>
+
+            <div class="sidebarMenuHolder" style="width: 100%; height: 500px">
+                <div class="JStree" style="text-align: left;">
+                    <div id="tree-inner">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="base-product-right" style="min-height: 500px">
+            <h2 style="margin-top: 0">
+                <small style="font-size: 13px">Отображать на сайте:</small>
+            </h2>
+            <div class="controls">
+                @Html.CheckBox("Visible", Model.Visible)
+            </div>
+            <h2>
+                <small style="font-size: 13px">Ширина:</small>
+            </h2>
+
+            <div class="controls">
+                @Html.TextBox("Width", Model.Width)
+            </div>
+            <h2>
+                <small style="font-size: 13px">Высота:</small>
+            </h2>
+
+            <div class="controls">
+                @Html.TextBox("Height", Model.Height)
+            </div>
+            <h2>
+                <small style="font-size: 13px">Фоновое изображение:</small>
+            </h2>
+
+            <div class="controls">
+                @if (Model.Background.IsFilled())
+                {
+                    <img style="margin: 10px 0; display: block; max-width: 400px" src="@Model.Background"/>
+                }
+                <input type="file" name="BackgroundFile"/>
+                @*@Html.TextBox("Background", Model.Background)*@
+            </div>
+            <h2>
+                <small style="font-size: 13px">Изображение шестеренки:</small>
+            </h2>
+
+            <div class="controls">
+                @if (Model.Wheel.IsFilled())
+                {
+                    <img style="margin: 10px 0; display: block" src="@Model.Wheel"/>
+                }
+                <input type="file" name="WheelFile"/>
+                @*@Html.TextBox("Wheel", Model.Wheel)*@
+            </div>
+            <br/>
+            <br/>
+            <input type="submit" class="btn" value="Сохранить" style="margin-left: 0" />
+            <div class="backref">
+                <a href="/Master/ru/Anime">Вернуться к списку</a>
+            </div>
+        </div>
+    }
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            loadTreeInner();
+        });
+
+
+        function loadTreeInner() {
+            //$('#tree').jstree("destroy");
+            $.getJSON('@Url.Action("getTreeData", "Anime")', {}, function (res) {
+                $('#tree-inner').jstree({
+                    "plugins": [
+                        "themes", "json_data", "ui", "cookies"
+                    ],
+                    "json_data": { "data": res, "progressive_render": true }
+                }).bind("select_node.jstree", function (e, data) {
+                    if (data.rslt.obj.attr('id') != 'x0') {
+                        $('#SelectedSection').val(data.rslt.obj.attr('id'));
+
+                        $('#sel').html('Выбранный раздел: ' + data.rslt.obj.find(' > a').text().trim());
+                    } else {
+                        $('#sel').html('');
+                        $('#SelectedSection').val('');
+                    }
+                });
+            });
+        }
+    </script>
+}

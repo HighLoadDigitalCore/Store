@@ -1,0 +1,6 @@
+﻿@model ShopCart
+@if (Request.QueryString["hidemenu"] != "1")
+{
+    @Html.Partial("CartMenu", Model)
+}
+@Html.Partial(new OrderSteps().CurrentStepAction, Model)

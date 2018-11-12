@@ -1,0 +1,14 @@
+﻿@model ShopCart
+@{
+    var os = new OrderSteps();
+}
+<div class="container_12">
+    @foreach (var step in Model.Steps)
+    {
+        var active = step.Arg == os.CurrentStep;
+        var prev = step.Arg < os.CurrentStep;
+        <div class="grid_2 text_11 @(active ? "alpha" : (prev?"alpha":""))">
+            <i style="margin-right: 10px; float: left" class="@(active ? "icon_b_current" :(prev?"icon_b_done":"icon_b_default"))"></i><span class="@(active ? "color_action" : (prev?"color_green": "color_gray"))">@step.Name</span>
+        </div>    
+    }
+</div>

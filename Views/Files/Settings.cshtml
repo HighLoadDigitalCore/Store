@@ -1,0 +1,251 @@
+﻿@{
+    ViewBag.Title = "Список файлов";
+    Layout = "~/Views/Shared/_MasterLoader.cshtml";
+    var counter = 0;
+}
+@model List<StoreFile>
+
+<div class="control-group row-fluid" style="min-height: 400px">
+    <div class="controls">
+        <div class="span12">
+
+            <fieldset>
+                <input type="hidden" id="Category" value="@ViewBag.Category"/>
+                <input type="hidden" id="Product" value="@ViewBag.Product"/>
+                <table class="mygrid" style="width: 97%; border-bottom: 1px solid #D1D7DF">
+                    <tbody>
+                        <tr>
+
+                            <th>
+                                <div class="form-legend">
+                                    Файл
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    Загрузка
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    Выгрузка
+                                </div>
+                            </th>
+                            <th>
+                                <div class="form-legend">
+                                    Название
+                                </div>
+                            </th>
+                            <th>
+                                <div class="form-legend">
+                                    Скач.
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    &nbsp;
+                                </div>
+                            </th>
+                            <th style="width: 50px">
+                                <div class="form-legend">
+                                    &nbsp;
+                                </div>
+                            </th>
+                            <th class="last-td" style="width: 50px">
+                                <div class="form-legend">&nbsp;</div>
+                            </th>
+                        </tr>
+                        @foreach (var item in Model)
+                        {
+                            counter++;
+                            <tr class="@(counter%2 == 1 ? "even":"odd")">
+                                <td>
+                                    <div class="cell-content">
+                                        @Path.GetFileName(item.Link)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        
+                                        <label style="cursor: pointer; border-bottom: 1px dotted gray; padding-left: 0" class="upl-link" for="upload-file_@item.ID">Загрузить</label>
+                                        <input type="file" class="upl-file" arg="@item.ID" id="upload-file_@item.ID" style=" opacity: 0; position: absolute; z-index: -1;" />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        @if (!item.Link.IsNullOrEmpty())
+                                        {
+                                            <a target="_blank" href="/Master/ru/Files/Download/@item.ID">выгрузить</a>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        @Html.TextBox("Name_" + item.ID, item.Name, new { style = "margin-bottom: 0", onchange = "saveItem(this);", arg = item.ID, field = "Name"})
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        @Html.CheckBox("Download_" + item.ID, item.Download, new { style = "margin-bottom: 0", onchange = "saveItem(this);", arg = item.ID, field = "Download"})
+                                    </div>
+                                </td>
+                             
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="#" onclick="changeOrder(this, 'up', @item.ID); return false;" class="image-up" style="margin-left: 7px !important; cursor: pointer"></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="cell-content">
+                                        <a href="#" onclick="changeOrder(this, 'down', @item.ID); return false;" class="image-down" style="margin-left: 7px !important; cursor: pointer"></a>
+                                    </div>
+                                </td>
+                                <td class="td-delete">
+                                    <div class="cell-content cell-content-delete">
+                                        <a href="#" onclick="deleteItem(this, @item.ID); return false;" style="margin-left: 7px !important; cursor: pointer"></a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+
+
+
+                    </tbody>
+                </table>
+                <br>
+
+                <div class="image-add-cell">
+                    <input type="submit" class="image-add" name="Image_New_Icon" value="1">
+                    <input type="submit" onclick="addItem(this)" class="image-add-text" value="Добавить файл">
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<style>
+    .upl-link:hover {
+        border-bottom: none !important;
+        color: black !important;
+    }
+
+    .img-cell {
+        clear: both;
+        overflow: hidden;
+    }
+
+        .img-cell > img {
+            width: 35px;
+            height: 35px;
+            display: block;
+            float: left;
+        }
+
+        .img-cell a {
+            float: left;
+            display: block;
+            margin: -1px 0 0 2px;
+        }
+</style>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+    $().ready(function () {
+        resize();
+        initUpload();
+    });
+
+
+    function initUpload() {
+        $('.upl-file').each(function () {
+            var fu = $(this);
+            fu.fileupload({
+                autoUpload: true,
+                url: '/Master/ru/Files/UploadFile?ID=' + fu.attr('arg'),
+                dataType: 'json',
+                add: function (e, data) {
+                    var jqXHR = data.submit()
+
+                        .success(function (data, textStatus, jqXHR) {
+                            
+                            if (data.isUploaded) {
+                                try {
+                                    document.location.reload(true);
+                                } catch (ex) {
+                                    alert(ex);
+                                }
+                            }
+                            else {
+                                alert(data.message);
+                            }
+
+                        })
+                        .error(function (data, textStatus, errorThrown) {
+                            if (typeof (data) != 'undefined' || typeof (textStatus) != 'undefined' || typeof (errorThrown) != 'undefined') {
+                                alert(textStatus + errorThrown + data);
+                            }
+                        });
+                },
+                fail: function (event, data) {
+                    if (data.files[0].error) {
+                        alert(data.files[0].error);
+                    }
+                }
+            });
+        });
+    }
+
+
+    $(document).resize(function () {
+        resize();
+    });
+
+    function saveItem(obj) {
+        $.post('/Master/ru/Files/Save', { ID: $(obj).attr('arg'), Field: $(obj).attr('field'), Value: $(obj).is(":checkbox") ? $(obj).is(":checked") : $(obj).val() }, function () {
+
+        });
+    }
+
+    function resize() {
+        var tss = 0;
+        $('.text-span').each(function () {
+            if ($(this).find('h4').width() + $(this).find('label').width() > tss)
+                tss = $(this).find('h4').width() + $(this).find('label').width();
+        });
+        tss += 10;
+        $('.text-span').css('width', tss + 'px');
+
+        tss = 0;
+        $('.input-span').each(function () {
+            if ($(this).find('input').width() > tss)
+                tss = $(this).find('input').width();
+        });
+        tss += 10;
+        $('.input-span').css('width', tss + 'px');
+
+    }
+
+    function addItem(obj, catid) {
+        $.post('/Master/ru/Files/Add', { Category: $('#Category').val(), Product:$('#Product').val() }, function () {
+            document.location.reload(true);
+        });
+    }
+
+
+    function changeOrder(obj, type, id, cat) {
+        $.post('/Master/ru/Files/ChangeOrder', { Type: type, ID: id, Category: cat }, function () {
+            document.location.reload(true);
+        });
+    }
+
+    function deleteItem(obj, id, cat) {
+        $.post('/Master/ru/Files/DeleteItem', { ID: id }, function () {
+            document.location.reload(true);
+        });
+    }
+
+
+
+</script>

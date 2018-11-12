@@ -1,0 +1,75 @@
+﻿@model RegModel
+<div id="SimpleRegister">
+    @using (Ajax.BeginForm("SimpleRegister", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "SimpleRegister" }))
+    {
+        <div id="el_modal_window">
+            <div class="modal_wrap_content">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div class="container_12" id="register_modal">
+                            <h2 class="grid_10">Регистрация покупателя</h2>
+                            <p>
+                                Заполните форму регистрации, или используйте вход через социальные сети чтобы приступить к
+                                покупкам
+                       
+                            </p>
+
+                            @if (Model.ErrorText.IsFilled())
+                            {
+                                <div class="grid_8 messages_alert">
+                                    <span>@Model.ErrorText</span>
+                                </div>
+                            }
+                            <div id="register_fast" class="grid_4">
+                                <label>Фамилия<input type="text" class="el_form" name="Surname" value="@Model.Surname"></label>
+                                <label>Имя и отчество<input type="text" class="el_form" name="Name" value="@Model.Name"></label>
+                                <label>Электронная почта<input type="email" class="el_form" name="Email" value="@Model.Email"></label>
+                                <div class="check_agreement">
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.Agreed, new{onclick="if($(this).is(':checked')) $('#btn-reg').removeAttr('disabled'); else $('#btn-reg').attr('disabled', '');"})
+                                        <span>Подтверждаю свое согласие на обработку и хранение моих персональных данных в соответствии с 
+                                   
+                                            <a class="go_user_agreement js_link" href="/info/agreement" target="_blank">пользовательским соглашением</a></span>
+                                    </label>
+                                </div>
+                                <button @(!Model.Agreed ? "disabled=''":"") onclick="return DoAjaxPostAndMore(this)" id="btn-reg" class="el_form large btn btn_green btn_multi">
+                                    Зарегистрироваться
+               
+                                    <span class="text_11">и приступить к покупкам</span></button>
+                            </div>
+                            <div class="grid_5 block_right">
+                                <div id="social_login">
+                                    <p>Вы можете начать покупки, используя свой логин в сети:</p>
+                                    <div class="btns_social">
+                                        @Html.Action("Socials", "SocialAuth")
+                                    </div>
+                                    <div class="small_block">
+                                        <div>
+                                            <i class="icon_g_lock"></i>Это безопасно и просто
+                       
+                                        </div>
+                                        <div>
+                                            <i class="icon_g_key"></i>Не требует ввода пароля
+                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+
+                        </div>
+                        <a class="modal_window_close icon_close" onclick="return closeDialog(this);" href="#nogo"></a>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.NeedRedirect)
+            {
+                <script type="text/javascript">
+                    document.location.href = '@(Model.RedirectURL)';
+                </script>
+            }
+
+        </div>
+    }
+</div>

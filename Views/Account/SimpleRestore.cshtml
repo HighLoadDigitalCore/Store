@@ -1,0 +1,51 @@
+﻿@model RestoreModel
+<div id="SimpleRestore">
+    @using (Ajax.BeginForm("SimpleRestore", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "SimpleRestore" }))
+    {
+        <div id="el_modal_window">
+            <div class="modal_wrap_content">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div class="container_12" id="auth_modal">
+
+                            <h2>Восстановление пароля</h2>
+
+                            @if (Model.ErrorText.IsFilled())
+                            {
+                                <div class="grid_8 messages_alert">
+                                    <span>@Model.ErrorText</span>
+                                </div>
+                            }
+                            <div class="container_12">
+                                <div class="grid_8 page_restore_description">
+                                    Сообщите вашу электронную почту, указанную при регистрации.
+       
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div class="container_12">
+                                <div class="grid_4 restore_request_form">
+                                    <label>Электронная почта<input value="@Model.Email" name="Email" class="el_form restore_field" type="text"><span class="signature">Например, mail@mail.ru</span></label>
+                                    <button class="el_form btn btn_green" onclick="return DoAjaxPostAndMore(this)">Напомнить пароль</button>
+                                </div>
+                                <div class="grid_1 block_separator">&nbsp;</div>
+                                <div class="grid_3 page_restore_icon" style="margin: 20px 0">
+                                    <img src="/content/theme_main/img/phone_mail.jpg"><div>Мы отправим вам ваш пароль на вашу электронную почту!</div>
+                                </div>
+                            </div>
+                            <div class="content_footer">
+                                <hr class="shadow_line">
+                                <div>Вспомнили пароль? <a href="#nogo" onclick="return showAuthPopup();">Авторизуйтесь</a> прямо сейчас и запомните пароль.</div>
+                            </div>
+
+
+                        </div>
+                        <a class="modal_window_close icon_close" onclick="return closeDialog(this);" href="#nogo"></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+    }
+</div>

@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "Импорт прайс-листа ";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model ImportInfo
+@section Header
+{
+Загрузка каталога
+}
+@section Description
+{
+@*Здесь вы можете залить каталог на сайт из XLS файла*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@Html.Partial("MessageBox")
+@using (Html.BeginForm("Universal", "Import", new { pid = (string)ViewBag.SelectedPartner }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="control-group row-fluid">
+        <div class="span6">
+            <label class="control-label">Путь к картинкам на сервере</label>
+        </div>
+        <div class="span6">
+            <div class="controls">
+                @Html.TextBox("AdditionalPath", Model.AdditionalPath)
+            </div>
+        </div>
+    </div>    
+    <div class="control-group row-fluid">
+        <div class="span6">
+            <label class="control-label">Zip-архив с картинками (названия картинок должны соответствовать артикулу)</label>
+        </div>
+        <div class="span6">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="file" name="ZipImages" />
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="control-group row-fluid">
+        <div class="span6">
+            <label class="control-label">Удалить товары или категории, которые не содержаться в файле?</label>
+        </div>
+        <div class="span6">
+            <div class="controls">
+                <label class="checkbox">
+                    @Html.CheckBox("DeleteExpired", Model.DeleteExpired)
+                </label>
+
+            </div>
+        </div>
+    </div>
+    <div class="control-group row-fluid">
+        <div class="span6">
+            <label class="control-label">Выберите прайс-лист(zip, rar или xls)</label>
+        </div>
+        <div class="span6">
+            <div class="controls">
+                <label class="checkbox">
+                    <input type="file" id="file" name="file" size="23" />
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="control-group row-fluid">
+        <div class="controls">
+            <div class="span12">
+                <div class="backref" style="padding-left: 10px">
+                    @Html.ActionLink("Настройка импорта", "ImportEditor", "TableEditors")
+                </div>
+
+                <div class="backref" style="padding-left: 10px">
+@*
+                    <input type="submit" value="Загрузить категории" style="width: 200px" name="categories" />
+                    &nbsp;&nbsp;&nbsp;
+                    <input type="submit" value="Загрузить товары" style="width: 200px" name="products" />
+                    &nbsp;&nbsp;&nbsp;
+*@
+                    <input type="submit" class="btn" value="Загрузить товары" style="width: 200px; margin-left: 0" name="all" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group row-fluid">
+        <div class="controls">
+            <div class="span12">
+                <div class="backref">
+                    <div style="display: none; padding-left: 10px" class="message-cell">
+                        <div class="created">
+                            Создано&nbsp;<b></b>&nbsp;записей
+                        </div>
+                        <div class="updated">
+                            Обновлено&nbsp;<b></b>&nbsp;записей
+                        </div>
+                        <div class="errors" style="display: none">
+                            Помечено неактивными&nbsp;<b></b>&nbsp;записей
+                        </div>
+                        <br />
+                        <div class="message-box">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+}
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        var refreshURL = '@Url.Action("loadInfo", "Import")';
+        $().ready(function () {
+            loadInfo();
+        });
+
+        function loadInfo() {
+            $.get(refreshURL, { name: "" }, function (data) {
+                if (!data.StartDate)
+                    return;
+                $('.message-cell').show();
+                $('.message-box').html(data.MessageList);
+                $('.dirs b').html(data.Dirs);
+                $('.created b').html(data.Created);
+                $('.updated b').html(data.Updated);
+                $('.errors b').html(data.Deleted);
+
+                if (!data.EndDate)
+                    setTimeout('loadInfo();', 2000);
+                else if (!$('.start').length) {
+                    //window.location.reload();
+                }
+            });
+
+        }
+    </script>
+}

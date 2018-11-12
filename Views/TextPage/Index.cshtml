@@ -1,0 +1,10 @@
+﻿@model IEnumerable<CMSPageTextData>
+@foreach(var block in Model)
+{
+
+    var blockSettings = BlockSettings.GetSettings("TextEditor", block.ViewID);
+
+    <div class="text-content @(blockSettings.GetValue("ShowExpandCollapse").ToBool() ? "text-truncate" : "")" uid="@block.ID">
+        @Html.Raw(block.Text)
+    </div>
+}

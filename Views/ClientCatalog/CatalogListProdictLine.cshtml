@@ -1,0 +1,331 @@
+﻿@model StoreProduct
+@{
+    var shopcart = (ShopCart)ViewBag.ShopCart;
+    var isFavorite = ViewBag.IsFavorite is bool && (bool)ViewBag.IsFavorite;
+}
+@if (Model != null)
+{
+    <div itemscope itemtype="http://schema.org/Product" itemprop="itemListElement" data-item_id="@Model.ID" data-is_favorite="@Model.IsUserFavorite" class="goods-cell big-cell goods_view_line @(Model.Weight.HasValue && Model.Weight.Value > 0 ? "has_weight" : "") @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "selected" : "")">
+        @if (isFavorite)
+        {
+            <div class="in_product_control">
+                <label class="selector_container">
+                    <input type="checkbox" value="@Model.ID" name="cbx_@Model.ID" class="selector"><span>Выбрать</span>
+                </label><span arg="@Model.ID" class="deleter icon_list_delete" title="Удалить"></span>
+            </div>
+        }
+        @if (Model.StoreProductBlocks.Any(x => x.GroupName == "trend"))
+        {
+            <div style="background-image: url('/content/theme_main/img/icon-trend-small.png')" class="promoaction_icon"></div>
+        }
+        else if (Model.DiscountTotal > 0)
+        {
+            <div style="background-image: url('/content/theme_main/img/favorite.png')" class="promoaction_icon">-@Model.DiscountTotal.ToString("##.##")%</div>
+        }
+        @if (HttpContext.Current.User.Identity.IsAuthenticated)
+        {
+            <div data-goodsid="@Model.ID" class="goods_favorite @(Model.IsUserFavorite == 1 ? "active" : "")">
+                <div></div>
+                <i class="icon_g_favorite-empty"></i>
+            </div>
+        }
+        <div class="goods_pic">
+            <div class="icon_goods @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "goods_in_basket" : "")">@shopcart.ActiveProducts.Where(x => x.ProductID == Model.ID).Sum(x => x.Count)</div>
+            <a href="@Model.FullUrl">
+                <img src="@Model.DefaultThumbURL" class="main-img" alt="@Model.DefaultAlt">
+            </a>
+
+            @if (Model.StoreImages.Count > 1)
+            {
+                <div class="gallery">
+                    @foreach (var img in Model.StoreImages.OrderBy(x => x.OrderNum)/*.Skip(1)*/.Take(4))
+                    {
+                        <img path="@Model.GetThumbURL(280, 280, skiplogo: true)" alt="@img.Alt" onclick="changeImg(this)" width="40" height="40" src="@Model.GetThumbURL(50, 50, skiplogo: true)" />
+                        /*/Master/ru/Image/Resize?maxWidth=50&maxHeight=50&filePath=@img.UrlPath&padding=0&skiplogo=true*/
+                    }
+                </div>
+            }
+            @*
+                @if (Model.Weight.HasValue && Model.Weight.Value > 0)
+                {
+                    <div class="goods_weight"><i class="icon_weight"></i>@Model.Weight.Value.ToString("f2").Replace(".", ",") кг</div>
+                }
+            *@
+        </div>
+
+
+        <div class="goods_form">
+            <div style="position: relative; padding-left: 2px;">
+
+                <div class="price @(Model.PriceModule.SitePriceWithoutDiscount > Model.PriceModule.ShopCartPrice ? "color_action" : "color_black")">
+                    @if (Model.PriceModule.SitePriceWithoutDiscount > Model.PriceModule.ShopCartPrice)
+                    {
+                        <del>@Model.PriceModule.SitePriceWithoutDiscount.ToNiceDigit()<span>&nbsp;руб.</span></del>
+                        <div itemtype="http://schema.org/Offer" itemscope itemprop="offers">
+                            @Model.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp; руб.</span>
+                            <meta content="@Model.PriceModule.ShopCartPrice.ToNiceDigit().Replace(" ", "")" itemprop="price">
+                            <meta content="RUB" itemprop="priceCurrency">
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div itemtype="http://schema.org/Offer" itemscope itemprop="offers">
+                            @Model.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp; руб.</span>
+                            <meta content="@Model.PriceModule.ShopCartPrice.ToNiceDigit().Replace(" ", "")" itemprop="price">
+                            <meta content="RUB" itemprop="priceCurrency">
+
+                        </div>
+                    }
+                </div>
+
+            </div>
+            <div class="el_form-quantity">
+                <a class="el_form small btn disabled bradius_c-r reduce"><i class="icon icon_minus"></i></a>
+                <input type="text" class="el_form small bradius_c-r bradius_c-l" min="1" name="count" value="1">
+                <a class="el_form small btn bradius_c-l increase"><i class="icon icon_plus"></i></a>
+            </div>
+            <button spec="0" arg="@Model.ID" rel="to-cart" class="el_form small btn @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "В корзине" : "Купить")</button>
+            @if (SiteSetting.Get<bool>("ShowQst"))
+            {
+                <a class="qst-link" href="#" onclick=" showFeedBack(); return false; ">
+                    <img style="padding-top: 2px" src="/content/theme_main/img/qst.png" /><span>
+                        Задать<br />
+                        вопрос
+                    </span>
+                </a>
+            }
+            @if (SiteSetting.Get<bool>("ShowBackCall"))
+            {
+                <a class="qst-link" href="#" onclick=" showBackCall();return false; ">
+                    <img src="/content/theme_main/img/call.png" /><span>
+                        Обратный<br />
+                        звонок
+                    </span>
+                </a>
+            }
+            <br />
+            @Html.Raw(SiteSetting.Get<string>("CustomText"))
+        </div>
+        <div class="goods_data">
+            <a itemprop="url" title="@Model.NameOrDef" class="goods_caption" href="@Model.FullUrl">@Model.NameOrDef</a>
+            <meta content="@Model.NameOrDef" itemprop="name" />
+            @if (Model.NeedShowArticle)
+            {
+                <div class="signature text_11">Артикул: @Model.Article</div>
+            }
+            @*
+                <div class="goods_addition">
+                    <div data-itemid="@Model.ID" class="rating_star small">
+                        @for (int i = 5; i >= 1; i--)
+                        {
+                            <span data-ratingpos="@i" class="@(Math.Round(Model.VoteOverage, 0) >= i ? "selected" : "")"></span>
+                        }
+
+                    </div>
+                    @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+                        <a class="color_black" href="@Model.FullUrl#comment">Оставить отзыв</a>
+                    }
+                </div>
+            *@
+            @if (Model.IsActive)
+            {
+                <span class="exist">В наличии</span>
+            }
+            @*
+                @if (Model.CharactersForList.Any())
+                {
+                    <div class="goods_addition goods_addition_chars">
+                        @foreach (var c in Model.CharactersForList)
+                        {
+                            <div class="char-line">
+                                <div class="char-name">@c.StoreCharacter.Name:</div>
+                                <div class="char-value">@c.Value</div>
+                            </div>
+                        }
+                    </div>
+                }
+            *@
+
+            @if (Model.CharactersForFullList.Any())
+            {
+                <div class="goods_addition goods_addition_chars">
+                    @foreach (var c in Model.CharactersForFullList.ToList().Take(6))
+                    {
+                        <div class="char-line">
+                            <div class="char-name">@c.StoreCharacter.Name:</div>
+                            <div class="char-value">
+                                @c.Value
+                                @if (Model.CharactersForFullList.Last().ID == c.ID)
+                                {
+                                    <a class="detail-link" href="@Model.FullUrl">Подробнее</a>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            @Html.Partial("~/Views/ClientCatalog/ComparatorV2.cshtml", new Comparator(Model.ID))
+        </div>
+        <div class="clear"></div>
+        <div class="goods_action">
+            @{
+            var recomend = Model.StoreProductRelations.Where(x => x.BaseProductReverse != null && x.GroupName == "recomend").Select(x => x.BaseProductReverse).ToList();
+            var related = Model.StoreProductRelations.Where(x => x.BaseProductReverse != null && x.GroupName == "related").Select(x => x.BaseProductReverse).ToList();
+            var similar = Model.StoreProductRelations.Where(x => x.BaseProductReverse != null && x.GroupName == "similar").Select(x => x.BaseProductReverse).ToList();
+            var first = "";
+            if (recomend.Any())
+            {
+                first = "recomend";
+            }
+            else if (related.Any())
+            {
+                first = "related";
+            }
+            else if (similar.Any())
+            {
+                first = "similar";
+            }
+
+            }
+
+            <div class="element_tabs_btn">
+                @if (recomend.Any())
+                {
+                    <a arg="recomend" onclick="switchTab(this)" class="@(first == "recomend" ? "" : "")" href="javascript:void(0);">
+                        @("Рекомендуем купить")
+                    </a>
+                }
+                @if (related.Any())
+                {
+                    <a arg="related" onclick="switchTab(this)" class="@(first == "related" ? "" : "")" href="javascript:void(0);">
+                        @("С этим товаром покупают")
+
+                    </a>
+                }
+                @if (similar.Any())
+                {
+                    <a arg="similar" onclick="switchTab(this)" class="@(first == "similar" ? "" : "")" href="javascript:void(0);">
+                        @("Похожие товары")
+
+                    </a>
+                }
+            </div>
+
+
+            <div class="element_tabs_cnt">
+                @if (recomend.Any())
+                {
+                    <div arg="recomend" class="page_item_crosslink @(first != "recomend" ? "hidden" : "hidden")">
+                        <div>
+                            <div class="grid_9 slider ">
+                                <div class="slider_wrap">
+                                    <div class="slider_content goods_container" style="left: 0px;">
+                                        @foreach (var p in recomend)
+                                        {
+                                            <div data-item_id="@p.ID" class="goods_view_small">
+                                                <div class="goods_pic">
+                                                    <div class=" icon_goods"></div>
+                                                    <a href="@p.FullUrl">
+                                                        <img alt="@p.DefaultAlt" src="@p.GetThumbURL(150, 150, skiplogo: true)">
+                                                    </a>
+                                                </div>
+                                                <a title="@p.NameOrDef" class="goods_caption" href="@p.FullUrl">@p.NameOrDef</a>
+                                                <div class="price color_black">@p.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp;руб.</span></div>
+                                                <button arg="@p.ID" onclick="toCartRelative(this);" class="el_form small btn @(shopcart.ActiveProducts.Any(z => z.ProductID == p.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(shopcart.ActiveProducts.Any(z => z.ProductID == p.ID) ? "В корзине" : "Купить")</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                @if (recomend.Count > 3)
+                                {
+                                    <a href="#goprev" onclick="moveLeftMini(this)" class="icon_slide-green-left" style="display: block;"></a>
+                                    <a href="#gonext" onclick="moveRightMini(this)" class="icon_slide-green-right" style="display: block;"></a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (related.Any())
+                {
+                    <div arg="related" class="page_item_crosslink @(first != "related" ? "hidden" : "hidden")">
+                        <div>
+                            <div class="grid_9 slider ">
+                                <div class="slider_wrap">
+                                    <div class="slider_content goods_container" style="left: 0px;">
+                                        @foreach (var p in related)
+                                        {
+                                            <div data-item_id="@p.ID" class="goods_view_small">
+                                                <div class="goods_pic">
+                                                    <div class=" icon_goods"></div>
+                                                    <a href="@p.FullUrl">
+                                                        <img alt="@p.DefaultAlt" src="@p.GetThumbURL(150, 150, skiplogo: true)">
+                                                    </a>
+                                                </div>
+                                                <a title="@p.NameOrDef" class="goods_caption" href="@p.FullUrl">@p.NameOrDef </a>
+                                                <div class="price color_black">@p.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp;руб.</span></div>
+                                                <button arg="@p.ID" onclick="toCartRelative(this);" class="el_form small btn @(shopcart.ActiveProducts.Any(z => z.ProductID == p.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(shopcart.ActiveProducts.Any(z => z.ProductID == p.ID) ? "В корзине" : "Купить")</button>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </div>
+                                @if (related.Count > 3)
+                                {
+                                    <a href="#goprev" onclick="moveLeftMini(this); return false;" class="icon_slide-green-left" style="display: block;"></a>
+                                    <a href="#gonext" onclick="moveRightMini(this); return false;" class="icon_slide-green-right" style="display: block;"></a>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (similar.Any())
+                {
+                    <div arg="similar" class="page_item_crosslink @(first != "similar" ? "hidden" : "hidden")">
+                        <div>
+                            <div class="grid_9 slider ">
+                                <div class="slider_wrap">
+                                    <div class="slider_content goods_container" style="left: 0px;">
+                                        @foreach (var p in similar)
+                                        {
+                                            <div data-item_id="@p.ID" class="goods_view_small">
+                                                <div class="goods_pic">
+                                                    <div class=" icon_goods"></div>
+                                                    <a href="@p.FullUrl">
+                                                        <img alt="@p.DefaultAlt" src="@p.GetThumbURL(150, 150, skiplogo: true)">
+                                                    </a>
+                                                </div>
+                                                <a title="@p.NameOrDef" class="goods_caption" href="@p.FullUrl">@p.NameOrDef</a>
+                                                <div class="price color_black">@p.PriceModule.ShopCartPrice.ToNiceDigit()<span>&nbsp;руб.</span></div>
+
+                                                <button arg="@p.ID" onclick="toCartRelative(this);" class="el_form small btn @(shopcart.ActiveProducts.Any(z => z.ProductID == p.ID) ? "btn_orange" : "btn_green") btn_toBasket" type="submit">@(shopcart.ActiveProducts.Any(z => z.ProductID == p.ID) ? "В корзине" : "Купить")</button>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </div>
+                                @if (similar.Count > 3)
+                                {
+                                    <a href="#goprev" onclick="moveLeftMini(this)" class="icon_slide-green-left" style="display: block;"></a>
+                                    <a href="#gonext" onclick="moveRightMini(this)" class="icon_slide-green-right" style="display: block;"></a>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+
+
+            </div>
+
+
+
+        </div>
+        <div class="clear"></div>
+    </div>
+}
+

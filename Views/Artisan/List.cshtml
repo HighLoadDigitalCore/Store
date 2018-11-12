@@ -1,0 +1,141 @@
+﻿@model PagedData<UserProfile>
+<link rel="stylesheet" type="text/css" href="/content/theme_main/css/artisan.css"/>
+<script src="/content/theme_main/js/artisan.js"></script>
+<div class="master-list">
+
+    <select id="townlist" def="@ViewBag.Town">
+        <option value="92">Все мастера</option>
+        <option value="2">Москва</option>
+        <option value="6">Московская область</option>
+        <option value="7">Санкт-Петербург</option>
+        <option value="8">Адыгея</option>
+        <option value="9">Башкортостан</option>
+        <option value="10">Бурятия</option>
+        <option value="11">Алтай</option>
+        <option value="12">Дагестан</option>
+        <option value="13">Ингушетия</option>
+        <option value="14">Кабардино-Балкария</option>
+        <option value="15">Калмыкия</option>
+        <option value="16">Карачаево-Черкессия</option>
+        <option value="17">Карелия</option>
+        <option value="18">Коми</option>
+        <option value="19">Марий Эл</option>
+        <option value="20">Мордовия</option>
+        <option value="21">Саха (Якутия)</option>
+        <option value="22">Северная Осетия - Алания</option>
+        <option value="23">Татарстан</option>
+        <option value="24">Тыва</option>
+        <option value="25">Удмуртия</option>
+        <option value="26">Хакасия</option>
+        <option value="27">Чеченская республика</option>
+        <option value="28">Чувашская Республика</option>
+        <option value="29">Алтайский край</option>
+        <option value="30">Краснодарский край</option>
+        <option value="31">Красноярский край</option>
+        <option value="32">Приморский край</option>
+        <option value="33">Ставропольский край</option>
+        <option value="34">Хабаровский край</option>
+        <option value="35">Амурская область</option>
+        <option value="36">Архангельская область</option>
+        <option value="37">Астраханская область</option>
+        <option value="38">Белгородская область</option>
+        <option value="39">Брянская область</option>
+        <option value="40">Владимирская область</option>
+        <option value="41">Волгоградская область</option>
+        <option value="42">Вологодская область</option>
+        <option value="43">Воронежская область</option>
+        <option value="44">Ивановская область</option>
+        <option value="45">Иркутская область</option>
+        <option value="46">Калининградская область</option>
+        <option value="47">Калужская область</option>
+        <option value="48">Камчатский край</option>
+        <option value="49">Кемеровская область</option>
+        <option value="50">Кировская область</option>
+        <option value="51">Костромская область</option>
+        <option value="52">Курганская область</option>
+        <option value="53">Курская область</option>
+        <option value="54">Ленинградская область</option>
+        <option value="55">Липецкая область</option>
+        <option value="56">Магаданская область</option>
+        <option value="57">Мурманская область</option>
+        <option value="58">Нижегородская область</option>
+        <option value="59">Новгородская область</option>
+        <option value="60">Новгородская область</option>
+        <option value="61">Новосибирская область</option>
+        <option value="62">Омская область</option>
+        <option value="63">Оренбургская область</option>
+        <option value="64">Орловская область</option>
+        <option value="65">Пензенская область</option>
+        <option value="66">Пермский край</option>
+        <option value="67">Псковская область</option>
+        <option value="68">Ростовская область</option>
+        <option value="69">Рязанская область</option>
+        <option value="70">Самарская область</option>
+        <option value="71">Саратовская область</option>
+        <option value="72">Сахалинская область</option>
+        <option value="73">Свердловская область</option>
+        <option value="74">Смоленская область</option>
+        <option value="75">Тамбовская область</option>
+        <option value="76">Тверская область</option>
+        <option value="77">Томская область</option>
+        <option value="78">Тульская область</option>
+        <option value="79">Тюменская область</option>
+        <option value="80">Ульяновская область</option>
+        <option value="81">Челябинская область</option>
+        <option value="82">Забайкальский край</option>
+        <option value="83">Ярославская область</option>
+        <option value="84">Еврейская автономная область</option>
+        <option value="85">Республика Крым</option>
+        <option value="86">Ненецкий автономный округ</option>
+        <option value="87">Ханты-Мансийский автономный округ</option>
+        <option value="88">Чукотский автономный округ</option>
+        <option value="89">Ямало-Ненецкий автономный округ</option>
+        <option value="91">Севастополь</option>
+        <option value="90">Калининградская область</option>
+    </select>
+
+    @if (Model.Any())
+    {
+        <table class="user-list">
+            <thead>
+                <tr>
+                    <th><b>Аватар</b></th>
+                    <th><b>Имя мастера</b></th>
+                    <th><b>Описание</b></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td style="vertical-align: top">
+                            <div class="avatar">
+                                <span>
+                                    <a href="@user.Link"><img src="@user.GetAvatarLink(50)" style="max-width: 50px;" alt="@user.FullName" title="@user.FullName" class="avatar-pict"></a>
+                                </span>
+                            </div>
+                        </td>
+                        <td style="min-width: 200px; vertical-align: top">
+                            <div><a href="@user.Link">@user.FullName</a></div>
+                        </td>
+                        <td class="descr-cell">
+                            <div class="user-data-rating"><span class="user-data">Рейтинг:</span> <span arg="@user.UserID" class="rating-cell" rating="@user.Rate"></span></div>
+                            <div><span class="user-data">Города:</span> <span class="city">@user.Town</span></div>
+                            <div><span class="user-data">Специализация:</span> <span class="specs">@((user.Specs ?? "").Replace(";", ", "))</span></div>
+                        </td>
+                    </tr>
+
+                }
+
+            </tbody>
+        </table>
+
+        @Model.PagerMenu(Html)
+    }
+    else
+    {
+        <p>В выбранном регионе нет зарегистрировавшихся мастеров.</p>
+    }
+
+</div>

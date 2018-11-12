@@ -1,0 +1,29 @@
+﻿@model SiteMapItem
+@{
+    var count = Math.Ceiling((decimal)new DB().StoreProducts.Count(x => !x.Deleted) / 1000) * 1000;
+    var children = Model.GetChildren<SiteMapItem>();
+    
+}
+<article>
+    <div data-module="catalog_nav-bottom" class="layer_content container_12 text_11 color_dark">
+        <h2>Более <span id="goods_count">@count.ToString("### ### ###") товаров</span> по доступным ценам</h2>
+        @foreach (var child in children)
+        {
+            <dl class="grid_3">
+                <a href="@child.Link">
+                    <dt>@child.Name</dt>
+                </a>
+                @{
+            var subs = child.GetChildren<SiteMapItem>();
+                }
+                @foreach (var sub in subs)
+                {
+                    <a href="@sub.Link"><i class="icon_c_chevsmall-right"></i>
+                        <dd>@sub.Name</dd>
+                    </a>                        
+                }
+            </dl>
+        }
+        <div class="clear"></div>
+    </div>
+</article>

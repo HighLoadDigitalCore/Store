@@ -1,0 +1,122 @@
+﻿@model ChatEditor
+@Html.Partial("MessageBox")
+<div id="ChatList">
+    @using (Ajax.BeginForm("Editor", "Chat", new { ChatID = Model.ChatID, StartDate = Model.StartDate, EndDate = Model.EndDate, IsArchive = Model.IsArchive }, new AjaxOptions() { UpdateTargetId = "ChatList", OnComplete = "ajaxComplete();loadUIElems();", InsertionMode = InsertionMode.Replace, HttpMethod = "POST" }, new { name = "chatform" }))
+    {
+        <div class="form-legend">Поиск переписки:</div>
+
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.StartDate, "Начальная дата переписки", new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBox("StartDate", Model.StartDate.HasValue ? Model.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "", new { rel = "calendar" })
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.EndDate, "Конечная дата переписки", new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBox("EndDate", Model.EndDate.HasValue ? Model.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "", new { rel = "calendar" })
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group row-fluid">
+            <div class="span3">
+                @Html.LabelFor(x => x.IsArchive, "Завершенные переписки", new { @class = "control-label" })
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    <label class="checkbox">
+                        @Html.CheckBoxFor(x => x.IsArchive)
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="controls">
+                <div class="span12" style="padding-left: 10px">
+                    
+                    <input type="submit" value="Показать список" onclick="submitThis($(this))" name="filter" class="btn" />
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-legend">Найденные переписки:</div>
+        <div class="control-group row-fluid">
+            <div class="controls">
+                <div class="span5">
+                    <ul class="chat-list">
+                        @if (Model.ChatList.Any())
+                        {
+                            foreach (var chat in Model.ChatList)
+                            {
+                            <li>
+                                <a href="@Url.Action("Edit", new { ChatID = chat.ID, StartDate = Model.StartDate.HasValue ? Model.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "", EndDate = Model.EndDate.HasValue ? Model.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "", IsArchive = Model.IsArchive })" class="@((Model.ChatID ?? 0) == chat.ID ? "active" : "")">@Html.Raw(chat.ChatName)</a>
+                            </li>
+                            }
+
+                        }
+                        else
+                        {
+                            <li>Нет совпадающих записей</li>
+                        }
+                    </ul>
+                </div>
+                <div class="span7" style="margin: 0 0 0 -1px; border-left: 1px solid lightgray">
+                    @if (!Model.IsPost)
+                    {
+                        <ul class="chat-message-list">
+                            @foreach (var msg in Model.MessageList)
+                            {
+                                <li data-id="@msg.ID">
+                                    <div><b>@msg.Date.ToString("d MMMMM HH:mm:ss")</b><i>@msg.AuthorName</i>:</div>
+                                    <span>@msg.Text</span></li>
+                            }
+                            <li class="last-line"></li>
+                        </ul>
+                        if (Model.Chat != null && !Model.Chat.IsClosed)
+                        {
+                            <div class="chat-answer">
+                                Выберите шаблон ответа:
+                                <select id="AnsTemplate">
+                                    <option value="">&nbsp;</option>
+                                    @foreach (var ans in Model.AnswerList)
+                                    {
+                                        <option value="@ans">@ans</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="chat-answer">
+                                Ваш ответ:
+                                <textarea></textarea>
+                            </div>
+                            if (Model.Chat != null)
+                            {
+                                <button class="btn chat-btn-send" host="@Model.Chat.Host" session="@Model.Chat.ChatUID">Отправить</button>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="controls">
+                <div class="span12">
+                    <div class="backref">
+                        @Html.ActionLink("Сбросить фильтр", "Edit")
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

@@ -1,0 +1,25 @@
+﻿@if (!HttpContext.Current.User.Identity.IsAuthenticated)
+{
+    <div class="block user">
+        <span style="margin-right: 10px">
+            <a href="#nogo" id="reg-link" onclick=" showRegPopup(); ">Регистрация@*<i style="margin-left: 5px" class="icon_l_user"></i>*@</a>
+        </span>
+        <span style="margin-right: 10px">
+            <a class="go_enter_byerd" id="auth-link" onclick=" showAuthPopup(); " href="#nogo">Вход@*<i style="margin-left: 5px" class="icon_l_lock"></i>*@</a>
+        </span>
+    </div>
+}
+else
+{
+    var profile = HttpContext.Current.GetCurrentUser();
+    <div class="block user">
+        <div class="buyer_navigate">
+            <a title="@(profile.Profile.FullName)" href="@CMSPage.GetPageLinkByType("Profiles")">
+                <img src="@profile.Profile.GetAvatarLink(40)"></a><div>
+                    <span>@profile.Profile.FullName</span><span>
+                        <a href="@CabinetMenu.GetPageURL("profile")">Профиль<i class="icon_l_profile"></i></a>
+                    </span><span><a href="@CabinetMenu.GetPageURL("orders")">Заказы<i class="icon_l_orders"></i></a></span><span><a href="@Url.Action("Exit")">Выход<i class="icon_l_logout"></i></a></span>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,66 @@
+﻿@model AuthModel
+<div id="SimpleLogin">
+    @using (Ajax.BeginForm("SimpleLogin", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "SimpleLogin" }/*, new {id="SimpleLogin"}*/))
+    {
+        <div id="el_modal_window">
+            <div class="modal_wrap_content">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div class="container_12" id="auth_modal">
+                            <h2 class="grid_8">Добро пожаловать в наш магазин</h2>
+                            @if (Model.ErrorText.IsFilled())
+                            {
+                                <div class="grid_8 messages_alert">
+                                    @*<a class="close"><i class="icon_close"></i></a>*@<span>@Model.ErrorText</span>
+                                </div>
+                            }
+                            <div class="grid_4">
+                                <p>Для совершения покупок войдите используя свой email и пароль</p>
+                                <label>
+                                    Введите email
+                                <input name="Email" tabindex="101" type="text" value="@Model.Email"  class="el_form"/>
+                                </label>
+                                <label>
+                                    <a class="forgot_pass" tabindex="102" href="#nogo" onclick="showRestorePopup()">Забыли пароль?</a>
+                                    Введите пароль
+                                        <input name="Password" type="password" value="@Model.Password" class="el_form" />
+                                </label>
+                                <a tabindex="103" class="el_form btn btn_green" onclick="return DoAjaxPostAndMore(this)">&nbsp;&nbsp;&nbsp;Войти&nbsp;&nbsp;&nbsp;</a>
+                            </div>
+                            <div class="grid_1 block_sep">&nbsp;</div>
+                            <div class="grid_3 social_block">
+                                <div id="social_login">
+                                    <p>Вы можете начать покупки, используя свой логин в сети:</p>
+                                    <div class="btns_social">
+                                        @Html.Action("Socials", "SocialAuth")
+                                    </div>
+                                    <div class="small_block">
+                                        <div>
+                                            <i class="icon_g_lock"></i>Это безопасно и просто
+                       
+                                        </div>
+                                        <div>
+                                            <i class="icon_g_key"></i>Не требует ввода пароля
+                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <hr class="shadow_line">
+                            <div class="grid_8 go_counter">Впервые на сайте? <a href="#nogo" onclick="showRegPopup()">Зарегистрируйтесь</a> прямо сейчас!</div>
+                        </div>
+                        <a class="modal_window_close icon_close" onclick="return closeDialog(this);" href="#nogo"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+                            if (Model.NeedRedirect)
+                            {
+        <script type="text/javascript">
+            document.location.href = '@(Model.RedirectURL)';
+        </script>
+                            }
+
+    }
+</div>

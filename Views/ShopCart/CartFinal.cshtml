@@ -1,0 +1,42 @@
+﻿@model ShopCart
+@{
+    if (Model.TotalCount > 0)
+    {
+        var order = Model.CreateOrder();
+        if (order != null)
+        {
+            Model.SendLetters(order);
+            Model.Clear();
+            Model.Reset();
+        }
+    }
+}
+@if (!AccessHelper.IsAuth)
+{
+    <script type="text/javascript">
+        document.location.href = '@(CMSPage.GetPageLinkByType("ShopCart"))';
+    </script>
+}
+else
+{
+    <div id="CartFinal" style="width: 940px">
+        <div class="container_12 payment_cashless" style="min-height: 200px">
+            <div class="grid_12">
+                <br/>
+                <br/>
+                <h2>Ваш заказ успешно оформлен.</h2>
+                <p>
+                    Благодарим Вас за то, что воспользовались нашим магазином.
+                </p>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div class="order_nav clearfix">
+            <div class="order_nav-prev_step">
+                <a href="@CatalogBrowser.BaseURL" class="el_form large btn btn_multi btn_orange">Вернуться к каталогу
+                                 <span class="text_11">и продолжить покупки</span></a>
+                
+            </div>
+        </div>
+    </div>
+}

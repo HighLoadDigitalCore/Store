@@ -1,0 +1,221 @@
+﻿@using Org.BouncyCastle.Ocsp
+@{
+    ViewBag.Title = "Редактирование фото";
+    Layout = "~/Views/Shared/_Master.cshtml";
+    var prod = (StoreProduct)ViewBag.Product;
+    var cnt = 0;
+}
+@model List<StoreImage>
+
+@section Header
+{
+    Редактирование фото для товара '@prod.NameOrDef'
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script type="text/javascript">
+    $('#pageView').hide();
+    $().ready(function () {
+        calcCells();
+        
+    });
+    $().resize(function () {
+        calcCells();
+    });
+
+    function calcCells() {
+        var w = $('#alt_cell').width() + $('#title_cell').width();
+        $('#alt_cell').css('width', w * 2 / 3 + 'px');
+        $('#title_cell').css('width', w / 3 + 'px');
+
+    }
+
+</script>
+<input type="hidden" id="isPhotoPage" value="1" />
+@if (prod != null)
+{
+    <input type="hidden" id="EditorUID" value="Products" />
+    <input type="hidden" id="UID" value="@prod.ID" />
+    <div class="tab-horiz">
+        <div class="horiz-menu">
+            <div class="form-legend group-name" gid="Настройки"><a href="#">Настройки</a></div><div class="form-legend group-name" gid="SEO"><a href="#">SEO</a></div><div class="form-legend group-name" gid="Описание"><a href="#">Описание</a></div><div class="form-legend group-name" gid="Характеристики"><a href="#">Характеристики</a></div><div class="form-legend group-name" gid="Похожие товары"><a href="#">Похожие товары</a></div><div class="form-legend group-name" gid="Файлы"><a href="#">Файлы</a></div><div class="form-legend group-name active" gid="">
+                <a onclick=" return true; " href="@Request.RawUrl">Фото</a>
+                <br>
+            </div><a class="previewsite preview-link prev-head" title="Посмотреть на сайте" target="_blank" id="pageView" href="@prod.FullUrl"><img src="/content/Eye-icon.png"></a>
+        </div>
+        @using (Html.BeginForm("Index", "Image", new { ProductID = prod.ID }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.Partial("MessageBox")
+
+            <div class="group-content" style="display: block">
+                <div class="control-group row-fluid">
+                    <div class="span12">
+                        <table class="mygrid" style="width: 100%; margin: 10px 0; border-bottom: 1px solid #D1D7DF; border-right: 1px solid #D1D7DF; border-left: 1px solid #D1D7DF; ">
+                            <tbody>
+                                <tr>
+
+                                    <th style="width: 112px">
+                                        <div class="form-legend">
+                                            Фото
+                                        </div>
+                                    </th>
+                                    <th style="width: 70px">
+                                        <div class="form-legend">
+                                            Загрузка
+                                        </div>
+                                    </th>
+                                    <th style="width: 70px">
+                                        <div class="form-legend">
+                                            Выгрузка
+                                        </div>
+                                    </th>
+                                    <th id="alt_cell">
+                                        <div class="form-legend">
+                                            Alt
+                                        </div>
+                                    </th>
+                                    <th id="title_cell">
+                                        <div class="form-legend">
+                                            Title
+                                        </div>
+                                    </th>
+                                    <th style="width: 30px">
+                                        <div class="form-legend" style="padding: 3px 5px 0px 5px">
+                                            <img src="/content/Eye-icon.png" title="Показывать на сайте">
+                                        </div>
+                                    </th>
+                                    <th style="width: 30px">
+                                        <div class="form-legend">&nbsp;</div>
+                                    </th>
+                                    <th style="width: 30px">
+                                        <div class="form-legend">&nbsp;</div>
+                                    </th>
+                                    <th style="width: 30px">
+                                        <div class="form-legend">&nbsp;</div>
+                                    </th>
+                                    <th class="last-td" style="width: 30px">
+                                        <div class="form-legend">&nbsp;</div>
+                                    </th>
+                                </tr>
+
+                                @foreach (var image in Model)
+                                {
+                                    <tr class="@(cnt%2 == 0 ? "even" : "odd")">
+
+                                        <td>
+                                            <div class="cell-content">
+                                                <img style="max-width: 100px" src="@image.UrlPath" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-content" style="margin-top: 8px">
+
+                                                <input type="button" value="Картинка" onclick="$(this).next().click();"  />
+                                                <input type="file" name="Upload_@image.ID" style="width: 124px; display: none" class="fu" onchange="$(this).parent().parent().parent().find('.image-apply').click()" />
+                                            </div>
+                                            <div class="cell-content">
+                                                
+                                                <input type="button" value="Видео....." onclick="$(this).next().click();" />
+                                                <input type="file" name="UploadVideo_@image.ID" style="width: 124px; display: none" class="fu" onchange="$(this).parent().parent().parent().find('.image-apply').click()" />
+
+
+                                                @*<input type="text" placeholder="Ссылка на youtube" name="Youtube_@image.ID" value="@image.Youtube" style="width: 99%; margin-top: 7px" />*@
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                @if (!image.UrlPath.IsNullOrEmpty())
+                                                {
+                                                    <a href="@Url.Action("Download", new {path = image.UrlPath})">картинка</a>
+                                                }
+                                                @if (!image.Youtube.IsNullOrEmpty())
+                                                {
+                                                    <a href="@Url.Action("Download", new {path = image.Youtube})">видео</a>
+                                                }
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                <input type="text" name="Alt_@image.ID" value="@image.Alt" style="width: 99%; margin-top: 7px" />
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                <input type="text" name="Title_@image.ID" value="@image.Description" style="width: 99%; margin-top: 7px;" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                <input type="checkbox" name="Enabled_@image.ID" @(image.Enabled ? "checked" : "") title="Показывать на сайте" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                @if (image.ID > 0 && cnt > 0)
+                                                {
+                                                    <input type="submit" name="Up_@image.ID" class="image-up" />
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                @if (image.ID > 0 && cnt != Model.Count - 1)
+                                                {
+                                                    <input type="submit" name="Down_@image.ID" class="image-down" />
+                                                }
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                <input type="submit" title="Сохранить" name="Apply_@image.ID" class="image-apply" />
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                            <div class="cell-content">
+                                                <input type="submit" title="Удалить" name="Delete_@image.ID" class="image-delete" />
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+                                                cnt++;
+
+                                }
+
+
+                            </tbody>
+                        </table>
+                        <div class="image-add-cell">
+                            <input type="submit" class="image-add" name="Image_New_Icon" value="1" />
+                            <input type="submit" name="Image_New" class="image-add-text" value="Добавить изображение" />
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        }
+        @*<div class="horiz-menu">
+            <div class="form-legend group-name" gid="Настройки"><a href="#">Настройки</a></div><div class="form-legend group-name" gid="SEO"><a href="#">SEO</a></div><div class="form-legend group-name" gid="Описание"><a href="#">Описание</a></div><div class="form-legend group-name" gid="Характеристики"><a href="#">Характеристики</a></div><div class="form-legend group-name" gid="Похожие товары"><a href="#">Похожие товары</a></div><div class="form-legend group-name active" gid="">
+                <a onclick=" return true; " href="@Request.RawUrl">Фото</a>
+                <br>
+            </div>
+            <a class="previewsite preview-link prev-head" title="Посмотреть на сайте" target="_blank" id="pageView" href="@prod.FullUrl"><img src="/content/Eye-icon.png"></a>
+        </div>*@
+
+    </div>
+}

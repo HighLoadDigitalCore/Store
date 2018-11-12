@@ -1,0 +1,79 @@
+﻿@using System.Collections
+@model UniversalEditorPagedData
+
+@{
+    ViewBag.Title = Model.EditorName;
+    Layout = Model.ShowInPopup ? "~/Views/Shared/_MasterPopup.cshtml" : "~/Views/Shared/_Master.cshtml";
+}
+@section Header{
+    @Model.EditorName
+}
+@section Description{
+    @Model.EditorDescription
+}
+@section Preview{
+    @if (Model.PreviewData == null)
+    {
+        <a class="previewsite" href="/" target="_blank">Посмотреть на сайте</a>
+    }
+    else
+    {
+        <a href="@Model.PreviewData.Link" class="preview-link previewsite" target="_blank"><img src="/content/admin/eye-pict.png">Посмотреть на сайте</a>
+    }
+}
+@section LeftTab
+{
+    @{ AdminMenu.HasFilter = true; }
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+}
+<input type="hidden" id="Request" value="@(HttpContext.Current.Request.RawUrl.Contains("TableEditors/Pages") ? HttpContext.Current.Request.Url.Query : HttpContext.Current.Request.Url.Query.Replace("ParentID=0", "ParentID=1"))  " />
+@if ((Model.Settings.Filters != null && Model.Settings.Filters.Any(x => ((IEnumerable<object>)x.FilterSource.Source)!=null && ((IEnumerable<object>)x.FilterSource.Source).Any())) || Model.Settings.Filters == null)
+{
+    if (Model.Settings.Filters != null && Model.CurrentType == CurrentEditorType.List)
+    {
+        <div class="filter-block" id="@(Model.Settings.AutoFilter ? "AutoFilterTable" : "FilterTable")">
+            <div class="form-legend">Расположение блока:</div>
+            @foreach (var filter in Model.Settings.Filters)
+            {
+
+                <div class="control-group row-fluid">
+                    <div class="span3">
+                        <label class="control-label">@filter.HeaderText</label>
+                    </div>
+                    <div class="span9">
+                        <div class="controls">
+                            @if (filter.Type == FilterType.Container)
+                            {
+                                <br />
+                                ViewBag.BaseURL = Model.Settings.GenerateBaseURL(filter);
+                                @(Html.Partial("UniversalContainers", filter))
+                            }
+                            else if (!(filter.FilterSource is UniversalTreeDataSource))
+                            {
+                                if (filter.IsDropDown)
+                                {
+                                    @(filter.FilterSource.HasEmptyDef ?
+                                          Html.DropDownList(filter.QueryKey, new SelectList((IEnumerable)filter.FilterSource.Source, filter.FilterSource.KeyField, filter.FilterSource.ValueField, filter.ValueFromQuery), "", new { main = filter.MainFilter ? "1" : "0", width = "285px", @base = Model.Settings.GenerateBaseURL(filter), @class = "form-control" }) :
+                                          Html.DropDownList(filter.QueryKey, new SelectList((IEnumerable)filter.FilterSource.Source, filter.FilterSource.KeyField, filter.FilterSource.ValueField, filter.ValueFromQuery), new { main = filter.MainFilter ? "1" : "0", width = "285px", @base = Model.Settings.GenerateBaseURL(filter), @class = "form-control" }))
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    }
+    @Html.Partial("UniversalEditor", Model)
+}
+else
+{
+    <b class="form-legend">Для редактирования содержимого необходимо добавить модуль на какую-либо страницу</b>
+}

@@ -1,0 +1,26 @@
+﻿@model FilterConfiguration
+@{
+    var pt = new DB().PageTypes.First(x => x.ID == Model.PageTypeID);
+    var template = pt.CMSPageTemplate;
+    var current = pt.CMSPageCells.FirstOrDefault(x => x.ID == Model.ValueFromQuery.ToString().ToInt())?? new CMSPageCell();
+}
+@if (Model != null && template != null)
+{
+    <table class="container-select" name="@Model.QueryKey" main="@(Model.MainFilter ? "1" : "0")" base="@ViewBag.BaseURL">
+        @{ var max = template.CMSPageTemplateCells.Max(x => x.RowNum); }
+        @for (int i = 0; i <= max; i++)
+        {
+            var grouped = template.CMSPageTemplateCells.Where(x => x.RowNum == i).OrderBy(x => x.ColNum);
+
+            if (grouped.Any())
+            {
+            <tr>
+                @foreach (var cell in grouped)
+                {
+                    <td title="@cell.CellName" class="@(current.ColumnName==cell.CellID?"selected":"")" style="height: @(cell.MinHeight==0? 20: cell.MinHeight)px" arg="@((pt.CMSPageCells.FirstOrDefault(x=> x.ColumnName == cell.CellID)?? new CMSPageCell() ).ID)" colspan="@cell.ColSpan"></td>
+                }
+            </tr>    
+            }
+        }
+    </table>
+}

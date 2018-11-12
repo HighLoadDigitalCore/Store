@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "Управление заказами";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model PagedData<Order>
+@section Header
+{
+    Заказы
+}
+@section Description
+{
+    
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+}
+@Html.Partial("MessageBox")
+@using (Html.BeginForm())
+{
+    <div class="form-legend">Фильтр</div>
+    <div class="control-group row-fluid">
+        <div class="span5">
+            <label class="control-label">EMail, Фамилия, Имя пользователя(или их часть):</label>
+        </div>
+        <div class="span7">
+            <div class="controls">
+                @Html.TextBox("query")
+            </div>
+        </div>
+    </div>
+    <div class="control-group row-fluid">
+        <div class="span5">
+            <label class="control-label">Статус:</label>
+        </div>
+        <div class="span7">
+            <div class="controls">
+                @Html.DropDownList("status", new DB().OrderStatus.Select(x => new SelectListItem() { Text = x.Status, Value = x.ID.ToString(), Selected = Request.QueryString["StatusFilter"].IsFilled() ? x.ID.ToString() == Request.QueryString["StatusFilter"] : x.EngName == "Accepted" }))
+            </div>
+        </div>
+    </div>
+    <div class="control-group row-fluid">
+        <div class="span5">
+        </div>
+        <div class="span7">
+            <div class="controls">
+                <div class="span9">
+
+                    <input type="submit" class="btn" value="Найти" style="margin: 10px 0 10px 0" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+<div class="control-group row-fluid">
+    <fieldset>
+
+        <table class="mygrid" style="width: 100%;">
+            <tr>
+                <th>
+                    <div class="form-legend">Номер</div>
+                </th>
+                <th>
+                    <div class="form-legend">Статус</div>
+                </th>
+                <th>
+                    <div class="form-legend">ФИО покупателя</div>
+                </th>
+                <th>
+                    <div class="form-legend">Телефон</div>
+                </th>
+                <th>
+                    <div class="form-legend">Дата</div>
+                </th>
+                <th>
+                    <div class="form-legend" style="text-align:right;">Сумма</div>
+                </th>
+                <th class="last-td">
+                    <div class="form-legend">&nbsp;</div>
+                </th>
+            </tr>
+            @{
+                var counter = 0;
+            }
+            @foreach (var order in Model)
+            {
+                <tr class="@(counter%2 == 0 ? "even":"odd") @(counter == Model.Count() - 1 ? "last-grid-row":"")">
+                    <td>
+                        <div class="cell-content">@Html.ActionLinkQuery(order.ID.ToString("d5"), "Edit", "Orders", new[] { "page", "query", "status" }, new { order = order.ID })</div>
+                    </td>
+                    <td>
+                        <div class="cell-content">@order.OrderStatus.Status</div>
+                    </td>
+                    <td>
+                        <div class="cell-content">@Html.ActionLink(order.User.Profile.FullName, "Edit", "Users", new { user = order.User.UserId }, null) @(string.Format("({0})", order.User.Profile.Email))</div>
+                    </td>
+                    <td>
+                        <div class="cell-content">@order.User.Phone</div>
+                    </td>
+                    <td>
+                        <div class="cell-content">@(order.CreateDate.ToString("dd MMMMM yyyy, HH:mm"))</div>
+                    </td>
+                    <td>
+                        @{
+                            var count = order.TotalSum.ToString("C").Length;
+                        }
+                        <div class="cell-content" style="text-align:right;">@order.TotalSum.ToString("C").Remove(count - 5, 5)</div>
+                    </td>
+                    <td class="td-delete">
+                        <div class="cell-content cell-content-delete">@Html.ActionLinkQuery("удалить", "Delete", "Orders", new[] { "page", "query" }, new { order = order.ID })</div>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </table>
+        <br />
+        @Html.Raw(Model.PagerMenu(Html))
+
+    </fieldset>
+</div>

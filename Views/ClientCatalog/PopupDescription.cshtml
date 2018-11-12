@@ -1,0 +1,139 @@
+﻿@model StoreProduct
+@{
+    var shopcart = (ShopCart)ViewBag.ShopCart;
+    var currentCat = Model.StoreProductsToCategories.First(x => x.CategoryID == Model.StoreProductsToCategories.Max(z => z.CategoryID));
+    var prev = currentCat.StoreCategory.StoreProductsToCategories.OrderByDescending(x => x.OrderNum).Where(x => x.OrderNum < currentCat.OrderNum).Take(1).ToList();
+    var next = currentCat.StoreCategory.StoreProductsToCategories.OrderBy(x => x.OrderNum).Where(x => x.OrderNum > currentCat.OrderNum).Take(1).ToList();
+    
+}
+@if (Model != null)
+{
+    <div id="el_modal_window">
+        <div class="modal_wrap_content">
+            <div>
+                <div class="modal_window_content empty modal_with_quick_views">
+                    <div class="quick_view">
+                        <h2><a href="@Model.FullUrl">@Model.NameOrDef</a></h2>
+                        <section data-item_id="@Model.ID" class="goods_view_item clearfix">
+                            <div class="side_left">
+                                <div class="goods_item_pic">
+                                    <div class="goods_pic magnify">
+                                        <div class="icon_goods @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "goods_in_basket" : "")">@shopcart.ActiveProducts.Where(x => x.ProductID == Model.ID).Sum(x => x.Count)</div>
+                                        
+                                        <a class="goods_pic active theme_main_preview" href="@Model.GetThumbURL(800, 800)">
+                                            <img class="small-img" src="@Model.DefaultImage"></a>
+                                        <div class="large-img" style="background: url('@Model.GetThumbURL(280, 280)') no-repeat"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="side_right">
+                                <div class="goods_item_control clearfix">
+                                    <div class="price @(Model.DiscountTotal > 0 ? "color_action" : "color_black")">
+                                        @if (Model.DiscountTotal > 0)
+                                        {
+                                            <del>@Model.TradingPrice<span>&nbsp;руб.</span></del>
+                                            @Model.OriginalPrice<span>&nbsp; руб.</span>
+                                        }
+                                        else
+                                        {
+                                            @Model.TradingPrice<span>&nbsp; руб.</span>
+                                        }
+                                    </div>
+
+                                    <div class="page_goods_item product_form product_form_item">
+                                        <div class="el_form-quantity">
+                                            <a class="el_form btn disabled bradius_c-r reduce"><i class="icon icon_minus-big"></i></a>
+                                            <input type="text" class="el_form bradius_c-r bradius_c-l" min="1" name="count" value="1"><a class="el_form btn bradius_c-l increase"><i class="icon icon_plus-big"></i></a>
+                                        </div>
+                                        <button arg="@Model.ID" spec="0" type="submit" class="el_form btn @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "btn_orange" : "btn_green") btn_toBasket">
+                                            <i class="icon icon_l_basket"></i>
+                                            @(shopcart.ActiveProducts.Any(z => z.ProductID == Model.ID) ? "В корзине" : "Купить")
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="goods_item_data">
+                                    <div style="height: 25px;">
+                                        <span class="goods_property">
+                                            <div data-itemid="@Model.ID" class="rating_star">
+                                                @for (int i = 5; i >= 1; i--)
+                                                {
+                                                    <span data-ratingpos="@i" class="@(Math.Round(Model.VoteOverage, 0) >= i ? "selected" : "")"></span>
+                                                }
+
+                                            </div>
+                                        </span><span class="goods_property signature">@Model.VoteCount голос@(Model.VoteCount.GetStringPostfix(WordKind.Man))</span>
+                                        @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                                        {
+                                            <span data-goodsid="@Model.ID" class="goods_property goods_item_favorite @(Model.IsUserFavorite == 1 ? "active" : "")">
+                                                <i class="icon_c_heart"></i>
+                                            </span>
+                                        }
+                                    </div>
+                                    @if (Model.NeedShowArticle)
+                                    {
+                                        <div class="signature">Артикул: @Model.Article</div>
+                                    }
+
+                                    @if (Model.Weight.HasValue && Model.Weight.Value > 0)
+                                    {
+                                        <p><i class="icon_weight_thing"></i>@Model.Weight.Value.ToString("f2").Replace(".", ",") кг</p>
+                                    }
+
+                                </div>
+                                <div class="clear"></div>
+                                @{ var comments = Model.StoreProductComments.OrderByDescending(x => x.Comment.Date).Take(4);}
+                                <div class="quick_tabs clearfix">
+                                    <a class="selected" data-tabs="quick_description" href="#nogo">Описание</a>
+
+                                    <a data-tabs="quick_property" href="#nogo">Характеристики</a>
+                                    @if (comments.Any())
+                                    {
+                                        <a data-tabs="quick_comment" href="#nogo">Отзывы</a>
+                                    }
+                                    <div data-tabs="quick_description" class="quick_tabs_content selected">
+                                        @Html.Raw(Model.Description)
+                                        <br />
+                                        @Html.Raw(Model.StaticDescription)
+                                    </div>
+                                    <div data-tabs="quick_property" class="quick_tabs_content">
+                                        <div class="goods_item_properties">
+                                            @foreach (var prop in Model.StoreCharacterToProducts.Select(x => x.StoreCharacterValue))
+                                            {
+                                                <div>
+                                                    <a href="@prop.FilterLink">@prop.Value</a><span>@prop.StoreCharacter.Name</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    @if (comments.Any())
+                                    {
+                                        <div data-tabs="quick_comment" class="quick_tabs_content">
+                                            @foreach (var comment in comments)
+                                            {
+                                                <div class="quick_comments clearfix">
+
+                                                    <img class="user_pic" src="@comment.Comment.User.Profile.GetAvatarLink(40)">
+                                                    <div class="comment_wrapper">
+                                                        <div class="data">
+                                                            <b class="buyer">@comment.Comment.User.Profile.FullName</b>
+                                                            <div class="rate_wrapper">@comment.Comment.Date.ToString("d MMMM yyyy")г.</div>
+                                                        </div>
+                                                        <div class="text">@comment.Comment.CommentText</div>
+                                                    </div>
+                                                </div>
+                                            }
+                                            <a class="show_all_commnts" href="@Model.FullUrl#comment"><i class="icon_b_comment"></i>Посмотреть все отзывы</a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </section>
+                        <a href="#nogo" arg="@(prev.Any() ? prev.First().StoreProduct.ID : 0)" class="move_control move_left" style="@(prev.Any() ? "" : "display: none;")">&lt;</a>
+                        <a href="#nogo" arg="@(next.Any() ? next.First().StoreProduct.ID : 0)" class="move_control move_right" style="@(next.Any() ? "" : "display: none;")">&gt;</a>
+                    </div>
+                    <a class="modal_window_close icon_close" href="#nogo"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

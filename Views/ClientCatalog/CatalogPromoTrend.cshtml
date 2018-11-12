@@ -1,0 +1,11 @@
+﻿@model IEnumerable<StoreProductBlock>
+@if (Model.Any())
+{
+    <h2 class="page_widget_trends"><i class="icon_b_trends"></i>Хиты сезона</h2>
+    <div class="goods_container page_widget_special container_float">
+        @foreach (var item in Model)
+        {
+            @Html.Partial("CatalogListProdictTile", item.StoreProduct)
+        }
+    </div>
+}

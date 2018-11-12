@@ -1,0 +1,62 @@
+﻿@using Microsoft.Ajax.Utilities
+@model IEnumerable<StoreCategory>
+@{
+    var counter = 0;
+    var browser = CatalogBrowser.Init();
+}
+@helper NicestringResult(string name, StoreCategory category)
+{
+    string result = "";
+    if (!string.IsNullOrEmpty(name))
+    {
+        /*
+                var index = name.LastIndexOf(" ", System.StringComparison.Ordinal);
+                if (index > 0)
+                {
+                    result = name.Substring(0, index) + "<br>" + name.Substring(index + 1);
+                }
+
+                else
+        */
+        {
+            result = name;
+        }
+    }
+
+    if (category.StoreProductsToCategories.Any(x => !x.StoreProduct.Deleted))
+    {
+        result += " <i class=\"shcount\"> [" + category.StoreProductsToCategories.Count(x => !x.StoreProduct.Deleted) + "]</i>";
+    }
+
+    @Html.Raw(result)
+}
+
+@if (Model.Any())
+{
+
+    <div class="@(browser.CurrentCategory.StoreProductsToCategories.Any() || !browser.CurrentCategory.ShowBigIcons ? "small-icons":"")">
+        @foreach (var cat in Model.Where(x => !x.Deleted && x.ShowInCatalog && (!browser.CurrentCategory.StoreProductsToCategories.Any() || x.ID != browser.CurrentCategory.ID)).DistinctBy(x=> x.ID).OrderBy(x => x.OrderNum))
+        {
+            <div class="cat-item">
+                <a class="align_center cat_preview" href="@cat.FullUrl">
+                    <div class="size100 align_center">
+                        <div class="size100 align_middle">
+                            <img src="@cat.ImageUrl" alt="@cat.CategoryImageAlt" title="@cat.CategoryImageTitle">
+                        </div>
+                    </div>
+                    <span>@NicestringResult(cat.Name, cat)</span>
+                </a>
+
+            </div>
+        }
+    </div>
+
+
+    if (!browser.CurrentCategory.StoreProductsToCategories.Any() && !browser.IsFiltered)
+    {
+        <div class="clear" style="margin-bottom: 30px"></div>
+    }
+
+
+}
+

@@ -1,0 +1,19 @@
+﻿@model StoreCategory
+@{
+    var searcher = new CommonSearch("form-search_large");
+}
+@*@Html.Partial("~/Views/CommonBlocks/Search.cshtml", searcher)*@
+@if (Model.ProductList.Any())
+{
+    @Html.Partial("~/Views/ClientCatalog/CatalogSection.cshtml", Model)
+}
+else
+{
+    <div class="items_not_found">
+        <h5>По запросу <mark>@searcher.SearchQuery</mark> товары&nbsp;не&nbsp;найдены.</h5>
+        <p>Попробуйте уточнить поисковый запрос,
+            <br>
+            либо выберите нужные товары из каталога.</p>
+        <p class="to_cat"><a href="@CatalogBrowser.BaseURL">Перейти в каталог</a></p>
+    </div>
+}

@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Настройка доступа к разделам";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+Настройка доступа к разделам
+}
+@section Description
+{
+@*На этой странице можно разрешить или запретить доступ определенных групп пользователей к разделам сайта*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@Html.Partial("MessageBox")
+@using (Html.BeginForm())
+{
+    <div class="filter-block">
+        <div class="control-group row-fluid">
+            <div class="span4">
+                <label class="control-label">Выберите группу пользователей</label>
+            </div>
+            <div class="span8">
+                <div class="controls">
+                    @Html.DropDownList("RoleList", ViewBag.RoleSelectList as SelectList)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span12">
+                <div class="controls">
+                    <div id="tree-filter"></div>
+                    @Html.Hidden("PageListPlain", ViewBag.PageListPlain as string)
+                </div>
+            </div>
+        </div>
+
+        <input type="submit" value="Сохранить" class="btn" />
+    </div>
+}
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $().ready(function () {
+            var baseLink = '/Master/ru/Roles/AccessEditor';
+            $('#RoleList').change(function () {
+                document.location.href = baseLink + '?RoleID=' + $('#RoleList').val();
+            });
+        })
+    </script>
+}

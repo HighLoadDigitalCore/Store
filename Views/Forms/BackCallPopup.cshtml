@@ -1,0 +1,53 @@
+﻿@model BackCallModel
+<div id="FeedBackPopup">
+    @using (Ajax.BeginForm("BackCallPopup", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "FeedBackPopup" }))
+    {
+        <div id="el_modal_window">
+            <div class="modal_wrap_content">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div class="suggest_wrapper">
+                            <h2>Заказать звонок</h2>
+                            @if (Model.ErrorText.IsFilled())
+                            {
+                                <div class="messages_alert">
+                                    <span>@Model.ErrorText</span>
+                                </div>
+                            }
+                            <div>
+                                <label><span>Имя:</span><input type="text" required="required" value="@Model.Name" class="el_form" name="Name"></label>
+                                <label><span>Телефон:</span><input type="text" required="required" value="@Model.Phone" class="el_form" name="Phone"></label>
+                                @*<label><span>Перезвоните мне:</span></label>*@
+                                <div class="suggest_type back-call">
+                                    <label>
+                                        <input type="hidden" @(Model.Where == "Как можно быстрее" ? "checked=\"checked\"" : "") value="Как можно быстрее" name="Where" class="el_form">
+                                        <b class="thanks"></b>
+                                    </label>
+                                    
+                                    @*<label>
+                                        <input type="radio" @(Model.Where == "До обеда" ? "checked=\"checked\"" : "") value="До обеда" name="Where" class="el_form"><div>До обеда</div>
+                                        <b class="thanks"></b>
+                                    </label>
+                                    
+                                    <label>
+                                        <input type="radio" @(Model.Where == "В обед" ? "checked=\"checked\"" : "") value="В обед" name="Where" class="el_form"><div>В обед</div>
+                                        <b class="thanks"></b>
+                                    </label>
+                                    
+                                    <label>
+                                        <input type="radio" @(Model.Where == "Вечером" ? "checked=\"checked\"" : "") value="Вечером" name="Where" class="el_form"><div>Вечером</div>
+                                        <b class="thanks"></b>
+                                    </label>*@
+                                </div>
+                                <label><span>Комментарий</span><textarea required="required" placeholder="Ваш комментарий..." class="el_form" name="Comment">@Model.Comment</textarea></label>
+                                <button class="el_form btn btn_green send_button" onclick="return DoAjaxPostAndMore(this);" type="submit">Отправить</button>
+                            </div>
+                        </div>
+                        <a class="modal_window_close icon_close" href="#nogo" onclick="return closeDialog(this);"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

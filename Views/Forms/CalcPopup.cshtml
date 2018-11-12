@@ -1,0 +1,50 @@
+﻿@model CalcModel
+
+<script type="text/javascript" src="/Scripts/FileUpload/jquery.fileupload.js"></script>
+<div id="CalcPopup">
+    @using (Ajax.BeginForm("CalcPopup", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "CalcPopup" }))
+    {
+        <script type="text/javascript">
+            checkCalcRedirect();
+        </script>
+        <div id="el_modal_window">
+            <div class="modal_wrap_content">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div class="suggest_wrapper">
+                            <h2>@Html.Raw(Model.HasMail ? "Заявка на расчет":"Быстрая покупка")</h2>
+                            @if (Model.ErrorText.IsFilled())
+                            {
+                                <div class="messages_alert">
+                                    <span>@Model.ErrorText</span>
+                                </div>
+                            }
+                            <div>
+                                <label><span>Ваше имя <span style="color: red; display: inline">*</span></span><input type="text" required="required" value="@Model.Name" class="el_form" name="Name"></label>
+                                <label><span>Телефон <span style="color: red; display: inline">*</span></span><input type="text" required="required" value="@Model.Phone" class="el_form" name="Phone"></label>
+                                @if (Model.HasMail)
+                                {
+                                    <label><span>Эл. почта <span style="color: red; display: inline">*</span></span><input type="text" required="required" value="@Model.Mail" class="el_form" name="Mail"></label>
+                                }
+                                <br />
+                                <input type="file"/>
+                                @Html.HiddenFor(x=> x.File)
+                                @Html.HiddenFor(x=> x.HasMail)
+                                <input type="hidden" name="FromProduct" id="FromProduct" value="@(Model.FromProduct)"/>
+                                <input type="hidden" id="NeedClose" name="NeedClose" value="@(Model.NeedClose?"True":"False")" />
+                                <br/>
+                                <br/>
+                                <br/>
+                                
+                                <button class="el_form btn btn_green send_button" onclick="return DoAjaxPostAndMore(this);" type="submit">Отправить</button>
+                                <br />
+                            </div>
+                        </div>
+                        <a class="modal_window_close icon_close" href="#nogo" onclick="return closeDialog(this);"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

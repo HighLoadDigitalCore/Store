@@ -1,0 +1,183 @@
+﻿<table class="header">
+    <tbody>
+        <tr>
+            <td>
+                @*<table>
+                    <tbody>
+                        <tr>
+                            <td class="l">
+                                <div class="logo">
+                                    <a href="/Master/ru/">
+                                        <img style="width: 130px; padding-left: 10px;" src="/content/photon/images/photon/panel_logo-light-2x-green.png" alt="Photon.CMS">
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="c">
+                                <div>
+                                    <div class="search">
+                                        <div class="search1">
+                                            <i>
+                                                <input onkeypress="return search(event)" type="text" onblur="inputBlur(this, 'найти страницы, содержащие текст...')" onfocus="inputFocus(this, 'найти страницы, содержащие текст...')" value="найти страницы, содержащие текст..." name="SearchText">
+                                            </i>
+                                        </div>
+                                        <a href="#nogo" id="SearchBtn" onclick='loadSearch($("[name=SearchText]").val()); return false;'></a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="r">
+                                <div class="nav-fixed-topright" style="visibility: hidden">
+                                    <ul class="nav nav-user-menu">
+                                        <li>
+                                            <a href="mailto:photon-cms@mail.ru" title="Связаться с разработчиками системы">
+                                                <i class="icon-photon mail"></i>
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a href="/Master/ru/Chat/Edit" title="Онлайн чат" id="chat-cell">
+                                                <i class="icon-photon mic"></i>
+                                                @if (AccessHelper.MasterPanel.ChatUnreadCount > 0)
+                                                {
+                                                    <div class="notification-count">@AccessHelper.MasterPanel.ChatUnreadCount</div>
+                                                }
+                                            </a>
+                                        </li>
+                                        <li><a href="#" title="Обновить дерево каталога" id="reloadTreeData"><i class="icon-photon reopen"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="userbar">
+                                    <span>
+                                        @AccessHelper.CurrentUserProfile.FullName
+                                    </span> |
+                                    <a href="@Url.Action("LogOff", "Account")">Выход</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>*@
+
+
+
+                <ul class="primary-nav">
+                    @{
+                        var counter = 0;
+                    }
+                    @foreach (var item in AdminMenu.ItemList)
+                    {
+                        if (item.IsCurrent)
+                        {
+                            AdminMenu.CurrentItem = item;
+                        }
+                        if (item.IsMain)
+                        {
+                            AdminMenu.MainItem = item;
+                        }
+                        <li>
+                            <a class="@(counter==0?"first":"")" href="@(item.Children != null && item.Children.Any() ? "javascript:;" : item.URL)">
+                                <i class="icon-photon @item.Icon"></i><i class="text">@item.Name</i>
+                            </a>
+
+                            @if (item.Children != null && item.Children.Any())
+                            {
+                                <ul>
+                                    @foreach (var subitem in item.Children)
+                                    {
+                                        if (subitem.IsCurrent)
+                                        {
+                                            AdminMenu.CurrentItem = subitem;
+                                        }
+                                        if (subitem.IsMain)
+                                        {
+                                            AdminMenu.MainItem = subitem;
+                                        }
+                                        <li>
+                                            <a href="@Url.Action(subitem.Action, subitem.Controller)">
+                                                @if (subitem.Icon.IsFilled() && subitem.Icon!="home")
+                                                {
+                                                    <i class="icon-photon @subitem.Icon"></i>
+                                                }<i class="text">@subitem.Name</i>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </li>
+                            counter++;
+                    }
+                    
+                </ul>
+                <ul class="customer-menu">
+                    @*left part menu*@
+                    <li class="icon-customer">
+                        <a href="#" class="show-popup" title="найти страницы, содержащие текст...">
+                            <i class="icon-photon icon-search"></i>
+                        </a>
+                        <a href="#" title="Обновить дерево каталога" id="reloadTreeData"><i class="icon-photon reopen"></i></a>
+                    </li>
+                    <li class="out-customer">
+                        @AccessHelper.CurrentUserProfile.FullName
+                    </li>
+                    <li class="out-customer">
+                        <a href="@Url.Action("LogOff", "Account")">Выход</a>
+                    </li>
+                </ul>
+                <div class="search pop-up">
+                    <div class="search1">
+                        <i>
+                            <input onkeypress="return search(event)" type="text" onblur="inputBlur(this, 'найти страницы, содержащие текст...')" onfocus="inputFocus(this, 'найти страницы, содержащие текст...')" value="найти страницы, содержащие текст..." name="SearchText">
+                        </i>
+                    </div>
+                    <a href="#nogo" id="SearchBtn" onclick='loadSearch($("[name=SearchText]").val()); return false;'></a>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+@*
+    <div class="nav-fixed-left" style="visibility: hidden">
+            <ul class="nav nav-side-menu">
+                <li class="shadow-layer"></li>
+                @foreach (var item in AdminMenu.ItemList)
+                {
+                    if (item.IsCurrent)
+                    {
+                        AdminMenu.CurrentItem = item;
+                    }
+                    if (item.IsMain)
+                    {
+                        AdminMenu.MainItem = item;
+                    }
+                    <li class="@(item.Action == "LogOff" ? "nav-logout" : "")">
+                        <a href="@(item.Children != null && item.Children.Any() ? "javascript:;" : item.URL)">
+                            <i class="icon-photon @item.Icon"></i><span class="nav-selection">@item.Name</span></a>
+
+
+
+
+                        @if (item.Children != null && item.Children.Any())
+                        {
+                            <div class="sub-nav">
+                                <ul class="nav">
+                                    @foreach (var subitem in item.Children)
+                                    {
+                                        if (subitem.IsCurrent)
+                                        {
+                                            AdminMenu.CurrentItem = subitem;
+                                        }
+                                        if (subitem.IsMain)
+                                        {
+                                            AdminMenu.MainItem = subitem;
+                                        }
+                                        <li>
+                                            @Html.ActionLink(subitem.Name, subitem.Action, subitem.Controller)
+                                        </li>
+
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>*@

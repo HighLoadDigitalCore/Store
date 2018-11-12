@@ -1,0 +1,41 @@
+﻿@model UserProfile
+<style>
+    .private_office_nav-photo i{
+        background: url('/content/theme_main/img/photo.png')!important;
+        background-size: cover !important;
+    }
+</style>           
+@if (Request["view"] == "first")
+{
+    <div style="margin-top: 20px" class="first-block">
+        <h1>Добро пожаловать в личный кабинет мастера!</h1>
+        <p>Здесь вы сможете отредактировать свой профиль и посмотреть список поступивших заявок.</p>
+        <p>Выберите интересующий вас раздел:</p>
+        <br />
+        <br />
+    </div>
+}
+
+<div class="private_office_nav">
+    <a class="private_office_nav-profile @(Request["view"] == "profile" ? "current" : "")" href="/cabmaster?view=profile"><i></i>Профиль</a>
+    <a class="private_office_nav-orders private_office_nav-photo @(Request["view"] == "photo" ? "current" : "")" href="/cabmaster?view=photo"><i></i>Фото</a>
+    @*
+        <a class="private_office_nav-messages " href="/cabinet?view=adresses"><i></i>Адреса</a>
+        
+    *@
+    <a class="private_office_nav-fav_list @(Request["view"] == "qst" ? "current" : "")" href="/cabmaster?view=qst"><i></i>Заявки</a>
+    
+</div>
+@if (Request["view"] == "profile")
+{
+    <div style="margin-top: 20px">
+        @Html.Partial("Form", Model)
+    </div>
+}
+@if (Request["view"] == "photo")
+{
+    <div style="margin-top: 20px">
+        @Html.Partial("Photo", Model.User.UserImages)
+    </div>
+    
+}

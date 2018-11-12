@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CatalogItem>
+@if (Model != null && Model.Any())
+{
+    <div class="container_12">
+        <h4 class="item_view_title_main">ВЫ СМОТРЕЛИ</h4>
+    </div>
+    <article class="recent">
+        <div class="container_12 bottom_slider">
+            <div class="grid_12 slider ">
+                <div class="slider_wrap">
+                    <div class="slider_content goods_container" style="width: 960px;">
+                        @foreach (var item in Model)
+                        {
+                            <div class="goods_view_small">
+
+                                <div class="goods_pic">
+                                    <div class="icon_goods"></div>
+                                    <a class="no-hover" href="@item.Link" title="@item.Name">
+                                        <img src="@item.Image"></a>
+                                </div>
+                                <a title="@item.Name" class="goods_caption" href="@item.Link">@item.Name</a>
+                                @if (item.ID.HasValue && item.Price.HasValue)
+                                {
+                                    <input class="product-price" type="hidden" value="@item.Price.Value.ToString("f0")" arg="@item.ID"/>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+}

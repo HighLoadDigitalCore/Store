@@ -1,0 +1,45 @@
+﻿
+
+@model FeedBackModel
+<div id="FeedBackPopup">
+    @using (Ajax.BeginForm("FeedBackPopup", new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "FeedBackPopup" }))
+    {
+        <div id="el_modal_window">
+            <div class="modal_wrap_content">
+                <div>
+                    <div class="modal_window_content empty">
+                        <div class="suggest_wrapper">
+                            <h2>Обратная связь</h2>
+                            @if (Model.ErrorText.IsFilled())
+                            {
+                                <div class="messages_alert">
+                                    <span>@Model.ErrorText</span>
+                                </div>
+                            }
+                            <div>
+                                <input type="hidden" value="" name="order">Вы хотите отправить...<div class="suggest_type">
+                                    <label>
+                                        <input type="radio" @(Model.Type == "offer" ? "checked=\"checked\"":"") value="offer" name="Type" class="el_form"><div>Предложение</div>
+                                        <b class="offer"></b>
+                                    </label>
+                                    <label>
+                                        <input type="radio" @(Model.Type == "thanks" ? "checked=\"checked\"":"") value="thanks" name="Type" class="el_form"><div>Благодарность</div>
+                                        <b class="thanks"></b>
+                                    </label>
+                                    <label>
+                                        <input type="radio" @(Model.Type == "abuse" ? "checked=\"checked\"":"") value="abuse" name="Type" class="el_form"><div>Жалобу</div>
+                                        <b class="abuse"></b>
+                                    </label>
+                                </div>
+                                <label><span>Ваше обращение</span><textarea required="required" placeholder="Текст обращения..." class="el_form" name="Text">@Model.Text</textarea></label><h3>Как с вами связаться?</h3>
+                                <label><span>Электронная почта</span><input type="email" required="required" value="@Model.Mail" class="el_form" name="Mail"></label><label><span>Ваше имя</span><input type="text" required="required" value="@Model.Name" class="el_form" name="Name"></label>
+                                <button class="el_form btn btn_green send_button" onclick="return DoAjaxPostAndMore(this);" type="submit">Отправить</button>
+                            </div>
+                        </div>
+                        <a class="modal_window_close icon_close" href="#nogo" onclick="return closeDialog(this);"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

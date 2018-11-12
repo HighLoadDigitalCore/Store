@@ -1,0 +1,140 @@
+﻿@{
+    var colorTitle = ViewBag.ColorChat;
+}
+
+@{ 
+    <style>
+        .unauth input:focus, .unauth textarea:focus {
+        border-color: @colorTitle[2];
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px @colorTitle[2];
+        outline: 0 none;
+    }
+
+    </style>
+}
+
+@if (SiteSetting.Get<bool>("ShowChat"))
+{
+    <script type="text/javascript" src="/content/theme_main/js/chat.js"></script>
+    <link type="text/css" rel="stylesheet" href="/content/theme_main/css/chat.css" />
+    if (SiteSetting.Get<bool>("AutoShowChat"))
+    {
+    <script type="text/javascript" src="/content/theme_main/js/chat-auto-open.js"></script>
+    }
+    
+    <div id="jivo_top_wrap">
+        <div id="jivo_chat_widget">
+            <div id="jivo_chat_widget_online">
+                <div class="jivo-fixed-bottom jivo-animate jivo-online" id="jivo-label" style="right: -20px;">
+                    @*<div class="jivo-triangle-wraper jivo_shadow jivo_rounded_corners jivo_gradient jivo_3d_effect jivo_border jivo_dark_text">
+                        <div class="jivo-triangle-clip">
+                            <div class="jivo-triangle jivo-label-triangle" style="border-left-color: rgb(217, 225, 204);">
+                                <div class="jivo-triangle-inner" style="background-color: rgb(217, 225, 204);"></div>
+                            </div>
+                            <div class="jivo-noise jivo-noise-pattern-dark"></div>
+                            <div class="jivo-css-leaf jivo-online jivo-dark">
+                                <div class="jivo-top-right-square">
+                                    <div class="jivo-bottom-left-square"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                    <div id="jivo-label-wrapper">
+                        @*<div class="jivo-dark" id="jivo-label-status"></div>*@
+                        
+                        <div id="jivo-label-text" style="font-size: 14px; font-family: Helvetica; font-weight: bold; font-style: normal; color: @colorTitle[0]; background: url('@colorTitle[1]');">
+                            Напишите нам, мы в онлайне!
+                        </div>
+                        <div class="jivo-dark jivo-no-copyright" id="jivo-label-copyright"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="jivo-chat" style="" class="jivo-animated jivo-online jivo-fade-in">
+            @*<div class="jivo-triangle-wraper jivo_shadow jivo_rounded_corners jivo_gradient jivo_3d_effect jivo_border jivo_dark_text">
+                <div class="jivo-triangle-clip">
+                    <div class="jivo-triangle jivo-chat-triangle" style="border-left-color: rgb(217, 225, 204);">
+                        <div class="jivo-triangle-inner" style="background-color: rgb(217, 225, 204);"></div>
+                    </div>
+                    <div class="jivo-noise jivo-noise-pattern"></div>
+                    <div class="jivo-css-leaf jivo-online jivo-dark">
+                        <div class="jivo-top-right-square">
+                            <div class="jivo-bottom-left-square"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+            <div class="jivo-desktop" id="jivo_action">
+                <div data-action="close" id="jivo_close_button"></div>
+            </div>
+            <div id="jivo_iframe_wrap">
+                <div id="jivo_iframe_placeholder">
+                    <div id="inner-chat">
+                        <div id="jivosite-iframe-chat">
+                            <div class="header dark" id="header-avatar">
+                                <div id="header-avatar-container">
+                                    <div class="info">
+                                        <div class="agent-name">Оставьте сообщение</div>
+                                        @*<div class="title">Операторы онлайн</div>*@
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div class="nologo" id="chat-body">
+
+                                <div id="scrollbar-container">
+                                    <div class="viewport" id="messages-div">
+                                        <div id="messages-div-outer" class="ps-container">
+                                            @*
+                                        <div class="overview" id="messages-div-inner">
+                                            <div id="messages-div-inner-clear"></div>
+                                        </div>
+                                        <div class="ps-scrollbar-x-rail" style="display: none; left: 0px; bottom: 3px; width: 247px;">
+                                            <div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div>
+                                        </div>
+                                        <div class="ps-scrollbar-y-rail" style="display: none; top: 0px; right: 0px; height: 15px;">
+                                            <div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div>
+                                        </div>
+*@
+                                            <div class="overview" id="messages-div-inner">
+                                                @* <div class="new-msg-container clientMessage">
+                                                    <div class="pip"></div>
+                                                    <div class="new-msg-body clientMessage">
+                                                        <div class="new-msg-body-inner">
+                                                            <div class="new-msg-text">12345678</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="new-time">18:56</div>
+                                                </div>*@
+                                                <div id="messages-div-inner-clear"></div>
+                                            </div>
+                                        </div>
+                                        <div id="agent-typing"></div>
+                                    </div>
+                                </div>
+                                <div id="input-div" class="@(AccessHelper.IsAuth? "":"unauth")" style="@(AccessHelper.IsAuth? "height:355px":"height:52px")">
+                                    @if (!AccessHelper.IsAuth)
+                                    {
+                                        <div class="msg" style="color:#000; font-weight:700;"><p>Мы обязательно свяжемся с Вами!</p></div>
+                                        <input type="text" placeholder="Имя" id="ChatUserName"/>
+                                        <input type="text" placeholder="E-mail" id="ChatEmail"/>
+                                        <input type="text" placeholder="Телефон" id="ChatPhone"/>
+                                    }
+                                    <label for="input-field" style="font-weight:700; margin-bottom: 5px;">Сообщение</label>
+                                    <textarea maxlength="1000" autocomplete="off" name="input-field" id="input-field" placeholder="Задайте вопрос" style="resize: none; @(AccessHelper.IsAuth ? "height:320px;" : "height:150px;")"></textarea>
+                                </div>
+                                <button type="submit" id="chat-send-offline-button" class="chat-enter-btn" style="margin: 8px 15px; color: @colorTitle[0]; background: url('@colorTitle[1]'); border: none;">Отправить</button>
+                                <button class="chat-close-btn" id="chat-close">Закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="jivo-loader" class="jivo-loader jivo-fade-out" style="display: none">
+                <div id="jivo-loader-title" class="jivo-loader-title" style="color: rgb(22, 22, 21);">Подключаемся...</div>
+                <div class="jivo-loader-inner"></div>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Расписание цен";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@model Dictionary<int, IOrderedEnumerable<EventCalendar>>
+@section Header
+{
+@ViewBag.Title
+}
+@section Description
+{
+@*Вы можете составить расписание, по которому будут меняться цены в каталоге.*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@Html.Partial("MessageBox")
+<div class="">
+    @for (int i = 0; i < 7; i++)
+    {
+        <div class="widget-holder">
+            <div class="widget-flipper">
+                <div class="widget-area widget-latest-users widget-front">
+
+                    <div class="widget-head">
+                        @EventCalendar.DayNames[i]
+                        <div>
+                            <img title="Распиание событий на @EventCalendar.DayNames[i]" src="/content/photon/images/photon/w_latest@2x.png" />
+                        </div>
+                    </div>
+                    <ul>
+                        @if (Model.ContainsKey(i))
+                        {
+                            foreach (var ev in Model[i])
+                            {
+                            <li>
+                                <span>@ev.StartTime.Hours.ToString("d2"):@ev.StartTime.Minutes.ToString("d2") - @ev.EndTime.Hours.ToString("d2"):@ev.EndTime.Minutes.ToString("d2")
+                                </span>
+                                <span style="color: @(ev.Direction<0?"red":"green")">@(ev.Direction<0?"-":"+")@ev.PricePercent.ToString("f1")% </span>
+                                
+                                @*<span>@ev.TimeSpan.Hours час@(ev.TimeSpan.Hours.GetStringPostfix(WordKind.Man)), @ev.TimeSpan.Minutes @ev.TimeSpan.Minutes.GetStringPostfix(WordKind.Minute)</span>*@
+                                <div style="padding-top: 12px;">
+                                    <a class="delpage" title="Удалить событие" href="@Url.Action("Delete", new{ID = ev.ID})"></a>
+                                    <a class="editpage" title="Редактировать событие" href="@Url.Action("Edit", new{ID = ev.ID})"></a>
+                                </div>
+                            </li>
+  
+                            }
+                        }
+                        <li>
+                            @Html.ActionLink("Добавить", "Edit", new { ID = 0, DayOfWeek = i }, new { @class = "btn btn-mini", @style = "margin:0" })
+                        </li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+    }
+</div>

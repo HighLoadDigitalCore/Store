@@ -1,0 +1,30 @@
+﻿@{
+    var category = CabinetMenu.GetFavoriteCategory();
+    ViewBag.IsFavorite = true;
+}
+<div id="FavoriteCell">
+    @if (category != null && category.ProductList.Any())
+    {
+        <h2 class="private_office_title">Избранные товары</h2>
+        <div class="favorite_assign_controls">
+            <label>
+                <input type="checkbox" name="select_all" class="selector el_form"><span class="title"><span class="title all">выбрать все</span><span class="title selected hidden"></span></span></label>
+            <button disabled="" class="to_basket el_form btn small">Положить в корзину</button>
+        </div>
+        <div class="favorite_page">
+            @Html.Partial("~/Views/ClientCatalog/CatalogSection.cshtml", category)
+        </div>
+    }
+    else
+    {
+        <div class="items_not_found">
+            <h5>У вас нет избранных товаров</h5>
+            <p>
+                Добавляйте понравившиеся товары в избранное,
+            <br>
+                чтобы облегчить навигацию по сайту.
+            </p>
+            <p class="to_cat"><a href="@CatalogBrowser.BaseURL">Перейти в каталог</a></p>
+        </div>
+    }
+</div>

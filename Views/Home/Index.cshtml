@@ -1,0 +1,40 @@
+﻿@model PagedData<CMSPage>
+@{
+    ViewBag.Title = "Управление разделами сайта";
+    ViewBag.ContainerStyle = "inner-padding";
+    Layout = "~/Views/Shared/_Master.cshtml";
+    AdminMenu.HasFilter = true;
+}
+@section Header{
+    
+}
+@section Description{
+    
+}
+
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@*<div class="control-group row-fluid" style="border-top: 0">
+        <div class="span12">
+            <div id="PageContent"></div>
+        </div>
+    </div>*@
+<style>
+    .cell-head {
+        cursor: move;
+    }
+
+    .highlight {
+        /*width: 100px!important;*/
+    }
+</style>
+

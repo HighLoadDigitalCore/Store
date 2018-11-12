@@ -1,0 +1,48 @@
+﻿@model ShopCart
+@{
+    var os = new OrderSteps(3);
+}
+@if (!AccessHelper.IsAuth)
+{
+    <script type="text/javascript">
+        document.location.href = '@(CMSPage.GetPageLinkByType("ShopCart"))';
+    </script>
+}
+else
+{
+    <div id="CartPayment" style="width: 940px">
+        <div data-paymenttype="cashless" class="container_12 payment_cashless selected" style="min-height: 300px">
+            <div class="grid_6">
+                <p>
+                    Оплата будет произведена при получении товара. При
+                отказе от товара, или группы товаров, их сумма будет вычтена из
+                заказа.
+           
+                </p>
+                <div class="payment_cash_select">
+                    <label>
+                        <div class="el_form-pointer">
+                            <input type="radio" checked="" data-paymenttype="cash" class="el_form" name="type_cashless" value=""><i class="el_form point_radio"></i>
+                        </div>
+                        <span>Оплата наличными при получении</span></label>
+                </div>
+                <div class="hidden"></div>
+            </div>
+            <div class="grid_6 page_right_grid"></div>
+            <div class="page_right_bottom_image"></div>
+        </div>
+        <div class="clear"></div>
+        <div class="order_nav clearfix">
+            <div class="order_nav-prev_step">
+                <a href="@os.PrevStepUrl" class="el_form large btn btn_multi">Вернуться назад
+                                       
+                <span class="text_11">подтверждение заказа</span></a>
+            </div>
+            <div class="order_nav-next_step">
+                <a href="@os.NextStepUrl" class="el_form large btn btn_multi btn_orange">Следующий шаг
+                <span class="text_11">отправка заказа в обработку</span></a>
+                
+            </div>
+        </div>
+    </div>
+}

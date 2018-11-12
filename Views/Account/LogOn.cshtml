@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Photon.CMS | Вход в систему управления";
+    Layout = "~/Views/Shared/_LogOn.cshtml";
+}
+
+@model LogOnModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+@using (Html.BeginForm())
+{
+    <div id="loginPanel" class="login">
+        <div class="logo">
+            <img alt="Photon.CMS" src="/content/photon/images/photon/panel_logo-light-2x-green.png">
+        </div>
+        <div class="line">
+        </div>
+        <div id="loginErrorCell" style="@(Model.Message.IsNullOrEmpty() ? "display: none" : "")" class="rnd rnd5 login-error">
+            <i class="t"><i></i></i>
+            <div id="loginErrorBlock" class="cnt">@Html.Raw(Model.Message)</div>
+            <i class="b"><i></i></i>
+        </div>
+        <table class="login-form">
+            <tr>
+                <td>
+                    <strong id="loginText">Логин</strong>&nbsp;&nbsp;
+                </td>
+                <td class="ar">
+                    <input name="UserName" type="text" id="UserName" value="@Model.UserName" class="inp" onfocus="$('#loginErrorCell').hide();" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong id="passText">Пароль</strong>&nbsp;&nbsp;
+                </td>
+                <td class="ar">
+                    <input name="Password" type="password" id="Password" value="@Model.Password" class="inp" onfocus="$('#loginErrorCell').hide();" />
+                </td>
+            </tr>
+
+            <tr>
+                <td class="al" colspan="2">
+                    <strong id="passText">Запомнить меня?</strong>&nbsp;&nbsp;
+                    <input name="RememberMe" type="checkbox" id="RememberMe" checked="@(Model.RememberMe ? "checked":"")" class="" />
+                </td>
+            </tr>
+            @*
+                <tr>
+                    <td></td>
+                    <td class="ar">
+                        <a href="/atilektcms/restore.aspx" id="passResore">Напомнить пароль</a>
+                    </td>
+                </tr>
+            *@
+        </table>
+        <div class="line2">
+        </div>
+        <table class="login-form">
+            @* <tr>
+                    <td>
+                        <strong id="langText">Язык интерфейса</strong>
+                    </td>
+                    <td class="ar" ">
+                        <select name=" langlist" onchange="setLangCookies(this);setTimeout(&#39;__doPostBack(\&#39;langList\&#39;,\&#39;\&#39;)&#39;, 0)" id="langList">
+                        <option selected="selected" value="ru-RU">Русский</option>
+                        <option value="en-US">Английский</option>
+
+                        </select>
+                    </td>
+                </tr>*@
+            <tr>
+                <td></td>
+                <td>
+                    <a id="loginBtn" class="btn btn2 fr" href="#nogo" onclick="$(this).parents('form').submit();"><i>Войти</i></a>
+                </td>
+            </tr>
+        </table>
+        <img alt="" src="/content/admin/apple.png" class="apple">
+        <p id="verText" class="ver">версия 9.0</p>
+    </div>
+
+}

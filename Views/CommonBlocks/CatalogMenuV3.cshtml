@@ -1,0 +1,59 @@
+﻿
+@{
+    var browser = CatalogBrowser.Init();
+    var root = CatalogBrowser.CategoriesList.Where(x => x.Value.ShowInMenu && x.Value.ParentID == CatalogBrowser.Root.ID).Select(x => x.Value).Where(x=> !x.Deleted).OrderBy(x => x.OrderNum).ToList();
+}
+
+<div class="sidebar left300px catalog-menu-3">
+    <!-- category tree -->
+    @*
+    <div class="box-heading">
+        <span>Каталог</span>
+    </div>
+*@
+    <div class="box-content">
+@*
+        <div class="box-category" style="padding: 13px; border-bottom: 1px dotted rgb(51, 51, 51);">
+            <a href="/catalog" class="head cat_index_page active"><i class="icon_cat_index_page"></i>Каталог товаров<i class="arrow icon_arrow_down"></i></a>
+        </div>
+*@
+        <div class="box-category">
+            <!-- category tree -->
+            <ul class="menu-v category-tree" style="display: block;">
+                @*<li>
+                    <a href="/catalog" style="text-decoration: underline">Каталог товаров</a>
+
+                </li>*@
+                @foreach (var pg in root)
+                {
+                    if (pg.ShowInMenu)
+                    {
+                    <li class="category @(browser.ParentIds.Contains(pg.ID) ? "selected" : "")">
+                        @{
+                            var l2 = CatalogBrowser.CategoriesList.Where(x => x.Value.ShowInMenu && x.Value.ParentID == pg.ID && !x.Value.Deleted).Select(x => x.Value).OrderBy(x => x.OrderNum).ToList();
+                            
+                        }
+                        <a title="@pg.Name" href="@pg.FullUrl" class="@(l2.Any() ? "idCatSubcat" : "")">@pg.Name</a><span class="@(l2.Any() ? (pg.ID == browser.CurrentCategory.ID ? "close expanded" : "close collapsed") : "")"></span>
+
+                        @if (l2.Any())
+                        {
+                            <ul class="menu-v" style="@(browser.ParentIds.Contains(pg.ID) ? "display:block" : "display: none;")">
+                                @foreach (var l2i in l2)
+                                {
+                                    if (l2i.ShowInMenu)
+                                    {
+                                    <li class="@(browser.ParentIds.Contains(l2i.ID) ? "selected" : "")">
+                                        <a title="@l2i.Name" href="@l2i.FullUrl" id="level2" >@l2i.Name</a>
+
+                                    </li>
+                                    }
+                                }
+                            </ul>
+                        }
+                    </li>
+                    }
+                    }
+            </ul>
+</div>
+    </div>
+</div>

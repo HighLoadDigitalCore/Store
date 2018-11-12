@@ -1,0 +1,17 @@
+﻿@{
+    var user = HttpContext.Current.GetCurrentUser();
+}
+<div id="ProfileAdresses">
+    <h2 class="private_office_title">Список ваших адресов</h2>
+    <table>
+        @foreach (var addr in user.OrderAdresses)
+        {
+            <tr class="address_item color_block">
+                <td class="address-marker"><i></i></td>
+                <td class="address-title">@addr.ToString()</td>
+                <td colspan="2"><a href="#nogo" arg="@addr.ID" class="address-delete"><i></i>Удалить</a></td>
+            </tr>
+        }
+    </table>
+</div>
+<div class="grid_8"><a class="el_form btn btn_green" href="@CMSPage.GetPageLinkByType("ShopCart")?step=adress&edit=1&hidemenu=1">Добавить новый адрес</a></div>

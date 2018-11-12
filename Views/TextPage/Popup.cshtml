@@ -1,0 +1,11 @@
+﻿@model IEnumerable<CMSPagePopupData>
+
+@foreach(var block in Model)
+{
+    <div class="popup-content" uid="@block.ID">
+        @Html.Raw(block.Text)
+        <div class="btn-dialog-cell">
+            <input class="el_form btn btn_green" style="padding-left: 15px; padding-right: 15px" type="submit" value="ОК" onclick="$(this).parent().parent().dialog('close')" />
+        </div>
+    </div>
+}

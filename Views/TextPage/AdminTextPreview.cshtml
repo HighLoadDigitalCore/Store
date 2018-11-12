@@ -1,0 +1,12 @@
+﻿@{
+    Layout = "~/Views/Shared/TextPreviewPage.cshtml";
+}
+@model CMSPageCellView
+@if (Model != null)
+{
+    @Html.Action(Model.Action, Model.Controller, new {ViewID = Model.ID, Preview = true})
+}
+else
+{
+    @Html.Raw("Отображает произвольный текст и изображения")
+}

@@ -1,0 +1,22 @@
+﻿@model EventCalendar
+@{
+    ViewBag.Title = "Удаление расписания";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+@section Header
+{
+    Удаление события
+}
+@using (Html.BeginForm())
+{
+    <div class="form-legend">Вы уверены, что хотите удалить это событие из расписания?</div>
+    <div class="control-group row-fluid">
+        <div class="span12 span-inset">
+            <input class="btn" type="submit" value="Удалить" />
+            <div class="backref">
+                @Html.ActionLink("Назад к списку", "Index")
+            </div>
+        </div>
+    </div>
+}

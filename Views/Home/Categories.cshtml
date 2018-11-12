@@ -1,0 +1,136 @@
+﻿@model StoreCategory
+<div id="PageContent">
+    <style>
+        .mygrid td {
+            padding: 5px 0;
+        }
+    </style>
+    <input type="hidden" id="PreviewLink" value="@Model.FullUrl">
+    <input type="hidden" id="Description">
+    <input type="hidden" id="Header" value="Подразделы в папке '@Model.Name'">
+    <input type="hidden" id="Request" value="@Request.RawUrl">
+    <fieldset>
+        <table class="mygrid" style="width: 100%">
+            <tbody>
+                <tr>
+
+                    <th>
+                        <div class="form-legend">
+                            Настройки
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-legend">
+                            SEO
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-legend">
+                            Описание
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-legend">
+                            Фото
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-legend">
+                            Товары
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-legend">
+                            &nbsp;
+                        </div>
+                    </th>
+                    <th>
+                        <div class="form-legend">
+                            &nbsp;
+                        </div>
+                    </th>
+                    <th class="last-td">
+                        <div class="form-legend">&nbsp;</div>
+                    </th>
+                </tr>
+                @{
+                    var counter = 0;
+                }
+                @foreach (var cat in Model.Children.Where(x=> !x.Deleted).OrderBy(x=> x.OrderNum).ToList())
+                {
+                    <tr class="@(counter%2 == 0?"even":"odd") @(counter == Model.Children.Count - 1 ? "last-grid-row" : "")">
+                        <td>
+                            <div class="cell-content">
+                                <a href="/Master/ru/TableEditors/Categories?ParentID=@(Model.ID)&amp;Type=Edit&amp;UID=@(cat.ID)&amp;Page=0" onclick="$.cookie('Tabs_Categories', 'Настройки', { expires: 365, path: '/' }); loadByLink(this); return false;">@cat.Name</a>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="cell-content">
+                                <a href="/Master/ru/TableEditors/Categories?ParentID=@(Model.ID)&amp;Type=Edit&amp;UID=@(cat.ID)&amp;Page=0" target="_parent" class="editpage" style="height: 16px!important; margin-bottom: 2px!important; float: left; margin-left: 7px!important;" onclick="$.cookie('Tabs_Categories', 'SEO', { expires: 365, path: '/' }); loadByLink(this); return false;"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="cell-content">
+                                <a href="/Master/ru/TableEditors/Categories?ParentID=@(Model.ID)&amp;Type=Edit&amp;UID=@(cat.ID)&amp;Page=0" target="_parent" class="editpage" style="height: 16px!important; margin-bottom: 2px!important; float: left; margin-left: 25px!important;" onclick="$.cookie('Tabs_Categories', 'Описание', { expires: 365, path: '/' }); loadByLink(this); return false;"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="cell-content">
+                                <a href="/Master/ru/TableEditors/Categories?ParentID=@(Model.ID)&amp;Type=Edit&amp;UID=@(cat.ID)&amp;Page=0" target="_parent" class="editpage" style="height: 16px!important; margin-bottom: 2px!important; float: left; margin-left: 7px!important;" onclick="$.cookie('Tabs_Categories', 'Фото', { expires: 365, path: '/' }); loadByLink(this); return false;"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="cell-content">
+                                <a href="/Master/ru/TableEditors/Categories?ParentID=@(Model.ID)&amp;Type=Edit&amp;UID=@(cat.ID)&amp;Page=0" target="_parent" class="editpage" style="height: 16px!important; margin-bottom: 2px!important; float: left; margin-left: 18px!important;" onclick="$.cookie('Tabs_Categories', 'Товары', { expires: 365, path: '/' }); loadByLink(this); return false;"></a>
+                            </div>
+                        </td>
+
+                        <td style="width: 50px">
+
+                            <div class="cell-content">
+                                <a href="#" onclick="changeOrder(this, 'up', @(cat.ID)); return false;" class="image-up" style="margin-left: 7px !important"></a>
+                            </div>
+
+                        </td>
+                        <td style="width: 50px">
+
+
+                            <div class="cell-content">
+                                <a href="#" onclick="changeOrder(this, 'down', @(cat.ID)); return false;" class="image-down" style="margin-left: 7px !important"></a>
+                            </div>
+
+
+                        </td>
+                        <td class="td-delete">
+
+                            <div class="cell-content cell-content-delete">
+                                <a href="/Master/ru/TableEditors/Categories?ParentID=@(Model.ID)&amp;Type=Delete&amp;UID=@(cat.ID)&amp;Page=0" onclick="loadByLink(this); return false; " style="margin-left: 7px!important">удалить</a>
+                            </div>
+                        </td>
+                    </tr>
+                    counter++;
+                }
+
+
+
+
+            </tbody>
+        </table>
+        <br>
+        <input type="hidden" value="0" id="page">
+
+    </fieldset>
+    <div class="backref-tbl">
+        <a class="btn" href="/Master/ru/TableEditors/Categories?Type=Edit" onclick="loadByLink(this); return false;">Добавить</a>
+    </div>
+    <script type="text/javascript">
+        function changeOrder(obj, type, cat) {
+            $.post('/Master/ru/Home/ChangeOrder', { Type: type, CategoryID: cat }, function () {
+                loadByLink($('a').attr('href', $('#Request').val())); 
+            });
+        }
+
+    </script>
+</div>
+

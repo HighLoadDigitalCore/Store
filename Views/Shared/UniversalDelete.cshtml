@@ -1,0 +1,47 @@
+﻿@model UniversalEditorPagedData
+<div id="UF">
+    @if (Model.EditedRow != null && (int)Model.EditedRow.GetPropertyValue("ID") > 0)
+    {
+        using (Ajax.BeginForm("UniversalDelete", "UniversalEditor", Model.GetFullParamsValuesForDelete(Model.EditedRow), new AjaxOptions() { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "UF", OnComplete = "setRedirect()" }))
+        {
+            //new { Type = "Delete", Page = Model.Page, UID = Model.EditedRow.GetPropertyValue(Model.Settings.UIDColumnName) }
+            @Html.HiddenFor(model => model.CallerAction)
+            @Html.HiddenFor(model => model.CallerController)
+            @Html.HiddenFor(model => model.AddQueryParamsJoin)
+
+            @Html.Partial("MessageBox")
+            <div class="form-legend">Вы уверены, что хотите удалить безвозвратно эту запись и все связанные с ней данные?</div>
+            <div class="control-group row-fluid">
+                @{
+            var name = Model.EditedRow.GetPropertyValue(Model.Settings.ShowedFieldsInList.First(x => x.IsLinkToEdit).FieldName).ToString().ClearHTML().TruncateToPoint(100);
+            if (name.IsNullOrEmpty())
+            {
+                try
+                {
+                    name = Model.EditedRow.GetPropertyValue("Name").ToString().ClearHTML().TruncateToPoint(100);
+                }
+                catch
+                {
+
+                }
+            }
+            if (name.IsNullOrEmpty())
+            {
+                name = Model.EditedRow.GetPropertyValue("ID").ToString().ClearHTML().TruncateToPoint(100);
+            }
+                }
+                <h5 class="ask-head">Удаление записи &laquo;@name&raquo;</h5>
+                <input type="submit" value="Удалить" class="btn" />
+            </div>
+
+
+
+        }
+        @Html.Hidden("RedirectURL", Model.RedirectURL)
+        @Html.Hidden("IsPartial", Model.IsPartial ? "1" : "0")
+        @Html.Hidden("NewNode", "#x0")
+        <div class="backref">
+            @Html.ActionLinkQuery("Назад к списку", Model.CallerAction, Model.CallerController, Model.FullParamList, Model.GetFullParamsValuesForDelete(Model.EditedRow, true), new { onclick = Model.IsPartial ? "loadByLink(this); return false;" : "return true;" })
+        </div>
+    }
+</div>

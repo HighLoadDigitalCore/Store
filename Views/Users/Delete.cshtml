@@ -1,0 +1,36 @@
+﻿@model User
+@{
+    ViewBag.Title = "Удаление пользователя";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+
+@section Header
+{
+    Удаление пользователя
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm())
+{
+    @Html.Partial("MessageBox")
+    <div class="form-legend">Вы действительно хотите удалить пользователя "@Model.Profile.FullName" и все связанные с ним данные из системы?</div>
+    <div class="control-group row-fluid">
+        <div class="span12 span-inset">
+            <input class="btn" type="submit" value="Удалить" />
+            <div class="backref">
+    @Html.ActionLinkQuery("Назад к списку", "Index", "Users", new[] { "role", "query", "page" })
+            </div>
+        </div>
+    </div>
+}
+

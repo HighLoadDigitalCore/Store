@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "Редактирование или добавление полей в фильтр";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+@section Header
+{
+Редактирование или добавление полей в фильтр
+}
+@section Description
+{
+Укажите настройки полей для фильра
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@model FilterItem
+@Html.Partial("MessageBox")
+<div class="filter-block">
+    @using (Html.BeginForm("ItemEdit", "Filter", new { FilterID = Model.FilterID, ID = Model.ID }, FormMethod.Post))
+    {
+        <div class="form-legend">Редактирование правила:</div>
+
+        @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.FilterID)
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Название поля</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBoxFor(x => x.Name)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Подсказка</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBoxFor(x => x.Help)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Характеристика</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    <select name="CharID">
+                        @foreach (var item in FilterItem.Chars)
+                        {
+                            <option value="@item.Value" @(item.Value.ToInt() == Model.CharID ? "selected" : "")>@item.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Тип фильтра</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    <select name="Type">
+                        <option value="0" @(Model.Type == 0 ? "selected" : "")>Чекбоксы</option>
+                        <option value="1" @(Model.Type == 1 ? "selected" : "")>Слайдер</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Порядковый номер</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.TextBoxFor(x => x.OrderNum)
+                </div>
+            </div>
+        </div>
+        <div class="control-group row-fluid">
+            <div class="span3">
+                <label class="control-label">Отображать фильтр развернутым</label>
+            </div>
+            <div class="span9">
+                <div class="controls">
+                    @Html.CheckBoxFor(x => x.Visible)
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group row-fluid">
+            <div class="controls">
+                <div class="span12">
+                    <input type="submit" value="Сохранить изменения" class="btn" />
+                    <div class="backref">
+                        @Html.ActionLink("Назад к списку", "Items", "Filter", new { FilterID = Model.FilterID }, null)
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    }
+</div>

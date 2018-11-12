@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Список анимационных блоков";
+    Layout = "~/Views/Shared/_Master.cshtml";
+}
+
+@section Header{
+    Анимационные блоки
+}
+@section Description
+{
+    @*На этой странице отображаются все информационные блоки с анимацией*@
+}
+@section LeftTab
+{
+    <div class="controls">
+        <div class="sidebarMenuHolder" style="">
+            <div class="JStree">
+                <div id="tree"></div>
+            </div>
+        </div>
+    </div>
+
+}
+@model IList<Smoking.Models.AnimeBlock>
+<fieldset>
+    <table style="width: 100%" class="mygrid">
+        <tbody>
+            <tr>
+                <th>
+                    <div class="form-legend">
+                        Название раздела
+                    </div>
+                </th>
+                <th>
+                    <div class="form-legend">
+                        &nbsp;
+                    </div>
+                </th>
+                <th class="last-td">
+                    <div class="form-legend">&nbsp;</div>
+                </th>
+            </tr>
+            @{
+                var counter = 0;
+            }
+
+
+            @foreach (var filter in Model)
+            {
+                <tr class="@(counter%2 == 0 ? "even":"odd") @(counter == Model.Count() - 1 ? "last-grid-row":"")">
+                    <td>
+                        <div class="cell-content">
+                            <a title="Редактировать" href="/Master/ru/Anime/Edit/@filter.ID">@filter.SectionName</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="cell-content">
+                            <a title="Настройка компонентов" href="/Master/ru/Anime/Items?FilterID=@filter.ID">настройка</a>
+                        </div>
+                    </td>
+                    <td class="td-delete">
+                        <div class="cell-content cell-content-delete">
+                            <a title="Удалить блок" href="/Master/ru/Anime/Delete/@filter.ID">удалить</a>
+                        </div>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </tbody>
+    </table>
+    <br>
+    <input type="hidden" id="page" value="0">
+</fieldset>
+<div class="backref-tbl">
+    <a href="/Master/ru/Anime/Edit" class="btn">Добавить</a>
+</div>
+

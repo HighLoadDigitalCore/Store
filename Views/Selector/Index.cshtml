@@ -1,0 +1,158 @@
+﻿@model CommonPageInfo
+@{
+    Layout = "~/Views/Shared/" + Model.Layout + ".cshtml";
+}
+
+@section Header{
+    @if (Model.CurrentPage.PageType != null)
+    {
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "Header").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section HeaderS1{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "HeaderS1").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section HeaderS2{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "HeaderS2").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section HeaderS3{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "HeaderS3").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section FooterS1{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "FooterS1").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section FooterS2{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "FooterS2").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section FooterS3{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "FooterS3").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section LeftColumn{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "LeftColumn").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@section RightColumn{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "RightColumn").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+
+@section BodyBottom{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "BodyBottom").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+
+}
+
+@section ContentLower{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "ContentLower").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+
+}
+
+
+
+@section HeaderTop{
+    @if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in Model.CurrentPage.PageType.CMSPageCells.First(x => x.ColumnName == "HeaderTop").CMSPageCellViews.Where(x => x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum))
+        {
+            @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+        }
+    }
+}
+@if (Model.StatusCode != 200)
+{
+    @Html.Action("Search", "CommonBlocks")
+    @Html.Action(Model.Action, Model.Controller)
+}
+else
+{
+    if (Model.CurrentPage.PageType != null)
+    {
+
+        foreach (var x in (Model.CurrentPage.PageType.CMSPageCells.FirstOrDefault(x => x.ColumnName == "Body") ?? new CMSPageCell(){CMSPageCellViews = new EntitySet<CMSPageCellView>()}).CMSPageCellViews.Where(x => x != null && x.PageID == Model.CurrentPage.ID).OrderBy(x => x.OrderNum).Where(x => x != null))
+        {
+            
+            /*try
+            {*/
+                @Html.Action(x.Action, x.Controller, new { ViewID = x.ID, x.CellID })
+            /*}
+            catch (Exception e)
+            {
+                <div>
+                    <h1>@e.Message</h1>
+                    <span>@e.StackTrace</span>
+                </div>
+            }*/
+        }
+    }
+}
