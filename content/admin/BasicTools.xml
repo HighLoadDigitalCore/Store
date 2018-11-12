@@ -1,0 +1,38 @@
+<root>
+
+
+  <tools name="TextStyleToolBar" dockable="false" enabled="true" >
+    <tool name="Bold" />
+    <tool name="Italic" />
+    <tool name="Underline" />
+    <tool name="ForeColor" />
+    <tool name="BackColor"/>
+    <tool name="LinkManager" />
+    <tool name="Unlink" />
+  </tools>
+
+  <links>
+  </links>
+  <snippets>
+  </snippets>
+  <symbols>
+  </symbols>
+
+  <fontNames>
+  </fontNames>
+  <fontSizes>
+  </fontSizes>
+
+  <colors>
+  </colors>
+  <classes>
+  </classes>
+
+  <paragraphs>
+  </paragraphs>
+
+  <dialogParameters>
+  </dialogParameters>
+  <languages>
+  </languages>
+</root>

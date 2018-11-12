@@ -1,0 +1,8 @@
+﻿.RadTreeView .rtIn
+{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.RadTreeView .rtTop, .RadTreeView .rtMid, .RadTreeView .rtBot {
+padding:0 0 0 20px !important;
+}

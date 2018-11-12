@@ -1,0 +1,33 @@
+html, body{
+height:auto;background:#fff
+}
+.print-header{
+height:46px;background:#9cbce6 url(bg1.png) 0 0 repeat-x;margin-bottom:18px;padding-top:10px;text-align:center
+}
+.print-header-in{
+width:80%;margin:0 auto;text-align:left
+}
+.print-container{
+margin:0 auto 20px auto;width:75%
+}
+.print-footer{
+color:#1e5ba8;border-top:solid 2px #7ca4d6;padding:18px 0;width:75%;margin:0 auto
+}
+h1{
+color:#113a69;font-family:verdana;font-size:18px;margin-top:10px
+}
+.logo-print{
+float:right;margin:0 40px 0 0;width:136px;height:33px;background:url(logo-print.png) 0 0 no-repeat
+}
+.tblv2 td{
+color:#000
+}
+.tblv2 th{
+border-bottom:solid 1px #9cbce6;border-left:solid 1px #9cbce6;background:none
+}
+.stats{
+text-align:center
+}
+.rnd-stats-select-print{
+width:710px;margin:0 auto
+}

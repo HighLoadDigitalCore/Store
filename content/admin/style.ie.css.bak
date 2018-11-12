@@ -1,0 +1,76 @@
+* html .site a,
+* html .site span,
+* html .search1,
+* html .search1 i,
+* html .userbar,
+* html .help .lb,
+* html .editpage,
+* html .delpage,
+* html .addpage,
+* html .params,
+* html .openpage,
+* html .ico-s,
+* html .ico-eye,
+* html .ico-openpage,
+* html .ico-editpage,
+* html .ico-params,
+* html .ico-folder,
+* html .ico-folder1,
+* html .ico-delpage,
+* html .ico-del-all,
+* html .ico-list,
+* html .ico-addpage,
+* html .ico-up,
+* html .ico-down,
+* html .ico-greenplus,
+* html .ico-xls,
+* html .ico-print,
+* html .ico-graph,
+* html .ico-histogram,
+* html .ico-linear,
+* html .ico-diagram,
+* html .ico-minus,
+* html .ico-plus,
+* html .ico-search,
+* html .ico-install,
+* html .ico-tmpl,
+* html .ico-close,
+* html .ico-checkbox,
+* html .ico-del,
+* html .ico-check,
+* html .ico-construct,
+* html .ico-construct1,
+* html .ico-help,
+* html .ico-help1{
+background-image:url(images.ie.png)
+}
+.ico-page, .ico-star{
+behavior:url(/atilektcms/img/iepngfix.htc)
+}
+.primary-nav, p.h-delpage{
+zoom:1
+}
+.rnd .t i, .rnd .b i{
+position:relative
+}
+.secondary-nav a, .block1-title{
+cursor:hand
+}
+.btn, .btn i{
+cursor:hand
+}
+.error{
+width:expression(((this.clientWidth) > 400) ? "400px" : "auto")
+}
+.recyclebin input{
+margin:-2px 0
+}
+.list1 .inp{
+height:11px
+}
+.list1 .tree-ctrl1{
+margin-top:-1px
+}
+p.h-delpage{
+padding-right:9px
+}

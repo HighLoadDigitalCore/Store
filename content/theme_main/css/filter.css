@@ -1,0 +1,259 @@
+﻿.category-filter {
+    width: 100%;
+    border: 1px solid #7F7F7F;
+    margin: 10px 0 15px 0;
+}
+
+.category-filter-header {
+    background-color: #7F7F7F;
+    padding: 10px;
+    color: white;
+    font-size: 16px;
+}
+
+.category-filter-header-toggler {
+    float: right;
+    text-align: right;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.toggler-text {
+    border-bottom: 1px dotted white;
+}
+
+.category-filter-header-toggler .order-uarr, .category-filter-header-toggler .order-darr {
+    color: white;
+}
+
+.category-filter-body {
+    /*padding: 10px;*/
+    display: none;
+    clear: both;
+    overflow: hidden;
+    padding: 5px;
+}
+
+
+.group-arrow {
+    width: 13px;
+    height: 13px;
+    display: block;
+    float: right;
+    margin: 8px 3px 0 0;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.g-arrs {
+    /*background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgOCA2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9IiNiMmIyYjIiPjxwYXRoIGQ9Ik0uODAxIDUuMzk2bDMuMTk4LTMuMTk2IDMuMTk3IDMuMTk2Ljc5OS0uNzk5LTMuOTk2LTMuOTk0LTMuOTk2IDMuOTk0Ljc5OC43OTl6Ii8+PC9zdmc+Cg==') !important;*/
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTczbp9jAAAApElEQVQoU5WS0Q3CMAxE7XzkowOwQ/8j/pHYoNOxFgsV32E3TgtFPCk6xb5L3KiS0aIXk1ZrvavqAsXe60esMdNsGiZortMYREOut8lLI1YfgjjtNBD0IKfAzMPVaGgpzzAE7muS04mHrdV1Az5OhVfyGvE9Alwf+/ubMJZJD733ZLvJOHzTN9zXevrP1+MJp8EeGCeKIDROg+Y6jXvc/OPfE3kBy1UduV1nN2oAAAAASUVORK5CYII=') !important;
+}
+
+.g-darrs {
+    /*background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgOCA2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9IiNiMmIyYjIiPjxwYXRoIGQ9Ik03LjE5Ny42MDRsLTMuMTk4IDMuMTk2LTMuMTk3LTMuMTk2LS43OTkuNzk5IDMuOTk2IDMuOTk0IDMuOTk2LTMuOTk0LS43OTgtLjc5OXoiLz48L3N2Zz4K') !important;*/
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTczbp9jAAAAoUlEQVQoU5VSyQ3DQAiEfewjBaSH/Ff+R0oHqS5tpaGYQcNePiKPtBoBM4CRpYcmvRuVnPNLVd9gxMxvYYWHi41DBO7zLgxEQZbnjakRlh+M6HZqCDSjb4Gdx9EHoK5I7wY0pa/RLx5jR90KV2LOwbiZ9urzJOJjDyZwRZ1k2HwTilhrbkZdae6L1/MOp8ZmGK8cRnB0A/d5F86g+M+/J7IC9L0duaGGQFcAAAAASUVORK5CYII=') !important;
+}
+
+.category-filter-col {
+    width: 31.7%;
+    margin: 5px;
+    float: left;
+}
+
+.category-filter-group {
+    margin-bottom: 5px;
+    border: 1px solid #E5E5E5;
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.category-filter-overlay {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    
+    background-color: white;
+    background: url(/content/photon/images/photon/preloader/130.gif) white;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    opacity: 0.8;
+}
+
+.category-filter-group .title {
+    padding: 5px;
+    clear: both;
+    overflow: hidden;
+    font-weight: bold;
+    font-size: 13px;
+    height: 30px;
+    background-color: #F7FBFE;
+}
+
+.category-filter-group:hover .title {
+    background-color: #EDF6FD;
+}
+
+.category-filter-group .title span {
+    display: block;
+    float: left;
+    margin-top: 6px;
+    margin-left: 5px;
+}
+
+.help-tip {
+    margin-top: 7px;
+}
+
+.category-filter-group-img {
+    width: 36px;
+    height: 36px;
+    margin: -3px 5px -3px -3px;
+    /*border-radius: 5px;*/
+    display: block;
+    float: left;
+}
+
+.filter-group-body {
+    padding: 15px 5px 15px 20px;
+    max-height: 200px;
+    overflow-y: hidden;
+    border-top: 1px solid #E5E5E5;
+}
+
+    .filter-group-body .mCSB_scrollTools .mCSB_draggerRail {
+        width: 9px;
+    }
+
+    .filter-group-body .mCSB_dragger_bar {
+        width: 8px!important;
+    }
+
+.filter-group-body-pad {
+    padding-left: 45px;
+}
+
+.filter-group-body-price, .filter-group-body-range {
+    padding-left: 5px;
+    overflow-x: hidden;
+}
+
+.filter-group-collapsed {
+    display: none;
+}
+
+.category-filter-apply {
+    clear: both;
+    overflow: hidden;
+    padding: 5px;
+    display: none;
+    text-align: center;
+}
+
+.ye_result {
+    padding: 5px 6px !important;
+    width: 200px;
+    background-color: #CF2020 !important;
+    background-image: -webkit-linear-gradient(top, #FD9742, #CF2020) !important;
+    background-image: -moz-linear-gradient(top, #FD9742, #CF2020) !important;
+    border: 1px solid #CF2020 !important;
+    border-radius: 3px !important;
+    color: #FFFFFF !important;
+    font-size: 15px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    text-shadow: #D12522 0 -1px 0 !important;
+    display: inline-block!important;
+    margin-left: -85px;
+}
+
+    .ye_result a {
+        color: #fff;
+        font-size: 15px !important;
+        text-decoration: none;
+        border-bottom: 1px dashed #fff;
+    }
+
+    .ye_result a:hover {
+        color: #fff !important;
+        border-bottom: none;
+    }
+
+.toggler-text:hover {
+    border-bottom: none;
+}
+
+#del_filter {
+    float: left;
+    color: #214060;
+    margin: 7px 15px;
+    font-size: 12px;
+}
+
+.price-line {
+    width: 100%;
+    clear: both;
+    overflow: hidden;
+    margin: 0px 0 20px 0;
+}
+
+    .price-line span {
+        font-size: 11px;
+        color: darkgray;
+        display: inline-block;
+        margin: 0 3px;
+    }
+
+    .price-line input {
+        width: 60px;
+        height: 14px;
+        font-size: 12px;
+    }
+
+.to-price {
+    float: right;
+    margin-right: 3px;
+}
+
+.from-price {
+    float: left;
+}
+
+.filter-cbx {
+    clear: both;
+    overflow: hidden;
+    /*margin-bottom: 4px;*/
+}
+
+    .filter-cbx input {
+        float: left;
+    }
+
+    .filter-cbx label {
+        float: left;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+    .qtip-default {
+        border-color: #DAEAF6;
+        background-color: #4B97D2;
+        color: #ffffff;
+        border-radius: 5px;
+    }
+    .qtip-content {
+        padding: 1px 9px 9px 9px;
+        font-size: 12px;
+    }

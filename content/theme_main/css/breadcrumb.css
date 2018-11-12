@@ -1,0 +1,176 @@
+﻿.b-breadcrumb {
+    
+    font-size: 0;
+    margin-bottom: 40px;
+    margin-top: -10px;
+    
+    padding-top: 10px;
+    position: relative;
+    white-space: nowrap;
+    z-index: 999;
+    /*margin-left: 20px;*/
+    /*float: left;*/
+    /*overflow: hidden;*/
+}
+.b-breadcrumb__link {
+    text-decoration: none;
+}
+.b-breadcrumb__link:hover {
+    text-decoration: underline;
+}
+.b-breadcrumb__item_state_visible {
+    display: none;
+}
+.b-breadcrumb__item {
+    position: relative;
+    vertical-align: top;
+    float: left;
+
+}
+
+.b-breadcrumb__link_type_home {
+    border-radius: 2px 0 0 2px;
+    cursor: pointer;
+    padding: 0 10px 0 5px;
+    z-index: 2;
+}
+.b-breadcrumb__link {
+    border: 1px solid rgba(0, 0, 0, 0);
+    color: #00a1cd;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
+    padding: 0 10px;
+    vertical-align: top;
+    white-space: nowrap;
+        max-width: 170px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.b-breadcrumb__item-hr {
+    color: #979797;
+    display: inline-block;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0 2px;
+}
+
+
+.b-breadcrumb__link-home-icon {
+    margin: 3px 5px 0 0;
+    vertical-align: top;
+}
+.icon-mini_home {
+    background-position: -726px -237px;
+    height: 11px;
+    width: 13px;
+    /*background-image: url("/content/theme_main/img/tiu.png");*/
+    display: inline-block;
+}
+
+.b-breadcrumb__dropdown-arrow {
+    margin: 9px 7px 0 -5px;
+    vertical-align: top;
+    background-image: url("/content/theme_main/img/tiu.png");
+    display: inline-block;
+}
+.icon-breadcrumb_arrow, .b-breadcrumb__arrow {
+    background-position: -816px -51px;
+    height: 3px;
+    width: 5px;
+}
+.b-breadcrumb__sublist {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: #ffffff none repeat scroll 0 0;
+    border-color: #dadadd #dadadd #c7c7d1;
+    border-image: none;
+    border-radius: 0 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+    display: none;
+    left: 0;
+    opacity: 0;
+    padding: 5px 0 1px;
+    position: absolute;
+    top: 18px;
+    white-space: normal;
+    width: 285px;
+    z-index: 12;
+    list-style: outside none none;
+}
+.b-breadcrumb__sublist-item {
+    border-top: 1px dotted #dadadd;
+    font-size: 12px;
+}
+.b-breadcrumb__sublist-item:first-child {
+    border-top: 0 none;
+}
+.b-breadcrumb__sublist-item:hover {
+    background-color: #ffffff;
+}
+.b-breadcrumb__sublist-item:last-child {
+    border-radius: 0 0 3px 3px;
+}
+.b-breadcrumb__sublist-item:last-child .b-breadcrumb__sublist-link {
+    border-radius: 0 0 3px 3px;
+}
+.b-breadcrumb__sublist-link {
+    color: #0fa3ce;
+    display: block;
+    overflow: hidden;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+.b-breadcrumb__sublist-link:hover {
+    text-decoration: underline;
+}
+.b-breadcrumb__sublist-delim {
+    border-bottom: 1px dotted #d4d4d4;
+    border-top: 1px dotted #ffffff;
+    font-size: 1px;
+    height: 0;
+    line-height: 0;
+    margin: 0 20px;
+}
+.b-breadcrumb__sublist-item-count {
+    color: #959595;
+    float: right;
+    font-size: 11px;
+}
+
+.b-breadcrumb__item_state_opened .b-breadcrumb__dropdown-arrow {
+    visibility: hidden;
+}
+.b-breadcrumb__item_state_opened .b-breadcrumb__link {
+    border-color: #dadadd #dadadd #ffffff;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    margin-top: -5px;
+    padding-top: 5px;
+    position: relative;
+    z-index: 13;
+}
+.b-breadcrumb__item_state_opened .b-breadcrumb__link::after {
+    background: #ffffff none repeat scroll 0 0;
+    bottom: -3px;
+    content: " ";
+    display: block;
+    font-size: 0;
+    height: 5px;
+    left: 0;
+    line-height: 0;
+    position: absolute;
+    width: 100%;
+}
+.b-breadcrumb__item_state_opened .b-breadcrumb__sublist {
+    display: block;
+    opacity: 100;
+}

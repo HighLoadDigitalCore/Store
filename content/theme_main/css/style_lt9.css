@@ -1,0 +1,60 @@
+/*element_field*/
+.field>:first-child+*,.field-small>:first-child+*{float:right;width:5px;}
+.field>:first-child+*+*,.field-small>:first-child+*+*{height:100%;margin-left:5px;margin-right:5px;}
+.field_search>.ctrl_search{width:32px;margin-right:0}
+.field_search>.ctrl_search+div{margin-right:32px}
+.field_search>.ctrl_search-small{width:25px;margin-right:0}
+.field_search>.ctrl_search-small+div{margin-right:25px}
+.field_quantity>.ctrl_minus,.field_quantity>.ctrl_plus{width:25px}
+.field_quantity>.ctrl_plus+div{margin:0 25px}
+
+/*== Фикс поинтеров ==*/
+.el_form-pointer > input.checked + .point_checkbox { background-position: 0 -685px; }
+.el_form-pointer > input.checked + .point_radio { background-position: 0 -755px; }
+.el_form-pointer > input.checked + .point_checkbox.small { background-position: -10px -660px; }
+.el_form-pointer > input.checked + .point_radio.small { background-position: 0 -700px; }
+.el_form-pointer > input.checked + .point_radio.small.green { background-position: 0 -720px; }
+.el_form-pointer > input.checked + .point_radio.small.orange { background-position: -10px -720px; }
+
+.el_form-pointer > input.checked.disabled + .point_checkbox { background-position: 0 -700px; }
+.el_form-pointer > input.checked.disabled + .point_radio { background-position: 0 -770px; }
+
+
+/*== Фикс поинтеров для фильтров каталога ==*/
+.page_filterlist-container .cat_filterlist_point input.checked + span
+{
+    color: #fff;
+    background-color: #37a400;
+    background-image: none;
+    border-color: #b0d655;
+    box-shadow:  0px 1px 0px 1px #69bb40;
+    text-shadow: 0px -1px 0px #aaa;
+}
+
+.page_filterlist-container .cat_filterlist_point input.checked + span:hover
+{
+    background-image: none;
+    border-color: #b0d655;
+}
+
+.goods_view_box h3,
+.goods_view_small h3,
+.goods_view_line h3
+{
+    font-family: Verdana;
+    font-size: 12px;
+}
+
+.goods_view_box.last {
+    margin: 0px 0px 10px 0px;
+}
+
+.goods_view_box .goods_form h3
+{
+    font-size: 12px;
+    font-weight: normal;
+}
+.goods_view_box .goods_form h3 span
+{
+    font-size: 11px;
+}

@@ -1,0 +1,27 @@
+.content1
+{
+    padding: 10px !important;
+}
+body, html
+{
+    background: #fff;
+    width: 100%;
+    height: auto !important;
+}
+form
+{
+    height: auto !important;
+}
+.content
+{
+    width: 700px !important;
+}
+.tblv3
+{
+    width: 700px !important;
+}
+/*.RadWindow .rwWindowContent
+{
+    width:800px !important
+}*/
+

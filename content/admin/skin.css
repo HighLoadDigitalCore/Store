@@ -1,0 +1,116 @@
+/* RadDock for ASP.NET AJAX CMS Skin */
+
+/* Docking Zone properties */
+.RadDockZone_CMS
+{
+	border:0 !important;
+	padding:1px !important;
+    /*border-color: #a7bac5;*/
+}
+
+/* wrappers and borders */
+.RadDockZone_CMS .rdPlaceHolder
+{
+    border-color: #666;
+}
+
+.RadDock_CMS
+{
+    /*background-color: white;
+    color: #003399;*/
+    margin-bottom:13px !important;
+}
+
+.RadDock_CMS .rdTopBorder,
+.RadDock_CMS .rdSideBorders,
+.RadDock_CMS .rdBottomBorder
+{ 
+	border:0;
+    /*border-color: #a7bac5;*/
+}
+
+/* titlebar and buttons */
+.RadDock_CMS .rdTitlebar
+{
+	border:none;
+    /*border-color: #3c7fb1;
+    background-color: #e8f5fc;
+    color: #039;*/
+}
+
+.RadDock_CMS .rdHTitlebar .rdTitle
+{
+    /*background-image: url('WebResource.axd?d=fY3PY0dKw2TtZNyzOgwkOQeI8nNQ9BjP5gu-wz1oJMivZpctPASFuRQdRTH2zUDQmqPxOEWr5nxlXy7mMCM7jA2&t=633789507760000000');
+    background-repeat: repeat-x;
+    background-color: #e8f5fc;*/
+}
+
+.RadDock_CMS .rdVTitlebar .rdTitle
+{
+    /*border-color: #eff9fe #e8f5fc #eff9fe #fff;
+    background-color: white;*/
+}
+
+.RadDock_CMS .rdHTitlebar .rdCommands
+{
+    padding: 0 3px 0 0;
+}
+
+/* right to left support */
+.RadDock_CMS_rtl .rdHTitlebar .rdTitle
+{
+    padding-left: 0;
+    padding-right: 10px;
+}
+
+.RadDock_CMS_rtl .rdHTitlebar .rdCommands
+{
+    padding: 0 0 0 3px;
+}
+
+.RadDock_CMS .rdHTitlebar .rdCommands a,
+.RadDock_CMS .rdVTitlebar .rdCommands a
+{
+    margin: 0;
+}
+
+.RadDock_CMS .rdTitlebar .rdCommands a
+{
+	display:none;
+    /*background-image: url('WebResource.axd?d=fY3PY0dKw2TtZNyzOgwkOQeI8nNQ9BjP5gu-wz1oJMivZpctPASFuRQdRTH2zUDQyV972AnqvdT8ZBgvuZSq-YlcX5A2WcOx0&t=633789507760000000');*/
+}
+
+/* drag grips */
+.RadDock_CMS .rdGripTop,
+.RadDock_CMS .rdGripLeft
+{
+    /*background: #a7bac5;*/
+}
+
+.RadDock_CMS .rdTopLeft,
+.RadDock_CMS .rdTopRight,
+.RadDock_CMS .rdBottomLeft,
+.RadDock_CMS .rdBottomRight,
+.RadDock_CMS .rdLeftMiddle,
+.RadDock_CMS .rdRightMiddle
+{
+	/*background: #a6d9f4;*/
+}
+
+.RadDock_CMS .rdTopCenter, 
+.RadDock_CMS .rdBottomCenter 
+{
+	/*background: #a6d9f4;*/
+}
+
+.RadDock_CMS .rdWrapTable .rdTitlebar,
+.RadDock_CMS .rdWrapTable .rdTitle,
+.RadDock_CMS .rdWrapTable .rdCommands
+{
+    /*background-image: url(WebResource.axd?d=fY3PY0dKw2TtZNyzOgwkOQeI8nNQ9BjP5gu-wz1oJMivZpctPASFuRQdRTH2zUDQmqPxOEWr5nxlXy7mMCM7jA2&t=633789507760000000);*/
+}
+
+.rtIn {
+/*min-width:500px;*/
+width: 100%; display: inline-block;
+}

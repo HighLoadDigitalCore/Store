@@ -1,0 +1,19 @@
+﻿.reWrapper_corner, .reWrapper_center
+{
+    display: none !important;
+}
+
+.reLeftVerticalSide, .reRightVerticalSide, .reToolZone, .reToolCell
+{
+    background: white !important;
+}
+
+.reContentCell
+{
+    border-width: 0 !important;
+}
+
+.RadEditor
+{
+    filter: chroma(color=c2dcf0);
+}

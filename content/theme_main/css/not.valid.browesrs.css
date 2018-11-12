@@ -1,0 +1,68 @@
+
+#not_valid_browesrs {
+    background-color: #007832;
+    bottom: 0;
+    display: block;
+    height: 100%;
+    left: 0;
+    margin: 0 auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+#not_valid_browesrs .not_valid_header, #not_valid_browesrs .not_valid_content, #not_valid_browesrs .not_valid_footer {
+    margin: 0 auto;
+    padding: 1px 0;
+    width: 700px;
+}
+#not_valid_browesrs .not_valid_header, #not_valid_browesrs .not_valid_footer {
+    color: #FFFFFF;
+    font-size: 14px;
+    position: relative;
+}
+#not_valid_browesrs .not_valid_header {
+    height: 160px;
+}
+#not_valid_browesrs .not_valid_header a {
+    color: #FFFFFF;
+    float: right;
+    margin-top: 40px;
+}
+#not_valid_browesrs .not_valid_content {
+    background-color: #FFFFFF;
+}
+#not_valid_browesrs .not_valid_content p {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+#not_valid_browesrs .not_valid_content .body_bg {
+    height: 310px;
+}
+#not_valid_browesrs .not_valid_content a {
+    color: #777777;
+    font-size: 11px;
+}
+#not_valid_browesrs .not_valid_content table td {
+    padding: 0 10px 10px;
+    text-align: center;
+}
+#not_valid_browesrs .not_valid_content table i {
+    display: block;
+    height: 60px;
+    margin: 0 auto 10px;
+    position: relative;
+    width: 60px;
+}
+#not_valid_browesrs .not_valid_content table i.icon_browser_chrome {
+    background-position: 0 -60px;
+}
+#not_valid_browesrs .not_valid_content table i.icon_browser_moz {
+    background-position: 0 -120px;
+}
+#not_valid_browesrs .not_valid_footer {
+    height: 60px;
+    padding-top: 30px;
+    text-align: center;
+}

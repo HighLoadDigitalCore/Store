@@ -1,0 +1,39 @@
+html, body{
+height:100%;margin:0;padding:0;border:0;font:normal 11px verdana, geneva, sans-serif;background:#f5f8fc url(login-bg.jpg) 0 0 no-repeat
+}
+body form{
+height:100%;padding:0;margin:0
+}
+.login{
+padding:90px 0 0 0;width:270px;margin:0 auto;text-align:center;position:relative
+}
+.login-form{
+width:100%;margin-bottom:7px
+}
+.login-form td{
+color:#1e5ba8;padding:3px 0;white-space:nowrap;text-align:left
+}
+.login-form .inp{
+width:180px;color:#427ecc;padding-top:4px;padding-bottom:5px
+}
+.login select{
+width:118px;color:#427ecc
+}
+.login-form a{
+color:#939597
+}
+.line{
+background:#9cbce6;font-size:0;height:1px;margin:14px 0 22px 0
+}
+.line2{
+background:#9cbce6;font-size:0;height:1px;margin:0 0 7px 0
+}
+.ver{
+color:#5e9822;position:absolute;bottom:20px;right:0
+}
+.login-error{
+width:170px;float:right;position:relative;margin-right:-180px;//position:absolute;//margin-left:250px;text-align:left
+}
+.login-error .cnt{
+padding:0 16px;line-height:200%
+}

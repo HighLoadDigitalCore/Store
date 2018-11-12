@@ -1,0 +1,123 @@
+/* 
+	Logitech CSS declarations - Scrollbar plugin styles 
+	copyright Logitech 2009 
+*/
+
+/* TOC 
+	 1. Global Scroll Elements 
+	 2. Scrollbar Drag
+	 3. Scrollbar Buttons
+*/
+
+
+/* 1. GLOBAL SCROLL ELEMENTS
+------------------------------------------------ */
+.ui-scrollbar-container {
+	margin: 15px 0;
+	width: 100%; /* For IE 6 */
+	min-width: 950px;
+	position: relative;
+}
+
+.ui-scrollbar {
+	margin-bottom: 20px;
+}
+
+.ui-scrollbar.ui-scrollbar-vertical {
+	width: 17px;
+	height: 100%;
+	position: relative;
+	
+	position: absolute;
+	top: 0;
+	right: 0;
+	background: url("/images/v2/cmn/scrollbar/bg-scrollbar-vertical.png") repeat-y center;
+}
+
+.ui-scrollbar.ui-scrollbar-horizontal {
+	margin: 0 auto 20px;
+	width: 950px;
+	height: 17px;
+	position: relative;
+	background: url("/images/v2/cmn/scrollbar/bg-scrollbar-horizontal.png") repeat-x center;
+}
+
+.ui-scrollbar-disabled .ui-scrollbar {
+	opacity: 0.35;
+}
+
+.ui-scrollbar-disabled .ui-scrollbar-drag {
+	visibility: hidden;
+}
+
+.ui-scrollbar-disabled .ui-scrollbar-button {
+	display: none;
+}
+
+
+/* 2. SCROLLBAR DRAG
+------------------------------------------------ */
+.ui-scrollbar-drag {
+	top: 0;
+	left: 0;
+	position: absolute;
+	cursor: default;
+}
+
+.ui-scrollbar-drag-left, .ui-scrollbar-drag-right {
+	background: url("/images/v2/cmn/scrollbar/sprite-scrollbar-horizontal.png") no-repeat left;
+	float: left;
+	display: block;
+	width: 80%;
+	height: 100%;
+}
+
+.ui-scrollbar-drag-right {
+	width: 20%;
+	background-position: right;
+}
+
+.ui-scrollbar.ui-scrollbar-vertical .ui-scrollbar-drag {
+	background: url("/images/v2/cmn/scrollbar/bg-handle-vertical.png");
+}
+
+
+/* 3. SCROLLBAR BUTTONS
+------------------------------------------------ */
+.ui-scrollbar-left-end .ui-scrollbar-left {
+	display: none;
+}
+
+.ui-scrollbar-right-end .ui-scrollbar-right {
+	display: none;
+}
+
+.ui-scrollbar-button-wrap {
+	position: absolute;
+	top: 30%;
+	left: 0;
+	width: 100px;
+	height: 75px;
+}
+
+.ui-scrollbar-right {
+	position: absolute;
+	left: auto;
+	right: 0;
+}
+
+.ui-scrollbar-left .ui-scrollbar-button, .ui-scrollbar-right .ui-scrollbar-button {
+	width: 48px;
+	height: 75px;
+	background: url("/images/v2/cmn/scrollbar/sprite-button.png") no-repeat right center;
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 1500;
+}
+
+.ui-scrollbar-left .ui-scrollbar-button {
+	background-position: left center;
+	right: auto;
+	left: 0;
+}
