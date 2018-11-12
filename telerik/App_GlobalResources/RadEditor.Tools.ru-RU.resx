@@ -1,0 +1,456 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ReservedResource" xml:space="preserve">
+    <value>Пожалуйста не удаляйте эту строку. RadEditor требуется определить, находится ли внешний файл с ресурсами в папке App_GlobalResources.</value>
+  </data>
+  <data name="AboutDialog" xml:space="preserve">
+    <value>О редакторе RadEditor</value>
+  </data>
+  <data name="AbsolutePosition" xml:space="preserve">
+    <value>Задать абсолютное положение</value>
+  </data>
+  <data name="AjaxSpellCheck" xml:space="preserve">
+    <value>Проверка правописания AJAX</value>
+  </data>
+  <data name="ApplyClass" xml:space="preserve">
+    <value>Применить CSS класс</value>
+  </data>
+  <data name="BackColor" xml:space="preserve">
+    <value>Цвет фона</value>
+  </data>
+  <data name="Bold" xml:space="preserve">
+    <value>Жирный</value>
+  </data>
+  <data name="ConvertToLower" xml:space="preserve">
+    <value>Преобразовать в нижний регистр</value>
+  </data>
+  <data name="ConvertToUpper" xml:space="preserve">
+    <value>Преобразовать в верхний регистр</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>Вырезать</value>
+  </data>
+  <data name="DecreaseSize" xml:space="preserve">
+    <value>Уменьшить размер</value>
+  </data>
+  <data name="DeleteCell" xml:space="preserve">
+    <value>Удалить ячейку</value>
+  </data>
+  <data name="DeleteColumn" xml:space="preserve">
+    <value>Удалить столбец</value>
+  </data>
+  <data name="DeleteRow" xml:space="preserve">
+    <value>Удалить строку</value>
+  </data>
+  <data name="DeleteTable" xml:space="preserve">
+    <value>Удалить таблицу</value>
+  </data>
+  <data name="DocumentManager" xml:space="preserve">
+    <value>Управление документами</value>
+  </data>
+  <data name="FindAndReplace" xml:space="preserve">
+    <value>Найти и заменить</value>
+  </data>
+  <data name="FlashManager" xml:space="preserve">
+    <value>Управление Flash</value>
+  </data>
+  <data name="FontName" xml:space="preserve">
+    <value>Название шрифта</value>
+  </data>
+  <data name="FontSize" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="ForeColor" xml:space="preserve">
+    <value>Цвет изображения</value>
+  </data>
+  <data name="FormatBlock" xml:space="preserve">
+    <value>Стиль абзаца</value>
+  </data>
+  <data name="FormatCodeBlock" xml:space="preserve">
+    <value>Форматировать блок кода</value>
+  </data>
+  <data name="FormatStripper" xml:space="preserve">
+    <value>Очистка текста</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Справка</value>
+  </data>
+  <data name="ImageManager" xml:space="preserve">
+    <value>Управление изображениями</value>
+  </data>
+  <data name="ImageMapDialog" xml:space="preserve">
+    <value>Редактор карты изображения</value>
+  </data>
+  <data name="IncreaseSize" xml:space="preserve">
+    <value>Увеличить размер</value>
+  </data>
+  <data name="Indent" xml:space="preserve">
+    <value>Увеличить отступ</value>
+  </data>
+  <data name="InsertAnchor" xml:space="preserve">
+    <value>Вставить ссылку</value>
+  </data>
+  <data name="InsertColumnLeft" xml:space="preserve">
+    <value>Вставить столбец слева</value>
+  </data>
+  <data name="InsertColumnRight" xml:space="preserve">
+    <value>Вставить столбец справа</value>
+  </data>
+  <data name="InsertCustomLink" xml:space="preserve">
+    <value>Настроить ссылки</value>
+  </data>
+  <data name="InsertDate" xml:space="preserve">
+    <value>Вставить дату</value>
+  </data>
+  <data name="InsertEmailLink" xml:space="preserve">
+    <value>Вставить ссылку на E-mail</value>
+  </data>
+  <data name="InsertFormButton" xml:space="preserve">
+    <value>Вставить кнопку</value>
+  </data>
+  <data name="InsertFormCheckbox" xml:space="preserve">
+    <value>Вставить чек-бокс</value>
+  </data>
+  <data name="InsertFormElement" xml:space="preserve">
+    <value>Вставить элемент формы</value>
+  </data>
+  <data name="InsertFormForm" xml:space="preserve">
+    <value>Вставить форму</value>
+  </data>
+  <data name="InsertFormHidden" xml:space="preserve">
+    <value>Вставить скрытое поле</value>
+  </data>
+  <data name="InsertFormPassword" xml:space="preserve">
+    <value>Вставить поле для пароля</value>
+  </data>
+  <data name="InsertFormRadio" xml:space="preserve">
+    <value>Вставить радио-кнопку</value>
+  </data>
+  <data name="InsertFormReset" xml:space="preserve">
+    <value>Вставить кнопку сброса</value>
+  </data>
+  <data name="InsertFormSelect" xml:space="preserve">
+    <value>Вставить кнопку выбора</value>
+  </data>
+  <data name="InsertFormSubmit" xml:space="preserve">
+    <value>Вставить кнопку подтверждения</value>
+  </data>
+  <data name="InsertFormText" xml:space="preserve">
+    <value>Вставить текстовую строку</value>
+  </data>
+  <data name="InsertFormTextarea" xml:space="preserve">
+    <value>Вставить текстовое поле</value>
+  </data>
+  <data name="InsertGroupbox" xml:space="preserve">
+    <value>Вставить группу</value>
+  </data>
+  <data name="InsertHorizontalRule" xml:space="preserve">
+    <value>Горизонтальная линия</value>
+  </data>
+  <data name="InsertOrderedList" xml:space="preserve">
+    <value>Нумерованный список</value>
+  </data>
+  <data name="InsertParagraph" xml:space="preserve">
+    <value>Новый абзац</value>
+  </data>
+  <data name="InsertRowAbove" xml:space="preserve">
+    <value>Вставить строку сверху</value>
+  </data>
+  <data name="InsertRowBelow" xml:space="preserve">
+    <value>Вставить строку снизу</value>
+  </data>
+  <data name="InsertSnippet" xml:space="preserve">
+    <value>Вставить Code Snippet</value>
+  </data>
+  <data name="InsertSymbol" xml:space="preserve">
+    <value>Вставить символ</value>
+  </data>
+  <data name="InsertTable" xml:space="preserve">
+    <value>Вставить таблицу</value>
+  </data>
+  <data name="InsertTime" xml:space="preserve">
+    <value>Вставить время</value>
+  </data>
+  <data name="InsertUnorderedList" xml:space="preserve">
+    <value>Маркированный список</value>
+  </data>
+  <data name="Italic" xml:space="preserve">
+    <value>Наклонный</value>
+  </data>
+  <data name="JustifyCenter" xml:space="preserve">
+    <value>Выравнивание по центру</value>
+  </data>
+  <data name="JustifyFull" xml:space="preserve">
+    <value>Выравнивание по ширине</value>
+  </data>
+  <data name="JustifyLeft" xml:space="preserve">
+    <value>Выравнивание по левому краю</value>
+  </data>
+  <data name="JustifyNone" xml:space="preserve">
+    <value>Убрать выравнивание</value>
+  </data>
+  <data name="JustifyRight" xml:space="preserve">
+    <value>Выравнивание по правому краю</value>
+  </data>
+  <data name="LinkManager" xml:space="preserve">
+    <value>Управление ссылками</value>
+  </data>
+  <data name="MediaManager" xml:space="preserve">
+    <value>Управление звуком и видео</value>
+  </data>
+  <data name="MergeColumns" xml:space="preserve">
+    <value>Объединить ячейки по горизонтали</value>
+  </data>
+  <data name="MergeRows" xml:space="preserve">
+    <value>Объединить ячейки по вертикали</value>
+  </data>
+  <data name="ModuleManager" xml:space="preserve">
+    <value>Управление модулями</value>
+  </data>
+  <data name="Outdent" xml:space="preserve">
+    <value>Уменьшить отступ</value>
+  </data>
+  <data name="PageProperties" xml:space="preserve">
+    <value>Свойства страницы</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Вставить</value>
+  </data>
+  <data name="PasteAsHtml" xml:space="preserve">
+    <value>Вставить как HTML</value>
+  </data>
+  <data name="PasteFromWord" xml:space="preserve">
+    <value>Вставить из Word</value>
+  </data>
+  <data name="PasteFromWordNoFontsNoSizes" xml:space="preserve">
+    <value>Вставить из Word, убрать шрифт</value>
+  </data>
+  <data name="PastePlainText" xml:space="preserve">
+    <value>Вставить только текст</value>
+  </data>
+  <data name="PasteStrip" xml:space="preserve">
+    <value>Настройка вставки</value>
+  </data>
+  <data name="Print" xml:space="preserve">
+    <value>Печать</value>
+  </data>
+  <data name="RealFontSize" xml:space="preserve">
+    <value>Размер шрифта</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>Повторить</value>
+  </data>
+  <data name="RepeatLastCommand" xml:space="preserve">
+    <value>Повторить последнюю команду</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Выбрать все</value>
+  </data>
+  <data name="SetCellProperties" xml:space="preserve">
+    <value>Свойства ячейки</value>
+  </data>
+  <data name="SetImageProperties" xml:space="preserve">
+    <value>Свойства...</value>
+  </data>
+  <data name="SetLinkProperties" xml:space="preserve">
+    <value>Свойства...</value>
+  </data>
+  <data name="SetTableProperties" xml:space="preserve">
+    <value>Свойства таблицы</value>
+  </data>
+  <data name="SpellCheck" xml:space="preserve">
+    <value>Проверка правописания</value>
+  </data>
+  <data name="SplitCell" xml:space="preserve">
+    <value>Разделить ячейку</value>
+  </data>
+  <data name="StrikeThrough" xml:space="preserve">
+    <value>Зачеркнутый</value>
+  </data>
+  <data name="StripAll" xml:space="preserve">
+    <value>Удалить все форматирование</value>
+  </data>
+  <data name="StripCss" xml:space="preserve">
+    <value>Удалить форматирование Css</value>
+  </data>
+  <data name="StripFont" xml:space="preserve">
+    <value>Удалить элементы шрифта</value>
+  </data>
+  <data name="StripSpan" xml:space="preserve">
+    <value>Удалить элементы Span</value>
+  </data>
+  <data name="StripWord" xml:space="preserve">
+    <value>Удалить форматирование Word</value>
+  </data>
+  <data name="StyleBuilder" xml:space="preserve">
+    <value>Построитель стилей</value>
+  </data>
+  <data name="Subscript" xml:space="preserve">
+    <value>Нижний регистр</value>
+  </data>
+  <data name="Superscript" xml:space="preserve">
+    <value>Верхний регистр</value>
+  </data>
+  <data name="TableWizard" xml:space="preserve">
+    <value>Мастер таблиц</value>
+  </data>
+  <data name="TemplateManager" xml:space="preserve">
+    <value>Управление шаблонами</value>
+  </data>
+  <data name="ToggleDocking" xml:space="preserve">
+    <value>Закрепить все плавающие Панели инструментов/Модули</value>
+  </data>
+  <data name="ToggleScreenMode" xml:space="preserve">
+    <value>Переключится в полноэкранный режим</value>
+  </data>
+  <data name="ToggleTableBorder" xml:space="preserve">
+    <value>Показать/Скрыть рамку</value>
+  </data>
+  <data name="Underline" xml:space="preserve">
+    <value>Подчеркивание</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="Unlink" xml:space="preserve">
+    <value>Удалить ссылку</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Увеличение</value>
+  </data>
+  <data name="ImageEditor" xml:space="preserve">
+    <value>Редактор изображений</value>
+  </data>
+  <data name="SilverlightManager" xml:space="preserve">
+    <value>Управление Silverlight</value>
+  </data>
+  <data name="TrackChangesDialog" xml:space="preserve">
+    <value>Отследить изменения</value>
+  </data>
+  <data name="XhtmlValidator" xml:space="preserve">
+    <value>XHTML проверка</value>
+  </data>
+  <data name="SplitCellHorizontal" xml:space="preserve">
+    <value>Разделить ячейку по горизонтали</value>
+  </data>
+</root>

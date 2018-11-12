@@ -1,0 +1,11 @@
+<root>	
+	<tools>
+		<tool name="Bold"/>
+		<tool name="Italic"/>
+		<tool name="Underline"/>
+		<tool separator="true"/>
+		<tool name="JustifyLeft"/>
+		<tool name="JustifyCenter"/>
+		<tool name="JustifyRight"/>
+	</tools>
+</root>
